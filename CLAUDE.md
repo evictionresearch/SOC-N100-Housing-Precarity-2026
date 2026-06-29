@@ -35,11 +35,11 @@ Labs use **tidyverse**, **tidycensus**, **ggplot2**, **sf**, and related package
 
 ## Student Environment
 
-Students access RStudio via Berkeley DataHub — **not** local installs. The preferred hub is **stat20.datahub.berkeley.edu** (1GB RAM guarantee, rocker/geospatial image with all needed packages pre-installed).
+Students access RStudio via Berkeley DataHub — **not** local installs. The primary hub is **r.datahub.berkeley.edu** (general R hub; RStudio default). Stat20 hub is optional (higher RAM but bCourses-gated to Stat 20 unless SOC-N100 is allowlisted).
 
 The DataHub link automatically git-pulls the repo and opens RStudio:
 ```
-https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity&urlpath=rstudio%2F
+https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
 ```
 
 To regenerate hub links, use the [DataHub Link Generator Chrome extension](https://chromewebstore.google.com/detail/datahub-link-generator/ijbgangngghdanhcnaliiobbiffocahf) with the repo URL. See `DATAHUB.md` for full details on available hubs and their package sets.

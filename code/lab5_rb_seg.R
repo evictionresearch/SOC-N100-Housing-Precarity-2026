@@ -2,6 +2,11 @@
 install.packages("librarian")
 librarian::shelf(tidyverse, tidycensus, evictionresearch/neighborhood)
 
+repo_root <- Sys.getenv(
+  "REPO_ROOT",
+  unset = normalizePath("~/SOC-N100-Housing-Precarity-2026", mustWork = FALSE)
+)
+
 # Define ACS variable codes for gross rent as a percentage of household income
 # Each code corresponds to a specific rent burden category
 rb_vars <- c(
@@ -94,7 +99,8 @@ seg_adj <-
 
 glimpse(seg_adj)
 
-write_csv(seg_adj, "~/SOC-N100-Lab-Code/seg_adj.csv")
-write_csv(sf_rb, "~/SOC-N100-Lab-Code/sf_rb.csv")
+dir.create(file.path(repo_root, "output"), recursive = TRUE, showWarnings = FALSE)
+write_csv(seg_adj, file.path(repo_root, "output", "seg_adj.csv"))
+write_csv(sf_rb, file.path(repo_root, "output", "sf_rb.csv"))
 
 # Now we're going to map this using a great free websource called datawrapper.de

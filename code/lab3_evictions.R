@@ -11,6 +11,11 @@ library(lubridate) # for handling dates
 library(janitor) # for cleaning names
 library(qs) # for reading qs files
 
+repo_root <- Sys.getenv(
+  "REPO_ROOT",
+  unset = normalizePath("~/SOC-N100-Housing-Precarity-2026", mustWork = FALSE)
+)
+
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
 # from the US Census Bureau. Now, we're going to work with data from the
@@ -18,7 +23,7 @@ library(qs) # for reading qs files
 # Berkeley and link it to census conditions.
 # ==========================================================================
 
-indiana_evictions <- qread("~/SOC-N100-Housing-Precarity/data/evictions/d5_case_aggregated.qs")
+indiana_evictions <- qread(file.path(repo_root, "data/evictions/d5_case_aggregated.qs"))
 
 glimpse(indiana_evictions)
 summary(indiana_evictions)
@@ -114,7 +119,7 @@ co_census
 # This is a great format that can be read by any coding language. One issue 
 # though is that if the data are large, it can lead to saving a very large file. 
 getwd() # shows me where R's working directory is currently pointing. 
-write_csv(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.csv")
+write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 
 ###############################################################################
 # Paths and Directories in R
@@ -127,7 +132,7 @@ write_csv(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.csv")
 # A directory is like a folder on your computer.
 # 
 # A path shows the route to a file or folder. For example, the path
-# ~/SOC-N100-Housing-Precarity/data/census/in_co_renters.csv
+# ~/SOC-N100-Housing-Precarity-2026/data/in_co_renters.csv
 # tells R to look inside several folders, one inside another, until it finds 
 # (or creates) the file called in_co_renters.csv.
 # 
@@ -144,7 +149,7 @@ write_csv(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.csv")
 # my favorite is `qs` which stands for "quick serialization". It compresses a 
 # saved object and can read these objects super fast. This is very helpful 
 # when you are working with large datasets. 
-qsave(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.qs")
+qsave(co_census, file.path(repo_root, "data/in_co_renters.qs"))
 
 # Now lets merge the census data to the eviction rates
 in_rates <- 

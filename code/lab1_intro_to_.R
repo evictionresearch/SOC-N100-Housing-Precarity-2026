@@ -154,7 +154,12 @@ head(mtcars)   # Shows the first 6 rows
 # If we wanted to read in data on our computer, we would use something 
 # like read.csv, which is a base function. What is a base function you ask? it's what gets loaded anytime you open R. In other words, you don't have to call it in. 
 
-car_speeds <- read.csv("~/SOC-N100-Housing-Precarity/data/software_carpentry/car-speeds.csv")
+repo_root <- Sys.getenv(
+  "REPO_ROOT",
+  unset = normalizePath("~/SOC-N100-Housing-Precarity-2026", mustWork = FALSE)
+)
+
+car_speeds <- read.csv(file.path(repo_root, "data/software_carpentry/car-speeds.csv"))
 
 # ~ means home directory
 # / means find what's inside the next section of the directory. 
@@ -386,7 +391,8 @@ ggplot(mtcars, aes(x = hp, y = mpg, color = factor(gear))) +
 
 # Save your last plot to a file (uncomment to use):
 ggsave("my_first_plot.png")
-ggsave("~/SOC-N100-Lab-Code/plots/my_first_plot.png")
+dir.create(file.path(repo_root, "output", "plots"), recursive = TRUE, showWarnings = FALSE)
+ggsave(file.path(repo_root, "output", "plots", "my_first_plot.png"))
 
 # =============================================================================
 # 14. Your Turn: Try Making Plots!

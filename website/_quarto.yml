@@ -4,7 +4,7 @@ project:
 
 website:
   title: "SOC-N100"
-  repo-url: "https://github.com/evictionresearch/SOC-N100-Housing-Precarity"
+  repo-url: "https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026"
   navbar:
     left:
       - href: index.qmd
@@ -14,13 +14,13 @@ website:
       - text: Resources
         href: resources.qmd
       - text: RStudio
-        href: https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity&urlpath=rstudio%2F
+        href: https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
     tools:
       - icon: r-circle-fill
-        href: https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity&urlpath=rstudio%2F
+        href: https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
         aria-label: RStudio
       - icon: github
-        href: https://github.com/evictionresearch/SOC-N100-Housing-Precarity
+        href: https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
 
 format:
   html:
@@ -30,4 +30,3 @@ format:
     toc: true
 
 editor: visual
-
