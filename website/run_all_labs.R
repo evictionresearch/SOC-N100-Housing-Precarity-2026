@@ -5,6 +5,7 @@
 #   Rscript website/run_all_labs.R
 #   Rscript website/run_all_labs.R --install    # install packages first
 #   Rscript website/run_all_labs.R --labs=1,3     # subset only
+#   Rscript website/run_all_labs.R --per-lab        # fresh R per lab (DataHub)
 #
 # Requires: network for tidycensus/tigris labs (2–5). Census API key in
 #   ~/.Renviron (set once via census_api_key(..., install = TRUE) in lab 2).
@@ -95,6 +96,51 @@ lab_scripts <- c(
 repo_root <- find_repo_root()
 setwd(repo_root)
 message("Repo root: ", repo_root)
+
+# --per-lab: spawn a separate Rscript per lab so memory is released between labs.
+# Recommended on r.datahub (1GB pod limit) and when running inside RStudio Terminal.
+if ("--per-lab" %in% args) {
+  lab_ids <- parse_labs_flag(args)
+  lab_ids <- lab_ids[as.character(lab_ids) %in% names(lab_scripts)]
+  if (length(lab_ids) == 0) {
+    stop("No valid labs selected. Use --labs=1,2,3,4,5", call. = FALSE)
+  }
+
+  runner <- normalizePath(file.path(repo_root, "website/run_all_labs.R"), mustWork = TRUE)
+  message("Per-lab mode: fresh R process for each of: ", paste(lab_ids, collapse = ", "))
+
+  results <- do.call(
+    rbind,
+    lapply(seq_along(lab_ids), function(i) {
+      id <- as.character(lab_ids[[i]])
+      child_args <- c(runner, paste0("--labs=", id))
+      if ("--install" %in% args && i == 1L) {
+        child_args <- c(child_args, "--install")
+      }
+      t0 <- proc.time()[["elapsed"]]
+      exit_code <- system2("Rscript", child_args)
+      elapsed <- proc.time()[["elapsed"]] - t0
+      data.frame(
+        lab = id,
+        script = lab_scripts[[id]],
+        status = if (identical(exit_code, 0L)) "OK" else "FAIL",
+        seconds = round(elapsed, 1),
+        message = if (identical(exit_code, 0L)) "" else paste0("Rscript exit code ", exit_code),
+        stringsAsFactors = FALSE
+      )
+    })
+  )
+
+  message("\n", strrep("=", 60), "\nSummary\n", strrep("=", 60))
+  print(results, row.names = FALSE)
+  n_fail <- sum(results$status == "FAIL")
+  if (n_fail > 0) {
+    message("\n", n_fail, " lab(s) failed.")
+    quit(status = 1)
+  }
+  message("\nAll requested labs completed without errors.")
+  quit(status = 0)
+}
 
 if ("--install" %in% args) {
   message("Installing course packages...")
@@ -189,7 +235,9 @@ run_lab <- function(lab_id, script_path) {
 results <- do.call(
   rbind,
   lapply(as.character(lab_ids), function(id) {
-    run_lab(id, lab_scripts[[id]])
+    res <- run_lab(id, lab_scripts[[id]])
+    gc(verbose = FALSE)
+    res
   })
 )
 
