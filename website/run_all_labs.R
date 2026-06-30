@@ -6,8 +6,8 @@
 #   Rscript website/run_all_labs.R --install    # install packages first
 #   Rscript website/run_all_labs.R --labs=1,3     # subset only
 #
-# Requires: network for tidycensus/tigris labs (2–5); Census API key in
-#   Sys.getenv("CENSUS_API_KEY") or the course key in lab2.
+# Requires: network for tidycensus/tigris labs (2–5). Census API key in
+#   ~/.Renviron (set once via census_api_key(..., install = TRUE) in lab 2).
 #
 # Plots: ggplot/tmap code executes; graphics go to a null PDF device (nothing
 # opens on screen). ggsave() in labs still writes files under output/.
@@ -59,12 +59,19 @@ if ("--install" %in% args) {
   source("code/install_course_packages.R", local = new.env(parent = globalenv()))
 }
 
-census_key <- Sys.getenv("CENSUS_API_KEY", unset = "")
-if (nzchar(census_key) && requireNamespace("tidycensus", quietly = TRUE)) {
+lab_ids <- parse_labs_flag(args)
+needs_census <- any(as.character(lab_ids) %in% c("2", "3", "4", "5"))
+if (needs_census) {
+  source("code/course_paths.R")
+  source("code/course_secrets.R")
   tryCatch(
-    tidycensus::census_api_key(census_key, overwrite = TRUE, install = TRUE),
+    ensure_census_api_key(),
     error = function(e) {
-      message("Note: could not set CENSUS_API_KEY from environment: ", conditionMessage(e))
+      stop(
+        conditionMessage(e),
+        "\nBatch runs are non-interactive: run census_api_key('YOUR_KEY', install = TRUE) once in RStudio first.",
+        call. = FALSE
+      )
     }
   )
 }
@@ -129,7 +136,6 @@ run_lab <- function(lab_id, script_path) {
   )
 }
 
-lab_ids <- parse_labs_flag(args)
 lab_ids <- lab_ids[as.character(lab_ids) %in% names(lab_scripts)]
 if (length(lab_ids) == 0) {
   stop("No valid labs selected. Use --labs=1,2,3,4,5", call. = FALSE)

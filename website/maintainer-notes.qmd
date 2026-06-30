@@ -271,7 +271,9 @@ Rscript website/run_all_labs.R --labs=3,4  # subset
 | `tmap_mode("view")` | Forced to `"plot"` |
 | `ggplot` / `tm_*` | Executed; not displayed |
 
-**Requirements:** Repo root as working directory; network for labs 2–5 (Census API, tigris). Optional `CENSUS_API_KEY` env var; otherwise labs use the key embedded in lab 2.
+**Requirements:** Repo root as working directory; network for labs 2–5 (Census API, tigris). Census key in `~/.Renviron` (RStudio dialog on first `ensure_census_api_key()`, or `census_api_key(..., install = TRUE)` in Console). Batch `Rscript` runs are non-interactive — set the key once in `~/.Renviron` before `run_all_labs.R`.
+
+**Rotate exposed keys:** A Census key was previously hardcoded in lab 2 and may exist in git history — revoke it at Census and register a new key via `census_api_key(..., install = TRUE)`.
 
 **After a clean batch run:** spot-check maps in RStudio (lab 4 eviction map, lab 1 saved PNG) manually once per term.
 

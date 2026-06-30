@@ -231,6 +231,16 @@ nrow(d)   # 139072
 
 Run `install_course_packages.R` in a **fresh R session** (Session → Restart R) before opening lab scripts. Click **Yes** if RStudio offers to restart before installing.
 
+### Census API key (labs 2–5)
+
+Students need a free Census API key. **Do not commit keys in lab scripts.**
+
+Sign up: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
+
+**One-time setup** — open lab 2 in RStudio and run through `ensure_census_api_key()`. A dialog asks for your key the first time; it is saved to `~/.Renviron` on your DataHub account.
+
+Or in the Console: `census_api_key("YOUR_KEY", install = TRUE)`
+
 ## Manual test checklist (before publishing links to students)
 
 Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
@@ -240,7 +250,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
 4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
 5. [ ] Lab 1 runs through tidyverse section
-6. [ ] Lab 2: `tidycensus` loads; census API key works
+6. [ ] Lab 2: first run prompts for Census key (or key already in `~/.Renviron`); `get_acs()` returns data
 7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
 9. [ ] Optional full batch: `Rscript website/run_all_labs.R` from repo root (see `website/maintainer-notes.qmd`)

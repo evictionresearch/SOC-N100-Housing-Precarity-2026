@@ -1,7 +1,10 @@
 # Load required packages: tidyverse for data manipulation/visualization, tidycensus for accessing Census data
 source("code/course_paths.R")
 source("code/course_packages.R")
+source("code/course_secrets.R")
 load_pkgs("tidyverse", "tidycensus", "librarian")
+# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
+ensure_census_api_key()
 ensure_github("evictionresearch/neighborhood")
 library(neighborhood)
 

@@ -4,7 +4,10 @@
 source("code/course_paths.R")
 source("code/course_packages.R")
 source("code/course_data.R")
+source("code/course_secrets.R")
 load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
+# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
+ensure_census_api_key()
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
@@ -316,15 +319,6 @@ ggplot(clean_in_rates_adj_2019, aes(x = p_black_renters, y = black_eviction_rate
 # - Best for calculating single summary statistics per group
 # - Automatically drops grouping levels after summarizing
 # Example: Getting average evictions per county
-avg_evictions_county <-
-  indiana_evictions %>%
-  group_by(county) %>%
-  summarize(
-    avg_evictions = mean(filings, na.rm = TRUE),
-    total_evictions = sum(filings)
-
-
-# Calculate average evictions per county
 avg_evictions_county <-
   indiana_evictions %>%
   group_by(county) %>%

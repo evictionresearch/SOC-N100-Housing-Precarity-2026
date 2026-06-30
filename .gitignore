@@ -40,6 +40,14 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+.env
+
+# Local lab / batch run artifacts (not course materials)
+output/
+my_first_plot.png
+
+# Agent web research scratch (promote manually if needed)
+search-artifacts/
 
 # translation temp files
 po/*~

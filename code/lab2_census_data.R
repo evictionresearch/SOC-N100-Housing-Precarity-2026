@@ -12,15 +12,18 @@
 # exercise. See code/README.md for the two-layer package pattern.
 source("code/course_paths.R")
 source("code/course_packages.R")
+source("code/course_secrets.R")
 load_pkgs("tidyverse", "tidycensus")
 
-census_api_key(
-  key = "63217a192c5803bfc72aab537fe4bf19f6058326",
-  overwrite = TRUE,
-  install = TRUE
-)
-# you should replace this API key with your own. You can get one from the US
-# Census Bureau at https://api.census.gov/data/key_signup.html
+# Census API key — tidycensus built-in method (see code/course_secrets.R)
+# -----------------------------------------------------------------------------
+# First time you run this lab in RStudio, ensure_census_api_key() opens a dialog
+# to paste your key. tidycensus saves it to ~/.Renviron on your DataHub account
+# (outside the repo). Later sessions load it automatically — no prompt.
+#
+# Sign up (free): https://api.census.gov/data/key_signup.html
+# See course_secrets.R for DataHub security notes (~/.Renviron vs git).
+ensure_census_api_key()
 
 # The first thing we want to do is load some variables in R that we will use to
 # look at some neighborhood conditions related to displacement.
@@ -400,7 +403,7 @@ bay_area_ami %>%
 # ## Setup
 # 1. Install required packages: `tidyverse` and `tidycensus`
 # 2. Load libraries: `library(tidyverse)` and `library(tidycensus)`
-# 3. Set up Census API key using `census_api_key()`
+# 3. Set up Census API key: ensure_census_api_key() (RStudio dialog on first run)
 
 # ## Basic Data Retrieval
 # 1. Load variable definitions: `load_variables(year, "acs5")`

@@ -18,13 +18,29 @@
 ```r
 source("code/course_paths.R")
 source("code/course_packages.R")
+source("code/course_secrets.R")   # labs 2–5 (Census API)
 
 load_pkgs("tidyverse", "tidycensus")   # example
+ensure_census_api_key()                # labs 2–5 (reads ~/.Renviron)
 ```
 
 Labs 3–4 also `source("code/course_data.R")` for eviction file paths, then `qs2::qs_read()`.
 
 Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolves.
+
+## Census API key (security)
+
+We teach **tidycensus's built-in method** — not a custom `.env` file. tidycensus documents this workflow; it keeps keys out of git.
+
+**One-time setup (lab 2, in RStudio):** run the lab script (or `ensure_census_api_key()`). On first use, RStudio shows a dialog to paste your key; tidycensus saves it to `~/.Renviron`. Later labs load it with no prompt.
+
+Manual alternative in the Console: `census_api_key("YOUR_KEY", install = TRUE)`
+
+**DataHub caveat:** hub administrators can access user home directories for operations and support. That is a different threat than scraping a public repo, but it is not zero trust. A free, rate-limited, revocable Census key is **safe enough** for this course. Do not use `~/.Renviron` on shared infrastructure for high-value secrets.
+
+**If a key is accidentally committed to git:** revoke it at Census and request a new one.
+
+Sign up: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
 
 ## Helper functions
 
@@ -41,6 +57,15 @@ Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolv
 ### `course_data.R`
 
 Path constants: `eviction_data_qs2`, `eviction_data_rds` (labs 3–4).
+
+### `course_secrets.R`
+
+| Function | Purpose |
+|----------|---------|
+| `ensure_census_api_key()` | Prompt once in RStudio if missing; else reload `~/.Renviron` |
+| `prompt_for_census_api_key()` | RStudio password dialog (or `readline` fallback) |
+
+See file header for why we use tidycensus's `census_api_key(..., install = TRUE)` and DataHub security notes.
 
 Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
 

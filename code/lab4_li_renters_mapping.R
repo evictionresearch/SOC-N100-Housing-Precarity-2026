@@ -15,6 +15,7 @@
 source("code/course_paths.R")
 source("code/course_packages.R")
 source("code/course_data.R")   # eviction_data_qs2, eviction_data_rds path constants
+source("code/course_secrets.R")
 load_pkg("librarian")  # installs only if missing; see code/README.md
 
 # and then you can load the packages you need with:
@@ -31,6 +32,8 @@ librarian::shelf(tidyverse, tigris, sf, ggplot2, viridis)
 
 # For our lesson today, we will draw on these packages:
 librarian::shelf(tidyverse, tidycensus, tigris, sf, ggplot2)
+# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
+ensure_census_api_key()
 # Note that "tigris" is loaded when we load the tidycensus package because
 # it's a dependancy to run the tidycensus package. Tigris is a package for
 # downloading and manipulating spatial data. Tidycensus is a package for
