@@ -154,8 +154,6 @@ head(mtcars)   # Shows the first 6 rows
 # If we wanted to read in data on our computer, we would use something 
 # like read.csv, which is a base function. What is a base function you ask? it's what gets loaded anytime you open R. In other words, you don't have to call it in. 
 
-source("code/course_paths.R")
-
 car_speeds <- read.csv(file.path(repo_root, "data/software_carpentry/car-speeds.csv"))
 
 # ~ means home directory
@@ -187,9 +185,11 @@ median(mtcars$mpg)   # Median miles per gallon
 # Let's install and load it (do this only once):
 
 # Uncomment the next line if you have not installed tidyverse before:
-install.packages("tidyverse")
+# load_pkg("tidyverse")  # installs only if missing; see code/README.md
 
-library(tidyverse)
+source("code/course_paths.R")
+source("code/course_packages.R")
+load_pkg("tidyverse")
 
 # Let's use tidyverse to select columns and filter rows:
 # Before we do that, we're going to use an thing called a pipe "%>%"

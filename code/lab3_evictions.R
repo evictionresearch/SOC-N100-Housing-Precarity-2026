@@ -1,17 +1,9 @@
 # -----------------------------------------------------------------------------
 # Before we start, we need to install and load the necessary packages for this
-# exercise.
-install.packages("lubridate") # for handling dates
-install.packages("janitor") # for cleaning names
-install.packages("qs") # for reading qs files
-
-library(tidyverse)  # Load the tidyverse package
-library(tidycensus)  # Load the tidycensus package
-library(lubridate) # for handling dates
-library(janitor) # for cleaning names
-library(qs) # for reading qs files
-
+# exercise. See code/README.md for the two-layer package pattern.
 source("code/course_paths.R")
+source("code/course_packages.R")
+load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs")
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data

@@ -1,8 +1,9 @@
 # Load required packages: tidyverse for data manipulation/visualization, tidycensus for accessing Census data
-install.packages("librarian")
-librarian::shelf(tidyverse, tidycensus, evictionresearch/neighborhood)
-
 source("code/course_paths.R")
+source("code/course_packages.R")
+load_pkgs("tidyverse", "tidycensus", "librarian")
+ensure_github("evictionresearch/neighborhood")
+library(neighborhood)
 
 # Define ACS variable codes for gross rent as a percentage of household income
 # Each code corresponds to a specific rent burden category

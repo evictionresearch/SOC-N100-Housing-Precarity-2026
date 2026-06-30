@@ -12,11 +12,10 @@
 # functions combined.
 
 # You can install it with:
-install.packages("librarian")
-# Then, you can load it with:
-library(librarian)
-
 source("code/course_paths.R")
+source("code/course_packages.R")
+load_pkg("librarian")  # installs only if missing; see code/README.md
+
 # and then you can load the packages you need with:
 shelf(tidyverse, tigris, sf, ggplot2, viridis)
 # If one of these packages is not installed, librarian will install it for you

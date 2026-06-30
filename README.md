@@ -6,7 +6,7 @@ Housing Precarity and Displacement: Racial and Gender Inequality in Gentrificati
 
 | Role | What to open |
 |------|----------------|
-| **Students (labs on DataHub)** | [`SOC-N100.Rproj`](SOC-N100.Rproj) at repo root → scripts in [`code/`](code/) |
+| **Students (labs on DataHub)** | [`SOC-N100.Rproj`](SOC-N100.Rproj) at repo root → scripts in [`code/`](code/) ([package practices](code/README.md)) |
 | **Course site (browser)** | GitHub Pages from [`docs/`](docs/) (syllabus, schedule, resources) |
 | **Maintainers (edit site)** | [`website/SOC-N100-website-for-maintainers.Rproj`](website/SOC-N100-website-for-maintainers.Rproj) → render to `docs/` |
 | **DataHub setup** | [`DATAHUB.md`](DATAHUB.md) |

@@ -9,14 +9,10 @@
 # Install packages and options
 # -----------------------------------------------------------------------------
 # Before we start, we need to install and load the necessary packages for this
-# exercise.
-install.packages("tidyverse")  # Install the tidyverse package
-install.packages("tidycensus")  # Install the tidyverse package
-
-library(tidyverse)  # Load the tidyverse package
-library(tidycensus)  # Load the tidycensus package
-
+# exercise. See code/README.md for the two-layer package pattern.
 source("code/course_paths.R")
+source("code/course_packages.R")
+load_pkgs("tidyverse", "tidycensus")
 
 census_api_key(
   key = "63217a192c5803bfc72aab537fe4bf19f6058326",

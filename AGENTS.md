@@ -51,9 +51,11 @@ Lab scripts live in `code/`:
 - `lab4_li_renters_mapping.R` — low-income renter mapping
 - `lab5_rb_seg.R` — rent burden and segregation
 - `course_paths.R` — shared `repo_root` helper (source from repo root)
-- `install_course_packages.R` — one-shot package install for DataHub
+- `course_packages.R` — idempotent `load_pkg()` / `ensure_pkg()` helpers
+- `install_course_packages.R` — one-shot bulk install for DataHub
+- `README.md` — package practices (two-layer pattern)
 
-Labs use **tidyverse**, **tidycensus**, **ggplot2**, **sf**, and related packages. Students run these via Berkeley DataHub (not locally).
+See [`code/README.md`](code/README.md) for package install conventions.
 
 ## Student Environment
 
