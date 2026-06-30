@@ -47,12 +47,14 @@ indiana_evictions %>%
     evictions = sum(filings)
   )
 
-indiana_evictions %>%
-  group_by(county, year) %>%
-  summarize(
-    evictions = sum(filings),
-    renters = co_totrent
-  )
+# Pedagogical counterexample (fails — co_totrent has many rows per group).
+# Uncomment in class to see the error, then compare to first(co_totrent) below.
+# indiana_evictions %>%
+#   group_by(county, year) %>%
+#   summarize(
+#     evictions = sum(filings),
+#     renters = co_totrent
+#   )
 
 indiana_evictions %>%
   group_by(county, year) %>%
