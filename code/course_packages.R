@@ -76,6 +76,44 @@ load_pkgs <- function(...) {
   invisible(TRUE)
 }
 
+#' Temporarily set or clear GITHUB_PAT / GITHUB_TOKEN for remotes::install_github().
+with_github_pat <- function(pat, code) {
+  old <- list(
+    GITHUB_PAT = Sys.getenv("GITHUB_PAT", unset = NA_character_),
+    GITHUB_TOKEN = Sys.getenv("GITHUB_TOKEN", unset = NA_character_)
+  )
+  on.exit({
+    for (nm in names(old)) {
+      if (is.na(old[[nm]])) {
+        Sys.unsetenv(nm)
+      } else {
+        do.call(Sys.setenv, setNames(list(old[[nm]]), nm))
+      }
+    }
+  }, add = TRUE)
+  Sys.unsetenv("GITHUB_PAT")
+  Sys.unsetenv("GITHUB_TOKEN")
+  if (!is.null(pat) && nzchar(pat)) {
+    Sys.setenv(GITHUB_PAT = pat)
+  }
+  force(code)
+}
+
+#' Token from GitHub CLI when available (DataHub maintainers).
+github_cli_token <- function() {
+  if (!nzchar(Sys.which("gh"))) {
+    return(NA_character_)
+  }
+  out <- tryCatch(
+    system2("gh", c("auth", "token"), stdout = TRUE, stderr = FALSE),
+    error = function(e) character(0)
+  )
+  if (length(out) < 1L || !nzchar(out[[1L]])) {
+    return(NA_character_)
+  }
+  trimws(out[[1L]])
+}
+
 #' Install a GitHub package if its namespace is not available.
 ensure_github <- function(repo) {
   pkg <- basename(repo)
@@ -83,9 +121,47 @@ ensure_github <- function(repo) {
     return(invisible(TRUE))
   }
   ensure_pkg("remotes")
-  remotes::install_github(repo, upgrade = "never", quiet = TRUE)
+
+  install_once <- function(pat) {
+    with_github_pat(pat, {
+      remotes::install_github(repo, upgrade = "never", quiet = TRUE)
+    })
+  }
+
+  err <- NULL
+  pat <- github_cli_token()
+  if (!is.na(pat)) {
+    tryCatch(install_once(pat), error = function(e) err <<- conditionMessage(e))
+  }
+  if (!requireNamespace(pkg, quietly = TRUE) && is.null(err)) {
+    pat_env <- Sys.getenv("GITHUB_PAT", unset = "")
+    if (!nzchar(pat_env)) {
+      pat_env <- Sys.getenv("GITHUB_TOKEN", unset = "")
+    }
+    if (nzchar(pat_env)) {
+      tryCatch(install_once(pat_env), error = function(e) err <<- conditionMessage(e))
+    }
+  }
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    stop("Could not install GitHub package: ", repo, call. = FALSE)
+    if (!is.null(err) && grepl("401|Bad credentials", err, ignore.case = TRUE)) {
+      message(
+        "GitHub returned 401 (stale PAT or credentials). ",
+        "Retrying public install of ", repo, " without a token..."
+      )
+      err <- NULL
+      tryCatch(install_once(NULL), error = function(e) err <<- conditionMessage(e))
+    } else if (is.null(err)) {
+      tryCatch(install_once(NULL), error = function(e) err <<- conditionMessage(e))
+    }
+  }
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    stop(
+      "Could not install GitHub package: ", repo,
+      if (!is.null(err)) paste0("\n", err) else "",
+      "\nOn DataHub: run `gh auth login`, then `export GITHUB_PAT=$(gh auth token)` ",
+      "or `unset GITHUB_PAT GITHUB_TOKEN` if the repo is public.",
+      call. = FALSE
+    )
   }
   invisible(TRUE)
 }

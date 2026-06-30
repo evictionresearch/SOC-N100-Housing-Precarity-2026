@@ -154,11 +154,34 @@ git config --global user.email "your@berkeley.edu"
 
 gh auth login --hostname github.com --git-protocol https
 # Choose: GitHub.com → HTTPS → Login with a web browser
-# Copy the one-time code, open https://github.com/login/device on your laptop, authorize
+# Copy the one-time code; open https://github.com/login/device on your **laptop**
+# (ignore "Failed opening a web browser" — DataHub cannot launch your local browser)
 
 gh auth setup-git
 gh auth status
+
+# R's remotes package uses GITHUB_PAT for install_github() (e.g. neighborhood):
+export GITHUB_PAT="$(gh auth token)"
 ```
+
+Add `export GITHUB_PAT="$(gh auth token)"` to `~/.bashrc` on DataHub if you want it in every terminal session.
+
+### `install_github` HTTP 401 (Bad credentials)
+
+`evictionresearch/neighborhood` is **public**, but `remotes::install_github()` can still fail with **401** if R sends a **stale or invalid** `GITHUB_PAT` / `GITHUB_TOKEN` (common after a broken `gh` credential helper).
+
+```bash
+# Option A — fresh token from gh (after gh auth login)
+export GITHUB_PAT="$(gh auth token)"
+Rscript -e 'source("code/course_paths.R"); source("code/course_packages.R"); ensure_github("evictionresearch/neighborhood")'
+
+# Option B — public install with no token (clears bad credentials)
+unset GITHUB_PAT GITHUB_TOKEN
+Rscript -e 'source("code/course_paths.R"); source("code/course_packages.R"); ensure_github("evictionresearch/neighborhood")'
+```
+
+`ensure_github()` in `course_packages.R` retries without a token after a 401 when the repo is public.
+
 
 Auth is stored under `~/.config/gh/` on your NFS home directory and usually persists across server restarts.
 
