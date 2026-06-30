@@ -98,6 +98,7 @@ seg_adj <-
 glimpse(seg_adj)
 
 dir.create(file.path(repo_root, "output"), recursive = TRUE, showWarnings = FALSE)
+# Export CSV for Datawrapper (external tool — interchange format, not RDS).
 write_csv(seg_adj, file.path(repo_root, "output", "seg_adj.csv"))
 write_csv(sf_rb, file.path(repo_root, "output", "sf_rb.csv"))
 

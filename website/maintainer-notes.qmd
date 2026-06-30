@@ -42,6 +42,88 @@ For course-scale objects (~7 MB RDS for Indiana evictions), RDS is fast enough o
 
 ---
 
+## Format decision deep dive (is RDS ideal for this data?)
+
+### What the eviction file actually is
+
+Profiled from `d5_case_aggregated.rds` (June 2026):
+
+| Property | Value |
+|----------|-------|
+| Structure | Plain `tibble` / `data.frame` — **not** an `sf` object (no geometry column) |
+| Rows × cols | 139,072 × 58 |
+| Grain | Tract × month (2016–2022), Indiana |
+| Key join keys | `tract_geoid`, `county`, `year`, `plot_date` |
+| Main analysis cols | `filings`, `tenants`, tract/county renter denominators (`tr_totrent`, …) |
+| In-memory size | ~61 MB |
+| On-disk sizes (measured) | **RDS 6.7 MB** · legacy qs 10.2 MB · gzip CSV 5.5 MB · Parquet 7.8 MB |
+
+So this is a **wide analytic table** with repeated tract identifiers (1,696 unique tracts × many months), not a spatial file. Maps in lab 4 join it to `tigris` tract boundaries by `GEOID` / `tract_geoid`.
+
+### Two different jobs: “cache” vs “interchange”
+
+| Job | Question | Best formats | Why |
+|-----|----------|--------------|-----|
+| **Pipeline cache** | “I’m in R, I want to reload this exact object fast tomorrow without re-querying APIs.” | **RDS**, qs2, (legacy qs) | Preserves R types (`Date`, `integer` vs `numeric`), single-object round-trip, no extra packages for RDS |
+| **Interchange** | “Someone in Python / Excel / QGIS / Datawrapper needs this file.” | **CSV**, **Parquet**, GeoPackage (if spatial) | Tool-agnostic; human-readable (CSV); columnar + typed cross-language (Parquet) |
+
+**Quick serialization** (RDS, qs2) optimizes the **cache** job.  
+**Interchange formats** optimize **sharing and longevity outside one runtime**.
+
+Confusing the two is a common reproducibility mistake — e.g. publishing only `.rds` to GitHub when a policy partner needs CSV, or caching only CSV and losing `Date` types between sessions.
+
+### Cross-language options (if not opening in R)
+
+| Format | Python | Excel | GIS | Preserve types | Our file size | Course fit |
+|--------|--------|-------|-----|----------------|---------------|------------|
+| **RDS** | No (without rpy2 etc.) | No | No | Full R types | 6.7 MB | **Best for R-only labs** |
+| **CSV / CSV.gz** | Excellent | Excellent | OK (table join) | Weak (`Date` → character) | 5.5 MB gz | Already taught lab 3 |
+| **Parquet** | Excellent (pandas, polars) | Limited | Via GDAL | Strong | 7.8 MB | Good **ERN distribution** format; needs `arrow` in R to teach |
+| **qs2** | No | No | No | R types | ~similar to RDS | Extra package; no gain at 7 MB |
+| **GeoPackage** | Via geopandas | No | Excellent | Spatial | N/A | **Wrong tool** — data has no geometry |
+
+**Parquet is the serious cross-language choice** for analytic tables (ERN → Python pipelines, DuckDB, etc.). For *this* dataset at *this* size, Parquet is not smaller than RDS — so the reason to add it would be **interoperability**, not compression.
+
+### Recommendation for SOC-N100
+
+| Layer | Format | Action |
+|-------|--------|--------|
+| **Student labs (canonical)** | `.rds` | **Keep.** Zero dependencies, correct types, sub-second loads on DataHub. |
+| **Legacy provenance** | `.qs` | Keep in repo; maintainer conversion only. |
+| **Optional ERN / Python mirror** | `.csv.gz` or `.parquet` | **Optional** — add only if Tim wants a non-R distribution path; do not replace RDS in labs unless willing to add `arrow` to `install_course_packages.R`. |
+| **Do not use in course** | qs, qs2 for this file | Archived / extra compile deps; no pedagogical win at 7 MB. |
+
+**Bottom line:** RDS is **ideal for the teaching context** (R on DataHub). It is **not** the ideal **public interchange** format if ERN wants Python collaborators — that would be **documented Parquet or CSV** alongside RDS, not instead of it in labs.
+
+### When quick serialization vs interchange matters *for this data*
+
+- **Indiana evictions (course handout):** Loaded once per lab session, 7 MB — RDS load time is negligible. qs2 would save perhaps a second; not worth a new dependency.
+- **Student `co_census` (lab 3):** Small county-level pull — lab already demonstrates **both** `write_csv()` (shareable) and `saveRDS()` (R cache). That is the right dual-format lesson.
+- **Lab 5 → Datawrapper:** `write_csv()` is correct — external SaaS needs interchange, not RDS.
+- **Hypothetical ERN national extract (GB+):** Staff pipeline might use qs2/Parquet internally; students would still receive a course-scoped `.rds` or `.parquet` slice.
+
+---
+
+## Pedagogy: RDS opportunities across existing labs
+
+| Lab | Current I/O | RDS opportunity | Suggested framing (if Tim extends) |
+|-----|-------------|-----------------|--------------------------------------|
+| **1** | `read.csv` (Software Carpentry) | Low priority | CSV is right for intro spreadsheets; mention RDS exists for “R objects” in passing only. |
+| **2** | `get_acs()` live API | **Optional cache** | After a heavy `get_acs()` call: `saveRDS(sf_ami, "data/cache/sf_ami_2022.rds")` to teach **avoiding repeated Census API hits** (rate limits, reproducibility). Not required — adds file management. |
+| **3** | `readRDS` evictions; `write_csv` + `saveRDS` for `co_census` | **Already the flagship lesson** | Strengthen contrast: CSV = “any tool can read”; RDS = “exact R object, faster reload, document in README.” |
+| **4** | `readRDS` evictions; live `tigris` + joins | Optional | Could `saveRDS` merged map-ready table before `tm_shape()` if students hit slow re-runs — advanced, optional. |
+| **5** | `write_csv` → Datawrapper | **Contrast moment** | Brief comment: CSV for **external tools**; `saveRDS(seg_adj)` would be for **R-only** checkpoint before mapping. |
+
+**Already in place without new code:** Lab 3’s back-to-back `write_csv` and `saveRDS` is the natural place to discuss quick serialization vs interchange — see suggested student comment edit below.
+
+### Suggested talking points (Tim, ~2 min in lab 3)
+
+1. “We load ERN evictions from `.rds` because this course runs in R and we want one command, no extra packages.”
+2. “When you save `co_census`, you wrote CSV **and** RDS — CSV for your teammate in Excel; RDS for you next week in R.”
+3. “If you were feeding a Python team, you’d likely export **Parquet** with a data dictionary — different job than RDS.”
+
+---
+
 ## qs vs qs2 vs RDS — official landscape
 
 ### `qs` (legacy, archived)
@@ -79,14 +161,15 @@ For course-scale objects (~7 MB RDS for Indiana evictions), RDS is fast enough o
 
 ---
 
-## Why we chose RDS (not qs2) for SOC-N100
+## Why we chose RDS (not qs2 or Parquet) for SOC-N100
 
 1. **DataHub blocker:** `qs` would not install for students; labs stopped at package setup.
 2. **One-time conversion:** Staff converted `d5_case_aggregated.qs` → `.rds` once (`code/convert_qs_to_rds.R`); students inherit a zero-dependency path.
 3. **Pedagogy:** Labs already teach serialization concepts; RDS keeps focus on **eviction + census analysis**, not C++ compile chains on a shared hub.
-4. **qs2 mismatch:** Adopting `qs2` would still require a legacy `qs` read step for the old file — same maintainer burden, extra student package, no benefit at our file size.
+4. **qs2 mismatch:** Adopting `qs2` would still require a legacy `qs` read step for the old file — same maintainer burden, extra student package, no benefit at 7 MB.
+5. **Parquet optional:** Cross-language Parquet is worthwhile for ERN distribution, not for replacing RDS in R-only labs unless `arrow` is added to the course stack.
 
-**Future option:** If ERN ships updated eviction extracts, prefer **`.rds`** or **`.qs2`** (with conversion documented). Do not add new `.qs` files.
+**Future option:** If ERN ships updated eviction extracts, prefer **`.rds`** for course handouts and **`.parquet` or `.csv.gz`** for non-R distribution (document both in `data/evictions/README.md`). Do not add new `.qs` files.
 
 ---
 

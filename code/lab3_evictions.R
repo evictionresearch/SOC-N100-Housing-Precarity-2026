@@ -13,7 +13,8 @@ load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor")
 # ==========================================================================
 
 # Course eviction data (Indiana tract-level filings).
-# Labs 3–4 load the canonical copy:
+# Shipped as .rds for fast, dependency-free reload in R (see saveRDS section below
+# for when to use .rds vs .csv when sharing data with other tools).
 indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
 
 glimpse(indiana_evictions)
@@ -105,10 +106,11 @@ pivot_wider(
 co_census
 
 # Now let's save this file. 
-# We can save it in several different ways: 
-# 1. as a CSV (comma separated value) which is like a very basic excel spreadsheet. 
-# This is a great format that can be read by any coding language. One issue 
-# though is that if the data are large, it can lead to saving a very large file. 
+# We can save it in several different ways — pick based on who needs the file next:
+# 1. CSV (comma separated values): readable by Excel, Python, Stata, etc. — best for
+#    *sharing* across tools. Large tables can get big; types (dates, categories) may
+#    not round-trip perfectly.
+# 2. RDS (see below): best for *your own R workflow* — reload the exact object quickly.
 getwd() # shows me where R's working directory is currently pointing. 
 write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 
