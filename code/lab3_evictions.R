@@ -3,7 +3,7 @@
 # exercise. See code/README.md for the two-layer package pattern.
 source("code/course_paths.R")
 source("code/course_packages.R")
-load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs")
+load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor")
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
@@ -12,7 +12,7 @@ load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs")
 # Berkeley and link it to census conditions.
 # ==========================================================================
 
-indiana_evictions <- qread(file.path(repo_root, "data/evictions/d5_case_aggregated.qs"))
+indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
 
 glimpse(indiana_evictions)
 summary(indiana_evictions)
@@ -134,11 +134,10 @@ write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 # (the main folder for your user account).
 ###############################################################################
 
-# You can also save a file by compressing it. There are many compression formats 
-# my favorite is `qs` which stands for "quick serialization". It compresses a 
-# saved object and can read these objects super fast. This is very helpful 
-# when you are working with large datasets. 
-qsave(co_census, file.path(repo_root, "data/in_co_renters.qs"))
+# You can also save R objects to disk for fast reload. Base R uses saveRDS() /
+# readRDS(). Specialized packages like `qs` (quick serialization) compress large
+# objects even more, but `qs` was archived from CRAN in 2026 — we use RDS here.
+saveRDS(co_census, file.path(repo_root, "data/in_co_renters.rds"))
 
 # Now lets merge the census data to the eviction rates
 in_rates <- 

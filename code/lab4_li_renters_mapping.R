@@ -524,8 +524,7 @@ tm_shape(li_sf3) +
 # =============================================================================
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
-librarian::shelf(qs)
-indiana_evictions <- qread(file.path(repo_root, "data/evictions/d5_case_aggregated.qs"))
+indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
 
 # Which years seem to have complete data?
 indiana_evictions %>%

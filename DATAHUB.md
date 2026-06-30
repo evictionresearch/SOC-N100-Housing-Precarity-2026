@@ -103,13 +103,13 @@ To add packages for all students on r.datahub, open an issue on [berkeley-dsep-i
 
 **Draft issue for Tim to file:**
 
-> **Title:** SOC-N100 Summer 2026: request r.datahub packages (tidycensus, janitor, qs, librarian, sf, evictionresearch/neighborhood)
+> **Title:** SOC-N100 Summer 2026: request r.datahub packages (tidycensus, janitor, librarian, sf, evictionresearch/neighborhood)
 >
 > **Course:** SOC-N100 Housing Precarity and Displacement, Summer 2026 (~50 seats)
 > **Hub:** r.datahub.berkeley.edu (primary)
 > **Repo:** https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
 >
-> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs` 0.27.3** (from [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/qs_0.27.3.tar.gz) — removed from active CRAN 2026-01-17), `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
+> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
 >
 > Please add to `datahub-user-image/environment.yml` (conda): `gh` (GitHub CLI).
 >
@@ -121,7 +121,7 @@ Students work at the **repo root**, not in `website/`:
 
 1. Clone the repo (see below)
 2. In RStudio: **File → Open Project →** `SOC-N100.Rproj` (top level of the clone)
-3. Install course packages once per account (or when missing): `source("code/install_course_packages.R")` — see [Package installs and `qs`](#package-installs-and-qs) if you see a `qs` warning
+3. Install course packages once per account (or when missing): `source("code/install_course_packages.R")` — see [Package installs](#package-installs)
 4. Open labs from `code/` (start with `code/lab1_intro_to_.R`)
 
 The course **website** students read in a browser comes from `docs/` (GitHub Pages). The `website/` folder is Quarto **source** for maintainers only — like a `src/` tree whose built output is `docs/` (the modern equivalent of publishing static HTML from a `gh-pages` branch).
@@ -185,7 +185,7 @@ In RStudio:
 getwd()                                    # .../SOC-N100-Housing-Precarity-2026
 file.exists("SOC-N100.Rproj")              # TRUE
 file.exists("code/lab1_intro_to_.R")       # TRUE
-file.exists("data/evictions/d5_case_aggregated.qs")  # TRUE
+file.exists("data/evictions/d5_case_aggregated.rds")  # TRUE
 ```
 
 3. Install lab packages (first session, or when something is missing):
@@ -193,8 +193,6 @@ file.exists("data/evictions/d5_case_aggregated.qs")  # TRUE
 ```r
 source("code/install_course_packages.R")
 ```
-
-If you see `package 'qs' is not available for this version of R`, pull the latest branch and re-run — the installer pulls **qs 0.27.3 from the CRAN Archive** (package removed from active CRAN 2026-01-17). See [Package installs and `qs`](#package-installs-and-qs).
 
 4. Open `code/lab1_intro_to_.R` and run.
 
@@ -246,10 +244,10 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 1. [ ] `gh auth status` shows logged in (private repo) OR git-pull link works (public repo)
 2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on expected branch
 3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
-4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs")` is TRUE
+4. [ ] `source("code/install_course_packages.R")` completes without errors
 5. [ ] Lab 1 runs through tidyverse section
 6. [ ] Lab 2: `tidycensus` loads; census API key works
-7. [ ] Lab 3: `data/evictions/d5_case_aggregated.qs` reads successfully (`qread` works)
+7. [ ] Lab 3: `readRDS("data/evictions/d5_case_aggregated.rds")` works
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
 9. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 

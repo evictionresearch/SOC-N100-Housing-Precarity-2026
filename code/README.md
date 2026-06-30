@@ -33,24 +33,15 @@ Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolv
 | `load_pkg("pkg")` | `ensure_pkg` + `library()` |
 | `load_pkgs(...)` | Multiple packages |
 | `ensure_github("org/repo")` | GitHub install if namespace missing |
-| `ensure_qs()` | Legacy `qs` 0.27.3 from CRAN Archive (used by `ensure_pkg("qs")`) |
 | `install_all_course_packages()` | Used by `install_course_packages.R` |
 
-Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org). The archived `qs` package uses `ensure_qs()` (CRAN Archive 0.27.3).
+Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
 
-## `qs` on Berkeley DataHub
+## Course data: `.rds` not `qs`
 
-**Not an R 4.4.2 problem.** The original [`qs` package was archived from CRAN on 2026-01-17](https://cran.r-project.org/package=qs). Labs 3 and 4 read `.qs` files via `qread()`. The successor [`qs2`](https://cran.r-project.org/package=qs2) cannot read legacy `.qs` course files.
+Labs 3 and 4 load eviction data with base R `readRDS()` from `data/evictions/d5_case_aggregated.rds`.
 
-The warning:
-
-```text
-package 'qs' is not available for this version of R
-```
-
-means **CRAN no longer distributes `qs`**, not that your R version is too old.
-
-`ensure_qs()` installs **0.27.3** from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/) (source compile on Linux may take a few minutes). If compilation fails, ask CDSS to pre-install that tarball (see [qsbase/qs#88](https://github.com/qsbase/qs/issues/88)).
+The legacy [`qs`](https://cran.r-project.org/package=qs) package was **archived from CRAN on 2026-01-17** and **does not compile reliably** on r.datahub. The `.qs` file remains in the repo for maintainers; regenerate `.rds` with `Rscript code/convert_qs_to_rds.R` on a machine where `qs` 0.27.3 installs (CRAN Archive).
 
 ## `librarian` in lab 4
 
