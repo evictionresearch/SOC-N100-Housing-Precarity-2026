@@ -248,6 +248,37 @@ The lab 3 inline comment models this habit for students without naming the qs cr
 
 ---
 
+## Batch-run all labs (maintainer)
+
+Script: [`run_all_labs.R`](run_all_labs.R) — sources each `code/lab*.R` the way a student would when running the **whole script**, in a non-interactive session.
+
+```bash
+cd SOC-N100-Housing-Precarity-2026
+Rscript website/run_all_labs.R --install   # optional: install packages first
+Rscript website/run_all_labs.R             # labs 1–5
+Rscript website/run_all_labs.R --labs=3,4  # subset
+```
+
+**What it checks:** R errors, missing files, package load failures, API failures.
+
+**What it does not check:** whether plots *look* correct. ggplot and tmap code still **runs**; output is sent to a null graphics device (no windows). `ggsave()` in lab 1 still writes under `output/`. Interactive `tmap_mode("view")` is overridden to static `"plot"` mode during the batch run.
+
+**Stubs during batch run:**
+
+| Student code | Batch behavior |
+|--------------|----------------|
+| `View(...)` | Skipped (message only) |
+| `tmap_mode("view")` | Forced to `"plot"` |
+| `ggplot` / `tm_*` | Executed; not displayed |
+
+**Requirements:** Repo root as working directory; network for labs 2–5 (Census API, tigris). Optional `CENSUS_API_KEY` env var; otherwise labs use the key embedded in lab 2.
+
+**After a clean batch run:** spot-check maps in RStudio (lab 4 eviction map, lab 1 saved PNG) manually once per term.
+
+**Known limits:** Long runtime (10–30+ min with API/tigris). Lab scripts that are meant to be run **line-by-line** in class may still have quirks when sourced wholesale — fix forward when the runner reports `FAIL`.
+
+---
+
 ## References
 
 - [CRAN: qs (archived 2026-01-17)](https://cran.r-project.org/web/packages/qs/index.html)

@@ -26,10 +26,8 @@ shelf(tidyverse, tigris, sf, ggplot2, viridis)
 librarian::shelf(tidyverse, tigris, sf, ggplot2, viridis)
 # Personally, I prefer this route, it makes it cleaner to read.
 
-# You can also use librarian to install packages from github:
-librarian::shelf(posit / tidyverse)
-librarian::shelf(evictionresearch / neighborhood)
-# Just call the organization and repository name.
+# You can also use librarian to install packages from github (shown in class):
+# librarian::shelf(github::evictionresearch/neighborhood)
 
 # For our lesson today, we will draw on these packages:
 librarian::shelf(tidyverse, tidycensus, tigris, sf, ggplot2)

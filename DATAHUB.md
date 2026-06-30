@@ -243,6 +243,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 6. [ ] Lab 2: `tidycensus` loads; census API key works
 7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
-9. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
+9. [ ] Optional full batch: `Rscript website/run_all_labs.R` from repo root (see `website/maintainer-notes.qmd`)
+10. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 
 Record results and any package gaps in this file after testing.

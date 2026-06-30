@@ -154,7 +154,7 @@ head(mtcars)   # Shows the first 6 rows
 # If we wanted to read in data on our computer, we would use something 
 # like read.csv, which is a base function. What is a base function you ask? it's what gets loaded anytime you open R. In other words, you don't have to call it in. 
 
-car_speeds <- read.csv(file.path(repo_root, "data/software_carpentry/car-speeds.csv"))
+car_speeds <- read.csv("data/software_carpentry/car-speeds.csv")
 
 # ~ means home directory
 # / means find what's inside the next section of the directory. 
