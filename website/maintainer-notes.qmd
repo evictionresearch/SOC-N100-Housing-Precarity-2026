@@ -15,7 +15,7 @@ draft: true
 | Item | Before | After (2026 DataHub) |
 |------|--------|----------------------|
 | Eviction file | `data/evictions/d5_case_aggregated.qs` | **`.qs2`** (primary) + **`.rds`** (fallback) |
-| Lab 3–4 load | `qread(...)` | `read_eviction_data()` → `qs2::qs_read` or `readRDS` |
+| Lab 3–4 load | `qread(...)` | `qs2::qs_read()` (+ commented `readRDS()` backup) |
 | Lab 3 student save | `qsave(...)` | `saveRDS(...)` (+ qs2 noted in format comments) |
 | Course dependency | `qs` in install script | **`qs2`** (+ RDS fallback; no `qs`) |
 | Legacy `.qs` in repo | — | Provenance; regenerate via `code/convert_eviction_data.R` |
@@ -87,8 +87,8 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 
 | Layer | Format | Action |
 |-------|--------|--------|
-| **Student labs (canonical)** | `.qs2` + `qs2` | **Primary** — teaches CRAN successor; `read_eviction_data()` falls back to `.rds` |
-| **Fallback / resilience** | `.rds` | If `qs2` compile fails on a hub |
+| **Student labs (canonical)** | `.qs2` + `qs2` | **Primary** — `qs2::qs_read()`; `.rds` via commented backup line |
+| **Backup / resilience** | `.rds` | Student uncomments `readRDS()` if qs2 fails |
 | **Legacy provenance** | `.qs` | Keep in repo; maintainer conversion only. |
 | **Optional ERN / Python mirror** | `.csv.gz` or `.parquet` | **Optional** — add only if Tim wants a non-R distribution path; do not replace RDS in labs unless willing to add `arrow` to `install_course_packages.R`. |
 | **Do not use in course** | qs, qs2 for this file | Archived / extra compile deps; no pedagogical win at 7 MB. |
@@ -180,7 +180,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 | Section | Change |
 |---------|--------|
 | Package header | Removed `qs` from `load_pkgs()` |
-| Load Indiana evictions | `read_eviction_data()` (qs2 primary, RDS fallback) |
+| Load Indiana evictions | `qs2::qs_read()` (+ commented `readRDS()` backup) |
 | Save student artifact | `saveRDS(co_census, "data/in_co_renters.rds")` |
 | Teaching narrative | Still covers “save objects to disk”; now emphasizes **base R** and **documenting format choices** for reproducibility |
 
@@ -190,7 +190,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 
 | Section | Change |
 |---------|--------|
-| Part 3 eviction load | `read_eviction_data()` (same as lab 3) |
+| Part 3 eviction load | Same as lab 3 |
 
 **Learning goals unchanged:** Map eviction patterns with `tmap`; `librarian` demo unchanged for geospatial stack.
 

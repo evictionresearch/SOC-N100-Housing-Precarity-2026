@@ -14,19 +14,19 @@ load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
 # ==========================================================================
 
 # Course eviction data (Indiana tract-level filings).
-# Default: qs2 + .qs2 file (fast compressed serialization; CRAN successor to qs).
-# Fallback: readRDS() on .rds if qs2 is not installed on your hub — no extra package.
-eviction_qs2_path <- file.path(repo_root, eviction_data_qs2)
-eviction_rds_path <- file.path(repo_root, eviction_data_rds)
-
-if (requireNamespace("qs2", quietly = TRUE) && file.exists(eviction_qs2_path)) {
-  indiana_evictions <- qs2::qs_read(eviction_qs2_path)
-} else {
-  if (!requireNamespace("qs2", quietly = TRUE)) {
-    message("Package 'qs2' not installed — loading .rds with readRDS() instead.")
-  }
-  indiana_evictions <- readRDS(eviction_rds_path)
-}
+#
+# We load the ERN extract with qs2::qs_read() — a fast way to save and reload
+# large R objects (.qs2 files). qs2 is the maintained CRAN package for this job
+# (successor to the older qs package).
+#
+# If qs2::qs_read() fails on your computer — for example, the qs2 package did not
+# install when you ran install_course_packages.R — use the backup instead:
+#   1. Put a # at the start of the qs2::qs_read() line below (to comment it out)
+#   2. Remove the # from the readRDS() line
+# The .rds file in data/evictions/ is the same table in base R format; it does
+# not require the qs2 package.
+indiana_evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+# indiana_evictions <- readRDS(file.path(repo_root, eviction_data_rds))
 
 glimpse(indiana_evictions)
 summary(indiana_evictions)

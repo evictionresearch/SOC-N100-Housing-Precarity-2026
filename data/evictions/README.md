@@ -2,13 +2,11 @@
 
 | File | Format | Used when |
 |------|--------|-----------|
-| **`d5_case_aggregated.qs2`** | [qs2](https://cran.r-project.org/package=qs2) | **Primary in labs 3–4** (`qs2::qs_read` via `read_eviction_data()`) |
-| `d5_case_aggregated.rds` | base R | **Fallback** if `qs2` is not installed on a hub |
+| **`d5_case_aggregated.qs2`** | [qs2](https://cran.r-project.org/package=qs2) | **Default in labs 3–4** (`qs2::qs_read`) |
+| `d5_case_aggregated.rds` | base R | **Backup** if qs2 fails — uncomment `readRDS()` in the lab |
 | `d5_case_aggregated.qs` | legacy qs (archived CRAN) | Provenance only; maintainer conversion source |
 
 ## Regenerate `.rds` and `.qs2` from legacy `.qs`
-
-On a maintainer machine (needs archived `qs` 0.27.3 + `qs2`):
 
 ```bash
 Rscript code/convert_eviction_data.R
@@ -16,11 +14,12 @@ Rscript code/convert_eviction_data.R
 
 Background: [`website/maintainer-notes.qmd`](../../website/maintainer-notes.qmd).
 
-## DataHub smoke test
+## Verify on DataHub (after install_course_packages)
 
 ```r
+requireNamespace("qs2")
 source("code/course_paths.R")
 source("code/course_data.R")
-requireNamespace("qs2")          # TRUE after install_course_packages
-read_eviction_data()             # uses .qs2 when available
+d <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+nrow(d)   # 139072
 ```

@@ -22,7 +22,7 @@ source("code/course_packages.R")
 load_pkgs("tidyverse", "tidycensus")   # example
 ```
 
-Labs 3–4 load eviction data with **qs2::qs_read(.qs2)** by default and **readRDS(.rds)** as fallback (inline in each lab). `read_eviction_data()` in `course_data.R` mirrors the same logic for smoke tests.
+Labs 3–4 also `source("code/course_data.R")` for eviction file paths, then `qs2::qs_read()`.
 
 Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolves.
 
@@ -40,18 +40,16 @@ Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolv
 
 ### `course_data.R`
 
-| Function | Purpose |
-|----------|---------|
-| `read_eviction_data()` | Smoke tests / docs — same qs2-default logic as labs 3–4 |
+Path constants: `eviction_data_qs2`, `eviction_data_rds` (labs 3–4).
 
 Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
 
-## Course eviction data: `qs2` + RDS fallback
+## Course eviction data: `qs2` + `.rds` backup
 
-| File | Loader |
-|------|--------|
-| `data/evictions/d5_case_aggregated.qs2` | Primary — [`qs2`](https://cran.r-project.org/package=qs2) (`load_pkg("qs2")` in labs 3–4) |
-| `data/evictions/d5_case_aggregated.rds` | Fallback if `qs2` fails to install on a hub |
+| File | Use |
+|------|-----|
+| `data/evictions/d5_case_aggregated.qs2` | **Default in labs 3–4** — `qs2::qs_read()` |
+| `data/evictions/d5_case_aggregated.rds` | **Backup** — `readRDS()` if qs2 fails (comment swap in lab) |
 
 Legacy `.qs` is provenance only. Regenerate course files: `Rscript code/convert_eviction_data.R`.
 

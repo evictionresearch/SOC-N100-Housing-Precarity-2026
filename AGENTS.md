@@ -52,7 +52,7 @@ Lab scripts live in `code/`:
 - `lab5_rb_seg.R` — rent burden and segregation
 - `course_paths.R` — shared `repo_root` helper (source from repo root)
 - `course_packages.R` — idempotent `load_pkg()` / `ensure_pkg()` helpers
-- `course_data.R` — `read_eviction_data()` (qs2 + RDS fallback)
+- `course_data.R` — eviction file path constants (`eviction_data_qs2`, `eviction_data_rds`)
 - `install_course_packages.R` — one-shot bulk install for DataHub
 - `README.md` — package practices (two-layer pattern)
 

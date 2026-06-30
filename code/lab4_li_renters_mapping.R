@@ -525,20 +525,12 @@ tm_shape(li_sf3) +
 # =============================================================================
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
-# Load eviction data (same qs2-default / readRDS-fallback pattern as lab 3).
+#
+# Same load as lab 3: qs2::qs_read() on the .qs2 file (see lab 3 for backup
+# instructions if qs2 does not work — comment out qs2 line, uncomment readRDS).
 load_pkg("qs2")
-
-eviction_qs2_path <- file.path(repo_root, eviction_data_qs2)
-eviction_rds_path <- file.path(repo_root, eviction_data_rds)
-
-if (requireNamespace("qs2", quietly = TRUE) && file.exists(eviction_qs2_path)) {
-  indiana_evictions <- qs2::qs_read(eviction_qs2_path)
-} else {
-  if (!requireNamespace("qs2", quietly = TRUE)) {
-    message("Package 'qs2' not installed — loading .rds with readRDS() instead.")
-  }
-  indiana_evictions <- readRDS(eviction_rds_path)
-}
+indiana_evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+# indiana_evictions <- readRDS(file.path(repo_root, eviction_data_rds))
 
 # Which years seem to have complete data?
 indiana_evictions %>%

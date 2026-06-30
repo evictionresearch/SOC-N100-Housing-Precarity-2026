@@ -216,14 +216,14 @@ Re-running a lab is idempotent: packages already installed are not reinstalled.
 
 ### Eviction data (`qs2` primary, `.rds` fallback)
 
-Labs **3** and **4** call `read_eviction_data()` which uses **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2` when the package is installed, else **`readRDS()`** on `.rds`. The archived [`qs`](https://cran.r-project.org/package=qs) package is not used. Staff background: [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd).
+Labs **3** and **4** load eviction data with **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2`. A commented **`readRDS()`** line points to `.rds` if qs2 fails. Staff background: [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd).
 
-**DataHub test after `source("code/install_course_packages.R")`:**
+**Quick check after `source("code/install_course_packages.R")`:**
 
 ```r
-requireNamespace("qs2")   # should be TRUE
+requireNamespace("qs2")
 source("code/course_paths.R"); source("code/course_data.R")
-d <- read_eviction_data()
+d <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
 nrow(d)   # 139072
 ```
 
@@ -241,7 +241,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
 5. [ ] Lab 1 runs through tidyverse section
 6. [ ] Lab 2: `tidycensus` loads; census API key works
-7. [ ] Lab 3: `read_eviction_data()` works (`.qs2` via qs2, or `.rds` fallback)
+7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
 9. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 
