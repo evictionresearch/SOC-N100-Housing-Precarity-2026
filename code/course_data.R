@@ -6,30 +6,30 @@ eviction_data_rds <- "data/evictions/d5_case_aggregated.rds"
 
 #' Load Indiana tract-level eviction data (labs 3–4).
 #'
-#' Prefers qs2 when the file exists and the package is installed; falls back to
-#' base R readRDS() so labs still run if qs2 fails to compile on a hub.
+#' Same logic as the inline blocks in lab3_evictions.R and lab4_li_renters_mapping.R:
+#' qs2::qs_read(.qs2) by default, readRDS(.rds) fallback.
 read_eviction_data <- function() {
-  qs2_path <- file.path(repo_root, eviction_data_qs2)
-  rds_path <- file.path(repo_root, eviction_data_rds)
+  eviction_qs2_path <- file.path(repo_root, eviction_data_qs2)
+  eviction_rds_path <- file.path(repo_root, eviction_data_rds)
 
-  if (file.exists(qs2_path) && requireNamespace("qs2", quietly = TRUE)) {
-    return(qs2::qs_read(qs2_path))
+  if (requireNamespace("qs2", quietly = TRUE) && file.exists(eviction_qs2_path)) {
+    return(qs2::qs_read(eviction_qs2_path))
   }
 
-  if (file.exists(qs2_path) && !requireNamespace("qs2", quietly = TRUE)) {
+  if (file.exists(eviction_qs2_path) && !requireNamespace("qs2", quietly = TRUE)) {
     message(
       "Package 'qs2' not installed; loading ", eviction_data_rds,
       " with readRDS() instead."
     )
   }
 
-  if (file.exists(rds_path)) {
-    return(readRDS(rds_path))
+  if (file.exists(eviction_rds_path)) {
+    return(readRDS(eviction_rds_path))
   }
 
   stop(
     "Eviction data not found. Expected:\n  ",
-    qs2_path, "\n  ", rds_path,
+    eviction_qs2_path, "\n  ", eviction_rds_path,
     call. = FALSE
   )
 }

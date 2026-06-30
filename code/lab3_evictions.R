@@ -14,9 +14,19 @@ load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
 # ==========================================================================
 
 # Course eviction data (Indiana tract-level filings).
-# Primary: .qs2 via qs2::qs_read() — fast compressed serialization (successor to
-# the archived qs package). Fallback: .rds via readRDS() if qs2 is unavailable.
-indiana_evictions <- read_eviction_data()
+# Default: qs2 + .qs2 file (fast compressed serialization; CRAN successor to qs).
+# Fallback: readRDS() on .rds if qs2 is not installed on your hub — no extra package.
+eviction_qs2_path <- file.path(repo_root, eviction_data_qs2)
+eviction_rds_path <- file.path(repo_root, eviction_data_rds)
+
+if (requireNamespace("qs2", quietly = TRUE) && file.exists(eviction_qs2_path)) {
+  indiana_evictions <- qs2::qs_read(eviction_qs2_path)
+} else {
+  if (!requireNamespace("qs2", quietly = TRUE)) {
+    message("Package 'qs2' not installed — loading .rds with readRDS() instead.")
+  }
+  indiana_evictions <- readRDS(eviction_rds_path)
+}
 
 glimpse(indiana_evictions)
 summary(indiana_evictions)
@@ -111,9 +121,10 @@ co_census
 # 1. CSV (comma separated values): readable by Excel, Python, Stata, etc. — best for
 #    *sharing* across tools. Large tables can get big; types (dates, categories) may
 #    not round-trip perfectly.
-# 2. RDS (below): base R — no extra package; good fallback and interchange with qs2.
-# 3. qs2 (optional for large objects): qs2::qs_save() — faster than RDS at scale;
-#    see read_eviction_data() at the top of this lab. Not for sharing outside R.
+# 2. RDS (below): base R — reliable fallback if qs2 is unavailable; also fine for
+#    small objects you may share with non-qs2 workflows (qs2 can convert to RDS).
+# 3. qs2: qs2::qs_save() / qs2::qs_read() on .qs2 files — default for large ERN
+#    extracts in R; see the eviction load block at the top of this lab.
 getwd() # shows me where R's working directory is currently pointing. 
 write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 

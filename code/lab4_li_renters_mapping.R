@@ -14,7 +14,7 @@
 # You can install it with:
 source("code/course_paths.R")
 source("code/course_packages.R")
-source("code/course_data.R")
+source("code/course_data.R")   # eviction_data_qs2, eviction_data_rds path constants
 load_pkg("librarian")  # installs only if missing; see code/README.md
 
 # and then you can load the packages you need with:
@@ -525,9 +525,20 @@ tm_shape(li_sf3) +
 # =============================================================================
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
-# (Same eviction file as lab 3 — qs2 with readRDS fallback via read_eviction_data().)
+# Load eviction data (same qs2-default / readRDS-fallback pattern as lab 3).
 load_pkg("qs2")
-indiana_evictions <- read_eviction_data()
+
+eviction_qs2_path <- file.path(repo_root, eviction_data_qs2)
+eviction_rds_path <- file.path(repo_root, eviction_data_rds)
+
+if (requireNamespace("qs2", quietly = TRUE) && file.exists(eviction_qs2_path)) {
+  indiana_evictions <- qs2::qs_read(eviction_qs2_path)
+} else {
+  if (!requireNamespace("qs2", quietly = TRUE)) {
+    message("Package 'qs2' not installed — loading .rds with readRDS() instead.")
+  }
+  indiana_evictions <- readRDS(eviction_rds_path)
+}
 
 # Which years seem to have complete data?
 indiana_evictions %>%

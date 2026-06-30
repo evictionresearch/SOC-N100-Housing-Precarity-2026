@@ -22,7 +22,7 @@ source("code/course_packages.R")
 load_pkgs("tidyverse", "tidycensus")   # example
 ```
 
-Labs 3–4 also `source("code/course_data.R")` and call `read_eviction_data()`.
+Labs 3–4 load eviction data with **qs2::qs_read(.qs2)** by default and **readRDS(.rds)** as fallback (inline in each lab). `read_eviction_data()` in `course_data.R` mirrors the same logic for smoke tests.
 
 Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolves.
 
@@ -42,7 +42,7 @@ Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolv
 
 | Function | Purpose |
 |----------|---------|
-| `read_eviction_data()` | Labs 3–4: `qs2::qs_read(.qs2)` when available, else `readRDS(.rds)` |
+| `read_eviction_data()` | Smoke tests / docs — same qs2-default logic as labs 3–4 |
 
 Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
 
