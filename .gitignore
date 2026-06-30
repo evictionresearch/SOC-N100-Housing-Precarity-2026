@@ -56,3 +56,6 @@ po/*~
 rsconnect/
 
 /.quarto/
+
+# Staff-only draft (draft: true) - never publish its rendered HTML to the public site
+docs/maintainer-notes.html
