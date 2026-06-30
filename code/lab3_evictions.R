@@ -48,13 +48,16 @@ indiana_evictions %>%
   )
 
 # Pedagogical counterexample (fails — co_totrent has many rows per group).
-# Uncomment in class to see the error, then compare to first(co_totrent) below.
-# indiana_evictions %>%
-#   group_by(county, year) %>%
-#   summarize(
-#     evictions = sum(filings),
-#     renters = co_totrent
-#   )
+# Compare to first(co_totrent) in the next block. run_all_labs.R temporarily
+# comments the BATCH-SKIP block during maintainer smoke tests, then restores it.
+# BATCH-SKIP-BEGIN
+indiana_evictions %>%
+  group_by(county, year) %>%
+  summarize(
+    evictions = sum(filings),
+    renters = co_totrent
+  )
+# BATCH-SKIP-END
 
 indiana_evictions %>%
   group_by(county, year) %>%

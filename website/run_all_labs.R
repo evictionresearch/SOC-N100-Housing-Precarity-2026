@@ -12,8 +12,50 @@
 # Plots: ggplot/tmap code executes; graphics go to a null PDF device (nothing
 # opens on screen). ggsave() in labs still writes files under output/.
 # Interactive tmap ("view" mode) is forced to static "plot" mode here.
+#
+# Lab 3 includes an intentional in-class error (BATCH-SKIP block). Before
+# sourcing labs, this script comments that block out and restores the file on
+# exit (even if a lab fails).
 
 args <- commandArgs(trailingOnly = TRUE)
+
+#' Comment lines between # BATCH-SKIP-BEGIN and # BATCH-SKIP-END (inclusive markers stay).
+comment_batch_skip_block <- function(lines) {
+  begin <- grep("^# BATCH-SKIP-BEGIN", lines)
+  end <- grep("^# BATCH-SKIP-END", lines)
+  if (length(begin) != 1L || length(end) != 1L || end <= begin) {
+    return(lines)
+  }
+  for (i in (begin + 1L):(end - 1L)) {
+    if (!grepl("^[[:space:]]*#", lines[i])) {
+      lines[i] <- paste0("# ", lines[i])
+    }
+  }
+  lines
+}
+
+#' Write patched lab files for batch run; returns originals for restore on exit.
+apply_maintainer_lab_patches <- function(repo_root, lab_ids) {
+  originals <- list()
+  if (!"3" %in% as.character(lab_ids)) {
+    return(originals)
+  }
+  lab3_path <- file.path(repo_root, "code/lab3_evictions.R")
+  original <- readLines(lab3_path, warn = FALSE)
+  originals[[lab3_path]] <- original
+  writeLines(comment_batch_skip_block(original), lab3_path)
+  message("Maintainer patch: commented BATCH-SKIP block in lab3_evictions.R")
+  originals
+}
+
+restore_maintainer_lab_patches <- function(originals) {
+  for (path in names(originals)) {
+    writeLines(originals[[path]], path)
+  }
+  if (length(originals) > 0) {
+    message("Maintainer patch: restored ", length(originals), " lab file(s)")
+  }
+}
 
 parse_labs_flag <- function(args) {
   flag <- grep("^--labs=", args, value = TRUE)
@@ -60,6 +102,14 @@ if ("--install" %in% args) {
 }
 
 lab_ids <- parse_labs_flag(args)
+lab_ids <- lab_ids[as.character(lab_ids) %in% names(lab_scripts)]
+if (length(lab_ids) == 0) {
+  stop("No valid labs selected. Use --labs=1,2,3,4,5", call. = FALSE)
+}
+
+patched_originals <- apply_maintainer_lab_patches(repo_root, lab_ids)
+on.exit(restore_maintainer_lab_patches(patched_originals), add = TRUE)
+
 needs_census <- any(as.character(lab_ids) %in% c("2", "3", "4", "5"))
 if (needs_census) {
   source("code/course_paths.R")
@@ -134,11 +184,6 @@ run_lab <- function(lab_id, script_path) {
     message = if (is.null(err)) "" else err,
     stringsAsFactors = FALSE
   )
-}
-
-lab_ids <- lab_ids[as.character(lab_ids) %in% names(lab_scripts)]
-if (length(lab_ids) == 0) {
-  stop("No valid labs selected. Use --labs=1,2,3,4,5", call. = FALSE)
 }
 
 results <- do.call(

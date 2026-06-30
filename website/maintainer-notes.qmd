@@ -277,7 +277,9 @@ Rscript website/run_all_labs.R --labs=3,4  # subset
 
 **After a clean batch run:** spot-check maps in RStudio (lab 4 eviction map, lab 1 saved PNG) manually once per term.
 
-**Known limits:** Long runtime (10–30+ min with API/tigris). Lab scripts that are meant to be run **line-by-line** in class may still have quirks when sourced wholesale — fix forward when the runner reports `FAIL`. Intentional “wrong code” demos in labs must stay commented out (see lab 3 `co_totrent` without `first()`).
+**Lab 3 BATCH-SKIP:** `code/lab3_evictions.R` keeps an intentional `summarize(..., renters = co_totrent)` error for in-class teaching, wrapped in `# BATCH-SKIP-BEGIN` / `# BATCH-SKIP-END`. `run_all_labs.R` comments that block on disk before sourcing lab 3 and restores the original file on exit (`on.exit`, including after failures).
+
+**Known limits:** Long runtime (10–30+ min with API/tigris). Other line-by-line demos may need BATCH-SKIP markers if batch runs fail.
 
 ---
 
