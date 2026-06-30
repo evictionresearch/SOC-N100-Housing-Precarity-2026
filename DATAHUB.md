@@ -34,6 +34,9 @@ Student work under `~/` persists between sessions on each hub (NFS-backed home d
 **SOC-N100 packages requested for image (may require session `install.packages()` until CDSS merges):**
 `tidycensus`, `tigris`, `janitor`, `qs`, `librarian`, `evictionresearch/neighborhood`
 
+**SOC-N100 CLI tools requested for image (conda, via `datahub-user-image/environment.yml`):**
+`gh` (GitHub CLI — for private-repo auth and general GitHub workflows; students can `conda install -c conda-forge gh` until pre-installed)
+
 ### **2. STAT20 Deployment** (Optional — bCourses-gated)
 - **URL**: [stat20.datahub.berkeley.edu](https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)
 - **Memory**: `guarantee: 1024M, limit: 2048M` (1GB guarantee, 2GB limit)
@@ -108,18 +111,75 @@ To add packages for all students on r.datahub, open an issue on [berkeley-dsep-i
 >
 > Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, `qs`, `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
 >
+> Please add to `datahub-user-image/environment.yml` (conda): `gh` (GitHub CLI).
+>
 > Optional: add SOC-N100 bCourses course ID to stat20.datahub allowlist for higher-RAM fallback.
+
+## Private repo access on r.datahub (until repo is public)
+
+While the repo is private, students and staff with repo access can clone via **GitHub CLI device flow** (no personal token pasted into the terminal).
+
+### One-time setup per DataHub account
+
+In a **Terminal** on r.datahub (Jupyter → Terminal, or RStudio → Tools → Terminal):
+
+```bash
+# Install gh if not already on the image (skip once CDSS pre-installs it)
+conda install -y -c conda-forge gh
+
+git config --global user.name "Your Name"
+git config --global user.email "your@berkeley.edu"
+
+gh auth login --hostname github.com --git-protocol https
+# Choose: GitHub.com → HTTPS → Login with a web browser
+# Copy the one-time code, open https://github.com/login/device on your laptop, authorize
+
+gh auth setup-git
+gh auth status
+```
+
+Auth is stored under `~/.config/gh/` on your NFS home directory and usually persists across server restarts.
+
+### Clone and check out the course branch
+
+After the branch is pushed to GitHub:
+
+```bash
+cd ~
+gh repo clone evictionresearch/SOC-N100-Housing-Precarity-2026
+cd SOC-N100-Housing-Precarity-2026
+git fetch origin
+git checkout datahub-rstudio-2026
+git pull origin datahub-rstudio-2026
+git branch --show-current   # should print: datahub-rstudio-2026
+```
+
+If the repo is already cloned on `main`:
+
+```bash
+cd ~/SOC-N100-Housing-Precarity-2026
+git fetch origin
+git checkout datahub-rstudio-2026
+git pull origin datahub-rstudio-2026
+```
+
+Open the RStudio project: **File → Open Project →** `website/SOC-N100.Rproj`
+
+### When the repo goes public
+
+Students can use the [primary git-pull link](#course-datahubs) above; no `gh auth` required. Keep `gh` on the image for optional workflows (issues, PRs, other repos).
 
 ## Manual test checklist (before publishing links to students)
 
-Run on **r.datahub** with a Berkeley CalNet account after the repo is pushable and cloneable:
+Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 
-1. [ ] Open primary git-pull link → RStudio launches
-2. [ ] Repo clones to `~/SOC-N100-Housing-Precarity-2026`
-3. [ ] Lab 1 runs through tidyverse section
-4. [ ] Lab 2: `tidycensus` loads; census API key works
-5. [ ] Lab 3: `data/evictions/d5_case_aggregated.qs` reads successfully
-6. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
-7. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
+1. [ ] `gh auth status` shows logged in (private repo) OR git-pull link works (public repo)
+2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on branch `datahub-rstudio-2026`
+3. [ ] RStudio opens via primary git-pull link OR from `website/SOC-N100.Rproj`
+4. [ ] Lab 1 runs through tidyverse section
+5. [ ] Lab 2: `tidycensus` loads; census API key works
+6. [ ] Lab 3: `data/evictions/d5_case_aggregated.qs` reads successfully
+7. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
+8. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 
 Record results and any package gaps in this file after testing.
