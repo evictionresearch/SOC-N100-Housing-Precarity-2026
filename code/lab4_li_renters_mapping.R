@@ -15,6 +15,8 @@
 install.packages("librarian")
 # Then, you can load it with:
 library(librarian)
+
+source("code/course_paths.R")
 # and then you can load the packages you need with:
 shelf(tidyverse, tigris, sf, ggplot2, viridis)
 # If one of these packages is not installed, librarian will install it for you
@@ -524,7 +526,7 @@ tm_shape(li_sf3) +
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
 librarian::shelf(qs)
-indiana_evictions <- qread("data/evictions/d5_case_aggregated.qs")
+indiana_evictions <- qread(file.path(repo_root, "data/evictions/d5_case_aggregated.qs"))
 
 # Which years seem to have complete data?
 indiana_evictions %>%

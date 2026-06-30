@@ -2,10 +2,7 @@
 install.packages("librarian")
 librarian::shelf(tidyverse, tidycensus, evictionresearch/neighborhood)
 
-repo_root <- Sys.getenv(
-  "REPO_ROOT",
-  unset = normalizePath("~/SOC-N100-Housing-Precarity-2026", mustWork = FALSE)
-)
+source("code/course_paths.R")
 
 # Define ACS variable codes for gross rent as a percentage of household income
 # Each code corresponds to a specific rent burden category

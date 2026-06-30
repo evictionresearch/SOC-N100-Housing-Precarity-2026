@@ -1,17 +1,37 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for AI coding agents (Cursor, Claude Code, Copilot, etc.) working in this repository.
 
 ## What This Repo Is
 
 Course materials for **SOC-N100: Housing Precarity and Displacement** (Racial and Gender Inequality in Gentrification and Eviction) — a UC Berkeley summer course taught by Tim Thomas. The course covers eviction, displacement, and gentrification using R/tidycensus data analysis.
+
+## Repository layout
+
+```
+SOC-N100-Housing-Precarity-2026/
+├── SOC-N100.Rproj              # Student RStudio project (repo root) — open this on DataHub
+├── code/                       # Lab scripts and shared helpers
+├── data/                       # Course datasets
+├── docs/                       # Built HTML site (GitHub Pages publish target)
+├── website/                    # Quarto *source* for the site (maintainers only)
+│   └── SOC-N100-website-for-maintainers.Rproj
+├── DATAHUB.md                  # Berkeley DataHub setup and testing
+└── AGENTS.md                   # This file
+```
+
+**Students** work at the **repo root** with `SOC-N100.Rproj` and scripts in `code/`.
+
+**Maintainers** edit `website/*.qmd` and render with `website/SOC-N100-website-for-maintainers.Rproj` into `docs/`.
+
+The `website/` + `docs/` split is the modern GitHub Pages pattern: `website/` is authoring source (like a `src/` tree); `docs/` is the built site served from the `/docs` folder on `main` (similar in spirit to publishing a static site from a `gh-pages` branch, but without a separate branch).
 
 ## Website
 
 The course website is built with **Quarto** and deployed to GitHub Pages from the `/docs` directory.
 
 **To rebuild the site:**
-Open `website/SOC-N100.Rproj` in RStudio, then render via Quarto. The output directory is set to `../docs` in `website/_quarto.yml`.
+Open `website/SOC-N100-website-for-maintainers.Rproj` in RStudio, then render via Quarto. The output directory is set to `../docs` in `website/_quarto.yml`.
 
 **Key website files:**
 - `website/_quarto.yml` — site config, navbar structure, theme
@@ -30,6 +50,8 @@ Lab scripts live in `code/`:
 - `lab3_evictions.R` — eviction data analysis
 - `lab4_li_renters_mapping.R` — low-income renter mapping
 - `lab5_rb_seg.R` — rent burden and segregation
+- `course_paths.R` — shared `repo_root` helper (source from repo root)
+- `install_course_packages.R` — one-shot package install for DataHub
 
 Labs use **tidyverse**, **tidycensus**, **ggplot2**, **sf**, and related packages. Students run these via Berkeley DataHub (not locally).
 
@@ -42,7 +64,9 @@ The DataHub link automatically git-pulls the repo and opens RStudio:
 https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
 ```
 
-To regenerate hub links, use the [DataHub Link Generator Chrome extension](https://chromewebstore.google.com/detail/datahub-link-generator/ijbgangngghdanhcnaliiobbiffocahf) with the repo URL. See `DATAHUB.md` for full details on available hubs and their package sets.
+Students should then open **`SOC-N100.Rproj`** at the repo root (not the maintainer project under `website/`).
+
+See `DATAHUB.md` for hub links, private-repo `gh` auth, package requests, and testing checklists.
 
 ## Course Structure (Summer 2025 Reference)
 

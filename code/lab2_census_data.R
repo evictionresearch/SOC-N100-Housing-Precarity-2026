@@ -15,6 +15,9 @@ install.packages("tidycensus")  # Install the tidyverse package
 
 library(tidyverse)  # Load the tidyverse package
 library(tidycensus)  # Load the tidycensus package
+
+source("code/course_paths.R")
+
 census_api_key(
   key = "63217a192c5803bfc72aab537fe4bf19f6058326",
   overwrite = TRUE,

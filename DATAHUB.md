@@ -115,6 +115,28 @@ To add packages for all students on r.datahub, open an issue on [berkeley-dsep-i
 >
 > Optional: add SOC-N100 bCourses course ID to stat20.datahub allowlist for higher-RAM fallback.
 
+## Student workflow on r.datahub (day one)
+
+Students work at the **repo root**, not in `website/`:
+
+1. Clone the repo (see below)
+2. In RStudio: **File → Open Project →** `SOC-N100.Rproj` (top level of the clone)
+3. Install course packages once per account (or when missing): `source("code/install_course_packages.R")`
+4. Open labs from `code/` (start with `code/lab1_intro_to_.R`)
+
+The course **website** students read in a browser comes from `docs/` (GitHub Pages). The `website/` folder is Quarto **source** for maintainers only — like a `src/` tree whose built output is `docs/` (the modern equivalent of publishing static HTML from a `gh-pages` branch).
+
+## Fresh start on DataHub (testing or re-cloning)
+
+To wipe a previous clone and start clean:
+
+```bash
+cd ~
+rm -rf SOC-N100-Housing-Precarity-2026
+```
+
+Then follow **Private repo access** (if still private) or clone directly (if public).
+
 ## Private repo access on r.datahub (until repo is public)
 
 While the repo is private, students and staff with repo access can clone via **GitHub CLI device flow** (no personal token pasted into the terminal).
@@ -142,28 +164,39 @@ Auth is stored under `~/.config/gh/` on your NFS home directory and usually pers
 
 ### Clone and check out the course branch
 
-After the branch is pushed to GitHub:
-
 ```bash
 cd ~
 gh repo clone evictionresearch/SOC-N100-Housing-Precarity-2026
 cd SOC-N100-Housing-Precarity-2026
 git fetch origin
-git checkout datahub-rstudio-2026
-git pull origin datahub-rstudio-2026
-git branch --show-current   # should print: datahub-rstudio-2026
+git checkout datahub-rstudio-2026   # or main after merge
+git pull
+git branch --show-current
 ```
 
-If the repo is already cloned on `main`:
+### Open the student RStudio project and install packages
 
-```bash
-cd ~/SOC-N100-Housing-Precarity-2026
-git fetch origin
-git checkout datahub-rstudio-2026
-git pull origin datahub-rstudio-2026
+In RStudio:
+
+1. **File → Open Project →** select `SOC-N100.Rproj` in the clone root (`~/SOC-N100-Housing-Precarity-2026/SOC-N100.Rproj`)
+2. Confirm working directory is the repo root:
+
+```r
+getwd()                                    # .../SOC-N100-Housing-Precarity-2026
+file.exists("SOC-N100.Rproj")              # TRUE
+file.exists("code/lab1_intro_to_.R")       # TRUE
+file.exists("data/evictions/d5_case_aggregated.qs")  # TRUE
 ```
 
-Open the RStudio project: **File → Open Project →** `website/SOC-N100.Rproj`
+3. Install lab packages (first session, or when something is missing):
+
+```r
+source("code/install_course_packages.R")
+```
+
+4. Open `code/lab1_intro_to_.R` and run.
+
+**Do not** open `website/SOC-N100-website-for-maintainers.Rproj` for labs — that project is for editing the Quarto site only.
 
 ### When the repo goes public
 
@@ -174,12 +207,13 @@ Students can use the [primary git-pull link](#course-datahubs) above; no `gh aut
 Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 
 1. [ ] `gh auth status` shows logged in (private repo) OR git-pull link works (public repo)
-2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on branch `datahub-rstudio-2026`
-3. [ ] RStudio opens via primary git-pull link OR from `website/SOC-N100.Rproj`
-4. [ ] Lab 1 runs through tidyverse section
-5. [ ] Lab 2: `tidycensus` loads; census API key works
-6. [ ] Lab 3: `data/evictions/d5_case_aggregated.qs` reads successfully
-7. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
-8. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
+2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on expected branch
+3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
+4. [ ] `source("code/install_course_packages.R")` completes
+5. [ ] Lab 1 runs through tidyverse section
+6. [ ] Lab 2: `tidycensus` loads; census API key works
+7. [ ] Lab 3: `data/evictions/d5_case_aggregated.qs` reads successfully
+8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
+9. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 
 Record results and any package gaps in this file after testing.

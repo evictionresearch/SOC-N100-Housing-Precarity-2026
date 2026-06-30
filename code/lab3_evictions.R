@@ -11,10 +11,7 @@ library(lubridate) # for handling dates
 library(janitor) # for cleaning names
 library(qs) # for reading qs files
 
-repo_root <- Sys.getenv(
-  "REPO_ROOT",
-  unset = normalizePath("~/SOC-N100-Housing-Precarity-2026", mustWork = FALSE)
-)
+source("code/course_paths.R")
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
