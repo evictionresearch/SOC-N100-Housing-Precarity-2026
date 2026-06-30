@@ -14,6 +14,7 @@
 # You can install it with:
 source("code/course_paths.R")
 source("code/course_packages.R")
+source("code/course_data.R")
 load_pkg("librarian")  # installs only if missing; see code/README.md
 
 # and then you can load the packages you need with:
@@ -524,8 +525,9 @@ tm_shape(li_sf3) +
 # =============================================================================
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
-# (Stored as .rds — R's standard serialized format; see lab 3 for why we document format choices.)
-indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
+# (Same eviction file as lab 3 — qs2 with readRDS fallback via read_eviction_data().)
+load_pkg("qs2")
+indiana_evictions <- read_eviction_data()
 
 # Which years seem to have complete data?
 indiana_evictions %>%

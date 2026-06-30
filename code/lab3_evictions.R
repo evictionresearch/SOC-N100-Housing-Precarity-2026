@@ -3,7 +3,8 @@
 # exercise. See code/README.md for the two-layer package pattern.
 source("code/course_paths.R")
 source("code/course_packages.R")
-load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor")
+source("code/course_data.R")
+load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
@@ -13,9 +14,9 @@ load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor")
 # ==========================================================================
 
 # Course eviction data (Indiana tract-level filings).
-# Shipped as .rds for fast, dependency-free reload in R (see saveRDS section below
-# for when to use .rds vs .csv when sharing data with other tools).
-indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
+# Primary: .qs2 via qs2::qs_read() — fast compressed serialization (successor to
+# the archived qs package). Fallback: .rds via readRDS() if qs2 is unavailable.
+indiana_evictions <- read_eviction_data()
 
 glimpse(indiana_evictions)
 summary(indiana_evictions)
@@ -110,7 +111,9 @@ co_census
 # 1. CSV (comma separated values): readable by Excel, Python, Stata, etc. — best for
 #    *sharing* across tools. Large tables can get big; types (dates, categories) may
 #    not round-trip perfectly.
-# 2. RDS (see below): best for *your own R workflow* — reload the exact object quickly.
+# 2. RDS (below): base R — no extra package; good fallback and interchange with qs2.
+# 3. qs2 (optional for large objects): qs2::qs_save() — faster than RDS at scale;
+#    see read_eviction_data() at the top of this lab. Not for sharing outside R.
 getwd() # shows me where R's working directory is currently pointing. 
 write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 

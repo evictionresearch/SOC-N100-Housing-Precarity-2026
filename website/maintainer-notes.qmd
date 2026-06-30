@@ -14,12 +14,11 @@ draft: true
 
 | Item | Before | After (2026 DataHub) |
 |------|--------|----------------------|
-| Eviction file | `data/evictions/d5_case_aggregated.qs` | **`data/evictions/d5_case_aggregated.rds`** (canonical for labs) |
-| Lab 3 read | `qread(...)` | `readRDS(...)` |
-| Lab 3 student save | `qsave(...)` | `saveRDS(...)` |
-| Lab 4 read | `qread(...)` via `librarian::shelf(qs)` | `readRDS(...)` |
-| Course dependency | `qs` in install script | **No `qs`** — base R only for serialization |
-| Legacy `.qs` in repo | — | Kept for provenance; regenerate `.rds` with `code/convert_qs_to_rds.R` |
+| Eviction file | `data/evictions/d5_case_aggregated.qs` | **`.qs2`** (primary) + **`.rds`** (fallback) |
+| Lab 3–4 load | `qread(...)` | `read_eviction_data()` → `qs2::qs_read` or `readRDS` |
+| Lab 3 student save | `qsave(...)` | `saveRDS(...)` (+ qs2 noted in format comments) |
+| Course dependency | `qs` in install script | **`qs2`** (+ RDS fallback; no `qs`) |
+| Legacy `.qs` in repo | — | Provenance; regenerate via `code/convert_eviction_data.R` |
 
 **Trigger:** [`qs` was archived from CRAN on 2026-01-17](https://cran.r-project.org/web/packages/qs/index.html) and **failed to compile** on Berkeley r.datahub even from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/). Students could not complete labs 3–4.
 
@@ -88,7 +87,8 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 
 | Layer | Format | Action |
 |-------|--------|--------|
-| **Student labs (canonical)** | `.rds` | **Keep.** Zero dependencies, correct types, sub-second loads on DataHub. |
+| **Student labs (canonical)** | `.qs2` + `qs2` | **Primary** — teaches CRAN successor; `read_eviction_data()` falls back to `.rds` |
+| **Fallback / resilience** | `.rds` | If `qs2` compile fails on a hub |
 | **Legacy provenance** | `.qs` | Keep in repo; maintainer conversion only. |
 | **Optional ERN / Python mirror** | `.csv.gz` or `.parquet` | **Optional** — add only if Tim wants a non-R distribution path; do not replace RDS in labs unless willing to add `arrow` to `install_course_packages.R`. |
 | **Do not use in course** | qs, qs2 for this file | Archived / extra compile deps; no pedagogical win at 7 MB. |
@@ -180,7 +180,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 | Section | Change |
 |---------|--------|
 | Package header | Removed `qs` from `load_pkgs()` |
-| Load Indiana evictions | `readRDS("data/evictions/d5_case_aggregated.rds")` |
+| Load Indiana evictions | `read_eviction_data()` (qs2 primary, RDS fallback) |
 | Save student artifact | `saveRDS(co_census, "data/in_co_renters.rds")` |
 | Teaching narrative | Still covers “save objects to disk”; now emphasizes **base R** and **documenting format choices** for reproducibility |
 
@@ -190,7 +190,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 
 | Section | Change |
 |---------|--------|
-| Part 3 eviction load | `readRDS(...)` instead of `librarian::shelf(qs)` + `qread()` |
+| Part 3 eviction load | `read_eviction_data()` (same as lab 3) |
 
 **Learning goals unchanged:** Map eviction patterns with `tmap`; `librarian` demo unchanged for geospatial stack.
 

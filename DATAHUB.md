@@ -32,7 +32,7 @@ Student work under `~/` persists between sessions on each hub (NFS-backed home d
 - **Data Sources**: `nycflights13@1.0.2`, `Lahman@12.0-0`, `ipumsr@0.8.1`
 
 **SOC-N100 packages requested for image (may require session `install.packages()` until CDSS merges):**
-`tidycensus`, `tigris`, `janitor`, `qs`, `librarian`, `evictionresearch/neighborhood`
+`tidycensus`, `tigris`, `janitor`, `qs2`, `librarian`, `evictionresearch/neighborhood`
 
 **SOC-N100 CLI tools requested for image (conda, via `datahub-user-image/environment.yml`):**
 `gh` (GitHub CLI — for private-repo auth and general GitHub workflows; students can `conda install -c conda-forge gh` until pre-installed)
@@ -109,7 +109,7 @@ To add packages for all students on r.datahub, open an issue on [berkeley-dsep-i
 > **Hub:** r.datahub.berkeley.edu (primary)
 > **Repo:** https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
 >
-> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
+> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs2`**, `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
 >
 > Please add to `datahub-user-image/environment.yml` (conda): `gh` (GitHub CLI).
 >
@@ -185,7 +185,8 @@ In RStudio:
 getwd()                                    # .../SOC-N100-Housing-Precarity-2026
 file.exists("SOC-N100.Rproj")              # TRUE
 file.exists("code/lab1_intro_to_.R")       # TRUE
-file.exists("data/evictions/d5_case_aggregated.rds")  # TRUE
+file.exists("data/evictions/d5_case_aggregated.qs2")  # TRUE
+file.exists("data/evictions/d5_case_aggregated.rds")  # TRUE (fallback)
 ```
 
 3. Install lab packages (first session, or when something is missing):
@@ -213,9 +214,18 @@ Documented in [`code/README.md`](code/README.md):
 
 Re-running a lab is idempotent: packages already installed are not reinstalled.
 
-### Eviction data (`.rds`, not `qs`)
+### Eviction data (`qs2` primary, `.rds` fallback)
 
-Labs **3** and **4** use `readRDS("data/evictions/d5_case_aggregated.rds")`. The course no longer depends on the archived [`qs`](https://cran.r-project.org/package=qs) package — it was removed from CRAN 2026-01-17 and fails to compile on r.datahub. Staff background: [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd).
+Labs **3** and **4** call `read_eviction_data()` which uses **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2` when the package is installed, else **`readRDS()`** on `.rds`. The archived [`qs`](https://cran.r-project.org/package=qs) package is not used. Staff background: [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd).
+
+**DataHub test after `source("code/install_course_packages.R")`:**
+
+```r
+requireNamespace("qs2")   # should be TRUE
+source("code/course_paths.R"); source("code/course_data.R")
+d <- read_eviction_data()
+nrow(d)   # 139072
+```
 
 ### RStudio “Updating Loaded Packages” dialog
 
@@ -228,10 +238,10 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 1. [ ] `gh auth status` shows logged in (private repo) OR git-pull link works (public repo)
 2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on expected branch
 3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
-4. [ ] `source("code/install_course_packages.R")` completes without errors
+4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
 5. [ ] Lab 1 runs through tidyverse section
 6. [ ] Lab 2: `tidycensus` loads; census API key works
-7. [ ] Lab 3: `readRDS("data/evictions/d5_case_aggregated.rds")` works
+7. [ ] Lab 3: `read_eviction_data()` works (`.qs2` via qs2, or `.rds` fallback)
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
 9. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 

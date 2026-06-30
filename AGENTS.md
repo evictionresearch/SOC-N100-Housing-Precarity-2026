@@ -52,12 +52,13 @@ Lab scripts live in `code/`:
 - `lab5_rb_seg.R` — rent burden and segregation
 - `course_paths.R` — shared `repo_root` helper (source from repo root)
 - `course_packages.R` — idempotent `load_pkg()` / `ensure_pkg()` helpers
+- `course_data.R` — `read_eviction_data()` (qs2 + RDS fallback)
 - `install_course_packages.R` — one-shot bulk install for DataHub
 - `README.md` — package practices (two-layer pattern)
 
 See [`code/README.md`](code/README.md) for package install conventions.
 
-**Maintainers:** data-format migration (qs → RDS), lesson impact, and qs2 landscape — [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd) (draft; not published to students).
+**Maintainers:** data formats (qs → qs2 + RDS fallback) — [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd) (draft; not published to students).
 
 ## Student Environment
 

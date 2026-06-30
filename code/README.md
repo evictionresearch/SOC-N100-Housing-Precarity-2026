@@ -22,28 +22,40 @@ source("code/course_packages.R")
 load_pkgs("tidyverse", "tidycensus")   # example
 ```
 
+Labs 3–4 also `source("code/course_data.R")` and call `read_eviction_data()`.
+
 Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolves.
 
-## Helper functions (`course_packages.R`)
+## Helper functions
+
+### `course_packages.R`
 
 | Function | Purpose |
 |----------|---------|
 | `ensure_pkg("pkg")` | Install from CRAN if missing; optional `min_version` |
-| `ensure_pkgs(...)` | Same for multiple packages |
 | `load_pkg("pkg")` | `ensure_pkg` + `library()` |
 | `load_pkgs(...)` | Multiple packages |
 | `ensure_github("org/repo")` | GitHub install if namespace missing |
 | `install_all_course_packages()` | Used by `install_course_packages.R` |
 
+### `course_data.R`
+
+| Function | Purpose |
+|----------|---------|
+| `read_eviction_data()` | Labs 3–4: `qs2::qs_read(.qs2)` when available, else `readRDS(.rds)` |
+
 Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
 
-## Course data: `.rds` not `qs`
+## Course eviction data: `qs2` + RDS fallback
 
-Labs 3 and 4 load eviction data with base R `readRDS()` from `data/evictions/d5_case_aggregated.rds`.
+| File | Loader |
+|------|--------|
+| `data/evictions/d5_case_aggregated.qs2` | Primary — [`qs2`](https://cran.r-project.org/package=qs2) (`load_pkg("qs2")` in labs 3–4) |
+| `data/evictions/d5_case_aggregated.rds` | Fallback if `qs2` fails to install on a hub |
 
-The legacy [`qs`](https://cran.r-project.org/package=qs) package was archived from CRAN on 2026-01-17 and does not install reliably on r.datahub. The `.qs` file remains for maintainers; regenerate `.rds` with `Rscript code/convert_qs_to_rds.R`.
+Legacy `.qs` is provenance only. Regenerate course files: `Rscript code/convert_eviction_data.R`.
 
-**Maintainers:** full context (qs vs qs2 vs RDS, lesson impact, student talking points) — [`website/maintainer-notes.qmd`](../website/maintainer-notes.qmd).
+**Maintainers:** [`website/maintainer-notes.qmd`](../website/maintainer-notes.qmd).
 
 ## `librarian` in lab 4
 
