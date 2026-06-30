@@ -109,7 +109,7 @@ To add packages for all students on r.datahub, open an issue on [berkeley-dsep-i
 > **Hub:** r.datahub.berkeley.edu (primary)
 > **Repo:** https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
 >
-> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs`**, `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`. (`qs` is missing from the Posit PM noble snapshot used on r.datahub; pre-installing avoids a slow source compile for students.)
+> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs` 0.27.3** (from [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/qs_0.27.3.tar.gz) — removed from active CRAN 2026-01-17), `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
 >
 > Please add to `datahub-user-image/environment.yml` (conda): `gh` (GitHub CLI).
 >
@@ -194,7 +194,7 @@ file.exists("data/evictions/d5_case_aggregated.qs")  # TRUE
 source("code/install_course_packages.R")
 ```
 
-If you see `package 'qs' is not available for this version of R`, pull the latest branch and re-run — the installer retries CRAN source automatically. See [Package installs and `qs`](#package-installs-and-qs).
+If you see `package 'qs' is not available for this version of R`, pull the latest branch and re-run — the installer pulls **qs 0.27.3 from the CRAN Archive** (package removed from active CRAN 2026-01-17). See [Package installs and `qs`](#package-installs-and-qs).
 
 4. Open `code/lab1_intro_to_.R` and run.
 
@@ -217,17 +217,23 @@ Re-running a lab is idempotent: packages already installed are not reinstalled.
 
 ### The `qs` warning on r.datahub
 
-Labs **3** and **4** use `qread()` on `data/evictions/d5_case_aggregated.qs`. R **4.4.2 is fine**; the warning appears because [Posit Package Manager](https://packagemanager.posit.co/) does not mirror every CRAN package for Ubuntu Noble + R 4.4 ([forum discussion](https://forum.posit.co/t/qs-binary-package-for-r-4-3-and-rhel-9-is-missing/183207)).
+Labs **3** and **4** use `qread()` on `data/evictions/d5_case_aggregated.qs`. The message:
 
-`code/course_packages.R` falls back to `https://cloud.r-project.org` and builds `qs` from source on Linux. After pulling the latest branch, verify:
+```text
+package 'qs' is not available for this version of R
+```
+
+means the original [`qs` package was archived from CRAN on 2026-01-17](https://cran.r-project.org/package=qs) — **not** that R 4.4.2 is unsupported. The successor [`qs2`](https://cran.r-project.org/package=qs2) cannot read legacy `.qs` course files.
+
+`code/course_packages.R` installs **qs 0.27.3** from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/) via `remotes::install_version()`. After pulling the latest branch, verify (source compile may take a few minutes):
 
 ```r
 source("code/install_course_packages.R")
 requireNamespace("qs")   # should be TRUE
-packageVersion("qs")
+packageVersion("qs")     # 0.27.3
 ```
 
-If source compile fails, ask CDSS to pre-install `qs` on the image (and ensure `libatomic` is available — see [qsbase/qs#88](https://github.com/qsbase/qs/issues/88)).
+If source compile fails, ask CDSS to pre-install `qs` 0.27.3 from the CRAN Archive tarball (and ensure `libatomic` is available — see [qsbase/qs#88](https://github.com/qsbase/qs/issues/88)).
 
 ### RStudio “Updating Loaded Packages” dialog
 

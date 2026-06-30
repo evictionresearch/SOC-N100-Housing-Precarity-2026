@@ -33,9 +33,10 @@ Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolv
 | `load_pkg("pkg")` | `ensure_pkg` + `library()` |
 | `load_pkgs(...)` | Multiple packages |
 | `ensure_github("org/repo")` | GitHub install if namespace missing |
+| `ensure_qs()` | Legacy `qs` 0.27.3 from CRAN Archive (used by `ensure_pkg("qs")`) |
 | `install_all_course_packages()` | Used by `install_course_packages.R` |
 
-Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror — **`qs` is the known case** — helpers automatically retry from [cloud.r-project.org](https://cloud.r-project.org) with a source build on Linux.
+Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org). The archived `qs` package uses `ensure_qs()` (CRAN Archive 0.27.3).
 
 ## `qs` on Berkeley DataHub
 
