@@ -40,22 +40,22 @@ Installs use the session default repos (Posit PM on DataHub). If a package is mi
 
 ## `qs` on Berkeley DataHub
 
-**Not an R 4.4.2 problem.** Labs 3 and 4 read `.qs` files via `qread()`. The warning you may see:
+**Not an R 4.4.2 problem.** The original [`qs` package was archived from CRAN on 2026-01-17](https://cran.r-project.org/package=qs). Labs 3 and 4 read `.qs` files via `qread()`. The successor [`qs2`](https://cran.r-project.org/package=qs2) cannot read legacy `.qs` course files.
+
+The warning:
 
 ```text
 package 'qs' is not available for this version of R
 ```
 
-means **Posit Package Manager’s Linux snapshot does not list `qs`** for that environment, not that CRAN lacks `qs` for R 4.4.
+means **CRAN no longer distributes `qs`**, not that your R version is too old.
 
-After the CRAN fallback, `qs` should install from source. If compilation fails, course staff should ask CDSS to add `qs` to the r.datahub image and/or system library `libatomic` (see [qsbase/qs#88](https://github.com/qsbase/qs/issues/88)).
-
-Request `qs` in the GitHub issue draft in `DATAHUB.md`.
+`ensure_qs()` installs **0.27.3** from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/) (source compile on Linux may take a few minutes). If compilation fails, ask CDSS to pre-install that tarball (see [qsbase/qs#88](https://github.com/qsbase/qs/issues/88)).
 
 ## `librarian` in lab 4
 
 Lab 4 teaches `librarian::shelf()` as a convenience wrapper. Under the hood it is similar to our pattern (install if missing, then load). We still call `load_pkg("librarian")` first so the demo does not unconditionally run `install.packages("librarian")`.
 
-## RStudio “restart R before install?”
+## RStudio "restart R before install?"
 
 If RStudio prompts to restart before updating loaded packages, click **Yes** once, then re-run `source("code/install_course_packages.R")`. Bulk install is easiest on a **fresh R session** before opening lab scripts.
