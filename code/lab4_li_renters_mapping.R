@@ -524,6 +524,7 @@ tm_shape(li_sf3) +
 # =============================================================================
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
+# (Stored as .rds — R's standard serialized format; see lab 3 for why we document format choices.)
 indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
 
 # Which years seem to have complete data?

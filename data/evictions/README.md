@@ -1,10 +1,13 @@
-data/evictions/d5_case_aggregated.rds
+# Eviction course data
 
-Maintainers: regenerate from the legacy `.qs` file (requires archived `qs` 0.27.3):
+**Canonical file for labs:** `d5_case_aggregated.rds` (base R `readRDS()`).
 
-```r
-saveRDS(qs::qread("data/evictions/d5_case_aggregated.qs"),
-        "data/evictions/d5_case_aggregated.rds")
+**Legacy:** `d5_case_aggregated.qs` (original ERN extract; requires archived `qs` 0.27.3).
+
+## Regenerate `.rds` from `.qs`
+
+```bash
+Rscript code/convert_qs_to_rds.R
 ```
 
-Or run `Rscript code/convert_qs_to_rds.R` on a machine where `qs` installs.
+Requires `qs` 0.27.3 on the maintainer machine (CRAN Archive). See [`website/maintainer-notes.qmd`](../../website/maintainer-notes.qmd) for why we migrated and how qs / qs2 / RDS compare.

@@ -12,6 +12,8 @@ load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor")
 # Berkeley and link it to census conditions.
 # ==========================================================================
 
+# Course eviction data (Indiana tract-level filings).
+# Labs 3–4 load the canonical copy:
 indiana_evictions <- readRDS(file.path(repo_root, "data/evictions/d5_case_aggregated.rds"))
 
 glimpse(indiana_evictions)
@@ -134,9 +136,13 @@ write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 # (the main folder for your user account).
 ###############################################################################
 
-# You can also save R objects to disk for fast reload. Base R uses saveRDS() /
-# readRDS(). Specialized packages like `qs` (quick serialization) compress large
-# objects even more, but `qs` was archived from CRAN in 2026 — we use RDS here.
+# You can also save R objects to disk so you can reload them without re-running
+# expensive queries. Base R provides saveRDS() / readRDS() for this.
+#
+# As a researcher, treat the file format as part of your methods: note in your
+# README or appendix which format you used (.rds, .csv, .qs2, etc.) and which
+# R package versions produced the file. Collaborators — and you, years later —
+# need that metadata to reopen your objects reproducibly.
 saveRDS(co_census, file.path(repo_root, "data/in_co_renters.rds"))
 
 # Now lets merge the census data to the eviction rates

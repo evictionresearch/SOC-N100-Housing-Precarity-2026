@@ -41,7 +41,9 @@ Installs use the session default repos (Posit PM on DataHub). If a package is mi
 
 Labs 3 and 4 load eviction data with base R `readRDS()` from `data/evictions/d5_case_aggregated.rds`.
 
-The legacy [`qs`](https://cran.r-project.org/package=qs) package was **archived from CRAN on 2026-01-17** and **does not compile reliably** on r.datahub. The `.qs` file remains in the repo for maintainers; regenerate `.rds` with `Rscript code/convert_qs_to_rds.R` on a machine where `qs` 0.27.3 installs (CRAN Archive).
+The legacy [`qs`](https://cran.r-project.org/package=qs) package was archived from CRAN on 2026-01-17 and does not install reliably on r.datahub. The `.qs` file remains for maintainers; regenerate `.rds` with `Rscript code/convert_qs_to_rds.R`.
+
+**Maintainers:** full context (qs vs qs2 vs RDS, lesson impact, student talking points) — [`website/maintainer-notes.qmd`](../website/maintainer-notes.qmd).
 
 ## `librarian` in lab 4
 

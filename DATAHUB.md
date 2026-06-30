@@ -215,7 +215,7 @@ Re-running a lab is idempotent: packages already installed are not reinstalled.
 
 ### Eviction data (`.rds`, not `qs`)
 
-Labs **3** and **4** use `readRDS("data/evictions/d5_case_aggregated.rds")`. The course no longer depends on the archived [`qs`](https://cran.r-project.org/package=qs) package — it was removed from CRAN 2026-01-17 and fails to compile on r.datahub.
+Labs **3** and **4** use `readRDS("data/evictions/d5_case_aggregated.rds")`. The course no longer depends on the archived [`qs`](https://cran.r-project.org/package=qs) package — it was removed from CRAN 2026-01-17 and fails to compile on r.datahub. Staff background: [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd).
 
 ### RStudio “Updating Loaded Packages” dialog
 

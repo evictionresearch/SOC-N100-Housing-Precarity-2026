@@ -57,6 +57,8 @@ Lab scripts live in `code/`:
 
 See [`code/README.md`](code/README.md) for package install conventions.
 
+**Maintainers:** data-format migration (qs → RDS), lesson impact, and qs2 landscape — [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd) (draft; not published to students).
+
 ## Student Environment
 
 Students access RStudio via Berkeley DataHub — **not** local installs. The primary hub is **r.datahub.berkeley.edu** (general R hub; RStudio default). Stat20 hub is optional (higher RAM but bCourses-gated to Stat 20 unless SOC-N100 is allowlisted).
