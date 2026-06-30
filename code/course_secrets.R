@@ -50,6 +50,11 @@ ensure_census_api_key <- function() {
     stop("Load tidycensus first: load_pkgs('tidycensus')", call. = FALSE)
   }
 
+  if (exists(".census_api_key_ensured", envir = .GlobalEnv) &&
+      isTRUE(get(".census_api_key_ensured", envir = .GlobalEnv))) {
+    return(invisible(Sys.getenv("CENSUS_API_KEY", unset = "")))
+  }
+
   renviron_user <- path.expand("~/.Renviron")
   if (file.exists(renviron_user)) {
     readRenviron(renviron_user)
@@ -68,9 +73,14 @@ ensure_census_api_key <- function() {
     }
     tidycensus::census_api_key(key, overwrite = TRUE, install = TRUE)
     message("Census API key saved to ~/.Renviron for future sessions.")
+    assign(".census_api_key_ensured", TRUE, envir = .GlobalEnv)
     return(invisible(key))
   }
 
-  tidycensus::census_api_key(key, overwrite = TRUE, install = FALSE)
+  # Key is already in ~/.Renviron and loaded via readRenviron(). tidycensus reads
+  # Sys.getenv("CENSUS_API_KEY") for API calls. Do NOT call census_api_key(...,
+  # install = FALSE) here — that only Sys.setenv()'s again and prints tidycensus's
+  # nag: "To install your API key... install = TRUE" on every lab header.
+  assign(".census_api_key_ensured", TRUE, envir = .GlobalEnv)
   invisible(key)
 }
