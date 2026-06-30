@@ -1,0 +1,312 @@
+---
+title: "Maintainer notes"
+subtitle: "Data formats, qs migration, and lesson impact (staff only)"
+draft: true
+---
+
+**Audience:** Tim, course staff, and repo maintainers — not students.
+
+**Students** use `readRDS()` / `saveRDS()` in labs 3–4 and do not need the package-ecosystem detail below. This page documents *why* we changed the 2026 materials and how to talk about serialization in a reproducible pipeline.
+
+---
+
+## Summary (Summer 2026)
+
+| Item | Before | After (2026 DataHub) |
+|------|--------|----------------------|
+| Eviction file | `data/evictions/d5_case_aggregated.qs` | **`.qs2`** (primary) + **`.rds`** (fallback) |
+| Lab 3–4 load | `qread(...)` | `qs2::qs_read()` (+ commented `readRDS()` backup) |
+| Lab 3 student save | `qsave(...)` | `saveRDS(...)` (+ qs2 noted in format comments) |
+| Course dependency | `qs` in install script | **`qs2`** (+ RDS fallback; no `qs`) |
+| Legacy `.qs` in repo | — | Provenance; regenerate via `code/convert_eviction_data.R` |
+
+**Trigger:** [`qs` was archived from CRAN on 2026-01-17](https://cran.r-project.org/web/packages/qs/index.html) and **failed to compile** on Berkeley r.datahub even from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/). Students could not complete labs 3–4.
+
+---
+
+## What is RDS?
+
+**RDS** (R Data Serialization) is R’s built-in binary format for saving a single R object to disk.
+
+```r
+saveRDS(my_object, "my_object.rds")
+my_object <- readRDS("my_object.rds")
+```
+
+- **Ships with base R** — no CRAN dependency, works on DataHub, Binder, and collaborators’ laptops without extra setup.
+- **Uses R’s native `serialize()` / `unserialize()` pipeline** — the same mechanism R has used for decades.
+- **Trade-off:** Slower and larger than compressed serializers (`qs`, `qs2`, `fst`) on very large objects, but **maximum portability** for teaching and long-term reproducibility.
+
+For course-scale objects (~7 MB RDS for Indiana evictions), RDS is fast enough on DataHub.
+
+---
+
+## Format decision deep dive (is RDS ideal for this data?)
+
+### What the eviction file actually is
+
+Profiled from `d5_case_aggregated.rds` (June 2026):
+
+| Property | Value |
+|----------|-------|
+| Structure | Plain `tibble` / `data.frame` — **not** an `sf` object (no geometry column) |
+| Rows × cols | 139,072 × 58 |
+| Grain | Tract × month (2016–2022), Indiana |
+| Key join keys | `tract_geoid`, `county`, `year`, `plot_date` |
+| Main analysis cols | `filings`, `tenants`, tract/county renter denominators (`tr_totrent`, …) |
+| In-memory size | ~61 MB |
+| On-disk sizes (measured) | **RDS 6.7 MB** · legacy qs 10.2 MB · gzip CSV 5.5 MB · Parquet 7.8 MB |
+
+So this is a **wide analytic table** with repeated tract identifiers (1,696 unique tracts × many months), not a spatial file. Maps in lab 4 join it to `tigris` tract boundaries by `GEOID` / `tract_geoid`.
+
+### Two different jobs: “cache” vs “interchange”
+
+| Job | Question | Best formats | Why |
+|-----|----------|--------------|-----|
+| **Pipeline cache** | “I’m in R, I want to reload this exact object fast tomorrow without re-querying APIs.” | **RDS**, qs2, (legacy qs) | Preserves R types (`Date`, `integer` vs `numeric`), single-object round-trip, no extra packages for RDS |
+| **Interchange** | “Someone in Python / Excel / QGIS / Datawrapper needs this file.” | **CSV**, **Parquet**, GeoPackage (if spatial) | Tool-agnostic; human-readable (CSV); columnar + typed cross-language (Parquet) |
+
+**Quick serialization** (RDS, qs2) optimizes the **cache** job.  
+**Interchange formats** optimize **sharing and longevity outside one runtime**.
+
+Confusing the two is a common reproducibility mistake — e.g. publishing only `.rds` to GitHub when a policy partner needs CSV, or caching only CSV and losing `Date` types between sessions.
+
+### Cross-language options (if not opening in R)
+
+| Format | Python | Excel | GIS | Preserve types | Our file size | Course fit |
+|--------|--------|-------|-----|----------------|---------------|------------|
+| **RDS** | No (without rpy2 etc.) | No | No | Full R types | 6.7 MB | **Best for R-only labs** |
+| **CSV / CSV.gz** | Excellent | Excellent | OK (table join) | Weak (`Date` → character) | 5.5 MB gz | Already taught lab 3 |
+| **Parquet** | Excellent (pandas, polars) | Limited | Via GDAL | Strong | 7.8 MB | Good **ERN distribution** format; needs `arrow` in R to teach |
+| **qs2** | No | No | No | R types | ~similar to RDS | Extra package; no gain at 7 MB |
+| **GeoPackage** | Via geopandas | No | Excellent | Spatial | N/A | **Wrong tool** — data has no geometry |
+
+**Parquet is the serious cross-language choice** for analytic tables (ERN → Python pipelines, DuckDB, etc.). For *this* dataset at *this* size, Parquet is not smaller than RDS — so the reason to add it would be **interoperability**, not compression.
+
+### Recommendation for SOC-N100
+
+| Layer | Format | Action |
+|-------|--------|--------|
+| **Student labs (canonical)** | `.qs2` + `qs2` | **Primary** — `qs2::qs_read()`; `.rds` via commented backup line |
+| **Backup / resilience** | `.rds` | Student uncomments `readRDS()` if qs2 fails |
+| **Legacy provenance** | `.qs` | Keep in repo; maintainer conversion only. |
+| **Optional ERN / Python mirror** | `.csv.gz` or `.parquet` | **Optional** — add only if Tim wants a non-R distribution path; do not replace RDS in labs unless willing to add `arrow` to `install_course_packages.R`. |
+| **Do not use in course** | qs, qs2 for this file | Archived / extra compile deps; no pedagogical win at 7 MB. |
+
+**Bottom line:** RDS is **ideal for the teaching context** (R on DataHub). It is **not** the ideal **public interchange** format if ERN wants Python collaborators — that would be **documented Parquet or CSV** alongside RDS, not instead of it in labs.
+
+### When quick serialization vs interchange matters *for this data*
+
+- **Indiana evictions (course handout):** Loaded once per lab session, 7 MB — RDS load time is negligible. qs2 would save perhaps a second; not worth a new dependency.
+- **Student `co_census` (lab 3):** Small county-level pull — lab already demonstrates **both** `write_csv()` (shareable) and `saveRDS()` (R cache). That is the right dual-format lesson.
+- **Lab 5 → Datawrapper:** `write_csv()` is correct — external SaaS needs interchange, not RDS.
+- **Hypothetical ERN national extract (GB+):** Staff pipeline might use qs2/Parquet internally; students would still receive a course-scoped `.rds` or `.parquet` slice.
+
+---
+
+## Pedagogy: RDS opportunities across existing labs
+
+| Lab | Current I/O | RDS opportunity | Suggested framing (if Tim extends) |
+|-----|-------------|-----------------|--------------------------------------|
+| **1** | `read.csv` (Software Carpentry) | Low priority | CSV is right for intro spreadsheets; mention RDS exists for “R objects” in passing only. |
+| **2** | `get_acs()` live API | **Optional cache** | After a heavy `get_acs()` call: `saveRDS(sf_ami, "data/cache/sf_ami_2022.rds")` to teach **avoiding repeated Census API hits** (rate limits, reproducibility). Not required — adds file management. |
+| **3** | `readRDS` evictions; `write_csv` + `saveRDS` for `co_census` | **Already the flagship lesson** | Strengthen contrast: CSV = “any tool can read”; RDS = “exact R object, faster reload, document in README.” |
+| **4** | `readRDS` evictions; live `tigris` + joins | Optional | Could `saveRDS` merged map-ready table before `tm_shape()` if students hit slow re-runs — advanced, optional. |
+| **5** | `write_csv` → Datawrapper | **Contrast moment** | Brief comment: CSV for **external tools**; `saveRDS(seg_adj)` would be for **R-only** checkpoint before mapping. |
+
+**Already in place without new code:** Lab 3’s back-to-back `write_csv` and `saveRDS` is the natural place to discuss quick serialization vs interchange — see suggested student comment edit below.
+
+### Suggested talking points (Tim, ~2 min in lab 3)
+
+1. “We load ERN evictions from `.rds` because this course runs in R and we want one command, no extra packages.”
+2. “When you save `co_census`, you wrote CSV **and** RDS — CSV for your teammate in Excel; RDS for you next week in R.”
+3. “If you were feeding a Python team, you’d likely export **Parquet** with a data dictionary — different job than RDS.”
+
+---
+
+## qs vs qs2 vs RDS — official landscape
+
+### `qs` (legacy, archived)
+
+- **Status:** [Removed from CRAN 2026-01-17](https://cran.r-project.org/web/packages/qs/index.html); last release **0.27.3** (March 2025) in [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/).
+- **Author position:** Package maintainer Travers Ching [announced deprecation in favor of `qs2`](https://github.com/qsbase/qs/issues/103) (September 2024). Reasons: CRAN policy pressure on non-public R internals, and R version updates breaking legacy serialization paths.
+- **Install today:** GitHub or CRAN Archive only; **not** `install.packages("qs")`.
+- **Our course files:** `d5_case_aggregated.qs` was created with this format.
+
+### `qs2` (current CRAN successor)
+
+- **Status:** Active on CRAN ([`qs2` 0.2.2](https://cran.r-project.org/web/packages/qs2/index.html), published June 2026).
+- **Author position:** [Official qs vs qs2 FAQ](https://github.com/qsbase/qs2/issues/24) — `qs2` is the maintained replacement; uses approved R C API (`R_Serialize` / `R_Unserialize`) plus zstd compression and improved I/O.
+- **Critical incompatibility:** **`qs2` cannot read `.qs` files** ([confirmed by author](https://github.com/qsbase/qs/issues/103#issuecomment-2777319458)). Legacy data must be loaded with `qs` once, then re-saved as `.qs2` or RDS.
+- **RDS bridge:** `qs2` can convert `.qs2` ↔ `.RDS` via `qs_to_rds()` — because `qs2` wraps standard R serialization ([qs2 README](https://github.com/qsbase/qs2)). That is a reason many pipelines standardize on RDS for archival handoffs.
+
+### RDS (base R)
+
+- **Status:** Permanent part of R; no archival risk.
+- **Best for:** Course materials, shared repos, “open this file in 10 years” reproducibility, environments where compiled dependencies are painful (DataHub, classroom hubs).
+- **When to prefer compressed serializers:** Multi-GB objects, repeated load/save in HPC loops, production pipelines where staff control the image.
+
+### Comparison (maintainer cheat sheet)
+
+| | **RDS** | **qs (legacy)** | **qs2** |
+|---|---------|-----------------|---------|
+| CRAN today | Built into R | Archived | Active |
+| DataHub install | Always | Compile often fails | Usually works (compiled) |
+| Reads our `.qs` eviction file | No | Yes | No |
+| Reads `.rds` | Yes | No | Yes (native + `qs_to_rds`) |
+| Speed on huge data | Slower | Fast | Fast |
+| Long-term reproducibility | Excellent | Poor (deprecated) | Good (author designed for API compliance) |
+
+**Official recommendation from the ecosystem:** New work should use **`qs2`**, not `qs`. For **legacy `.qs` assets**, either keep a one-time `qs` 0.27.3 conversion environment or migrate to **RDS** / **qs2** and document the conversion. See [ropensci/targets#1373](https://github.com/ropensci/targets/issues/1373), [rio#473](https://github.com/gesistsa/rio/issues/473) for downstream package migrations.
+
+---
+
+## Why we chose RDS (not qs2 or Parquet) for SOC-N100
+
+1. **DataHub blocker:** `qs` would not install for students; labs stopped at package setup.
+2. **One-time conversion:** Staff converted `d5_case_aggregated.qs` → `.rds` once (`code/convert_qs_to_rds.R`); students inherit a zero-dependency path.
+3. **Pedagogy:** Labs already teach serialization concepts; RDS keeps focus on **eviction + census analysis**, not C++ compile chains on a shared hub.
+4. **qs2 mismatch:** Adopting `qs2` would still require a legacy `qs` read step for the old file — same maintainer burden, extra student package, no benefit at 7 MB.
+5. **Parquet optional:** Cross-language Parquet is worthwhile for ERN distribution, not for replacing RDS in R-only labs unless `arrow` is added to the course stack.
+
+**Future option:** If ERN ships updated eviction extracts, prefer **`.rds`** for course handouts and **`.parquet` or `.csv.gz`** for non-R distribution (document both in `data/evictions/README.md`). Do not add new `.qs` files.
+
+---
+
+## Lesson impact
+
+### Lab 3 (`code/lab3_evictions.R`)
+
+| Section | Change |
+|---------|--------|
+| Package header | Removed `qs` from `load_pkgs()` |
+| Load Indiana evictions | `qs2::qs_read()` (+ commented `readRDS()` backup) |
+| Save student artifact | `saveRDS(co_census, "data/in_co_renters.rds")` |
+| Teaching narrative | Still covers “save objects to disk”; now emphasizes **base R** and **documenting format choices** for reproducibility |
+
+**Learning goals unchanged:** Join eviction counts to ACS; think about tract vs county aggregation; save intermediate objects.
+
+### Lab 4 (`code/lab4_li_renters_mapping.R`)
+
+| Section | Change |
+|---------|--------|
+| Part 3 eviction load | Same as lab 3 |
+
+**Learning goals unchanged:** Map eviction patterns with `tmap`; `librarian` demo unchanged for geospatial stack.
+
+### What students should hear (if asked)
+
+> “We use R’s built-in `.rds` format so everyone on DataHub can load the eviction file without extra packages. When you run your own research, pick a serialization format deliberately, write it in your README, and check that collaborators can reopen your files.”
+
+Do **not** lead with CRAN archival unless a student is curious — see inline lab comments instead.
+
+---
+
+## Maintainer workflow
+
+### Regenerate `.rds` from legacy `.qs`
+
+On a machine where `qs` 0.27.3 installs (maintainer laptop, not r.datahub):
+
+```bash
+cd SOC-N100-Housing-Precarity-2026
+Rscript code/convert_qs_to_rds.R
+```
+
+Commit `data/evictions/d5_case_aggregated.rds`. See also `data/evictions/README.md`.
+
+### Verify on DataHub
+
+```r
+file.exists("data/evictions/d5_case_aggregated.rds")
+d <- readRDS("data/evictions/d5_case_aggregated.rds")
+nrow(d); ncol(d)   # expect 139072 x 58
+```
+
+### CDSS / image request
+
+We **removed `qs`** from the [DATAHUB.md](../DATAHUB.md) package request. No student-facing dependency on archived packages.
+
+### If Tim wants qs2 in a future advanced module
+
+- Convert source data: `qs::qread()` → `qs2::qs_save()` (maintainer-only step).
+- Teach `qs_read()` / `qs_save()` with `.qs2` extension.
+- Document incompatibility with legacy `.qs` in this file.
+
+---
+
+## Reproducibility framing (for staff teaching “data as scholarship”)
+
+Serialization is not a neutral implementation detail — it is a **contract with your future self and collaborators**:
+
+1. **Format** — `.csv`, `.rds`, `.qs2`, `.parquet` each imply different tools, types, and lossiness.
+2. **Package availability** — archived CRAN packages break `renv`/`install.packages()` years later ([qs is the canonical 2026 example](https://cran.r-project.org/web/packages/qs/index.html)).
+3. **Environment** — DataHub images, R version, and system libraries affect whether compiled packages install.
+4. **Documentation** — Record `sessionInfo()`, file format, and conversion scripts in README or `data/README.md`.
+
+The lab 3 inline comment models this habit for students without naming the qs crisis.
+
+---
+
+## Batch-run all labs (maintainer)
+
+Script: [`run_all_labs.R`](run_all_labs.R) — sources each `code/lab*.R` the way a student would when running the **whole script**, in a non-interactive session.
+
+```bash
+cd SOC-N100-Housing-Precarity-2026
+Rscript website/run_all_labs.R --install   # optional: install packages first
+Rscript website/run_all_labs.R             # labs 1–5 (one R process)
+Rscript website/run_all_labs.R --per-lab    # labs 1–5 (fresh R per lab — use on DataHub)
+Rscript website/run_all_labs.R --labs=3,4  # subset
+```
+
+**Memory on DataHub:** `r.datahub` pods are capped at about **1 GB** per user (see `DATAHUB.md`). Running all labs in **one** `Rscript` keeps `sf`, `tmap`, and Census objects in the same process; lab 4 (mapping) on top of labs 1–3 can push the pod over the limit, especially inside **RStudio Terminal** (RStudio Server shares the same pod). Symptoms: hung terminal, `403` when opening another terminal, or the session dying — not always a clear “Killed” message.
+
+`free -h` inside the hub often shows **node** memory (tens of GB), not your pod quota — so 60 GiB “available” does **not** mean the pod has 60 GiB.
+
+**What works:** run labs in **separate R processes** (memory freed when each exits):
+
+```bash
+Rscript website/run_all_labs.R --per-lab              # equivalent to one command
+# or manually:
+Rscript website/run_all_labs.R --labs=1,2,3
+Rscript website/run_all_labs.R --labs=4
+Rscript website/run_all_labs.R --labs=5
+```
+
+Observed on maintainer testing (2026-06): `--labs=1,2,3`, `--labs=4`, and `--labs=5` each complete in under ~11s; full single-process run can fail mid–lab 4.
+
+**What it checks:** R errors, missing files, package load failures, API failures.
+
+**What it does not check:** whether plots *look* correct. ggplot and tmap code still **runs**; output is sent to a null graphics device (no windows). `ggsave()` in lab 1 still writes under `output/`. Interactive `tmap_mode("view")` is overridden to static `"plot"` mode during the batch run.
+
+**Stubs during batch run:**
+
+| Student code | Batch behavior |
+|--------------|----------------|
+| `View(...)` | Skipped (message only) |
+| `tmap_mode("view")` | Forced to `"plot"` |
+| `ggplot` / `tm_*` | Executed; not displayed |
+
+**Requirements:** Repo root as working directory; network for labs 2–5 (Census API, tigris). Census key in `~/.Renviron` (RStudio dialog on first `ensure_census_api_key()`, or `census_api_key(..., install = TRUE)` in Console). Batch `Rscript` runs are non-interactive — set the key once in `~/.Renviron` before `run_all_labs.R`.
+
+**Rotate exposed keys:** A Census key was previously hardcoded in lab 2 and may exist in git history — revoke it at Census and register a new key via `census_api_key(..., install = TRUE)`.
+
+**After a clean batch run:** spot-check maps in RStudio (lab 4 eviction map, lab 1 saved PNG) manually once per term.
+
+**Lab 3 BATCH-SKIP:** `code/lab3_evictions.R` keeps an intentional `summarize(..., renters = co_totrent)` error for in-class teaching, wrapped in `# BATCH-SKIP-BEGIN` / `# BATCH-SKIP-END`. `run_all_labs.R` comments that block on disk before sourcing lab 3 and restores the original file on exit (`on.exit`, including after failures).
+
+**Known limits:** Long runtime (10–30+ min with API/tigris). On DataHub prefer `--per-lab`. Other line-by-line demos may need BATCH-SKIP markers if batch runs fail.
+
+---
+
+## References
+
+- [CRAN: qs (archived 2026-01-17)](https://cran.r-project.org/web/packages/qs/index.html)
+- [qs maintainer: The future of qs (#103)](https://github.com/qsbase/qs/issues/103)
+- [qs2: Please read regarding qs vs qs2 (#24)](https://github.com/qsbase/qs2/issues/24)
+- [qs2 package README — RDS conversion](https://github.com/qsbase/qs2)
+- [CRAN: qs2](https://cran.r-project.org/web/packages/qs2/index.html)
+- Course: [`code/README.md`](../code/README.md), [`DATAHUB.md`](../DATAHUB.md), [`data/evictions/README.md`](../data/evictions/README.md)
+
+*Web research snapshot: `search-artifacts/qs-qs2-rds-serialization.json` (June 2026).*

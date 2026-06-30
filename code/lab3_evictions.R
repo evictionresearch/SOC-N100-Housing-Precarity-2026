@@ -1,15 +1,13 @@
 # -----------------------------------------------------------------------------
 # Before we start, we need to install and load the necessary packages for this
-# exercise.
-install.packages("lubridate") # for handling dates
-install.packages("janitor") # for cleaning names
-install.packages("qs") # for reading qs files
-
-library(tidyverse)  # Load the tidyverse package
-library(tidycensus)  # Load the tidycensus package
-library(lubridate) # for handling dates
-library(janitor) # for cleaning names
-library(qs) # for reading qs files
+# exercise. See code/README.md for the two-layer package pattern.
+source("code/course_paths.R")
+source("code/course_packages.R")
+source("code/course_data.R")
+source("code/course_secrets.R")
+load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
+# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
+ensure_census_api_key()
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
@@ -18,7 +16,20 @@ library(qs) # for reading qs files
 # Berkeley and link it to census conditions.
 # ==========================================================================
 
-indiana_evictions <- qread("~/SOC-N100-Housing-Precarity/data/evictions/d5_case_aggregated.qs")
+# Course eviction data (Indiana tract-level filings).
+#
+# We load the ERN extract with qs2::qs_read() — a fast way to save and reload
+# large R objects (.qs2 files). qs2 is the maintained CRAN package for this job
+# (successor to the older qs package).
+#
+# If qs2::qs_read() fails on your computer — for example, the qs2 package did not
+# install when you ran install_course_packages.R — use the backup instead:
+#   1. Put a # at the start of the qs2::qs_read() line below (to comment it out)
+#   2. Remove the # from the readRDS() line
+# The .rds file in data/evictions/ is the same table in base R format; it does
+# not require the qs2 package.
+indiana_evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+# indiana_evictions <- readRDS(file.path(repo_root, eviction_data_rds))
 
 glimpse(indiana_evictions)
 summary(indiana_evictions)
@@ -36,12 +47,17 @@ indiana_evictions %>%
     evictions = sum(filings)
   )
 
+# Pedagogical counterexample (fails — co_totrent has many rows per group).
+# Compare to first(co_totrent) in the next block. run_all_labs.R temporarily
+# comments the BATCH-SKIP block during maintainer smoke tests, then restores it.
+# BATCH-SKIP-BEGIN
 indiana_evictions %>%
   group_by(county, year) %>%
   summarize(
     evictions = sum(filings),
     renters = co_totrent
   )
+# BATCH-SKIP-END
 
 indiana_evictions %>%
   group_by(county, year) %>%
@@ -109,12 +125,16 @@ pivot_wider(
 co_census
 
 # Now let's save this file. 
-# We can save it in several different ways: 
-# 1. as a CSV (comma separated value) which is like a very basic excel spreadsheet. 
-# This is a great format that can be read by any coding language. One issue 
-# though is that if the data are large, it can lead to saving a very large file. 
+# We can save it in several different ways — pick based on who needs the file next:
+# 1. CSV (comma separated values): readable by Excel, Python, Stata, etc. — best for
+#    *sharing* across tools. Large tables can get big; types (dates, categories) may
+#    not round-trip perfectly.
+# 2. RDS (below): base R — reliable fallback if qs2 is unavailable; also fine for
+#    small objects you may share with non-qs2 workflows (qs2 can convert to RDS).
+# 3. qs2: qs2::qs_save() / qs2::qs_read() on .qs2 files — default for large ERN
+#    extracts in R; see the eviction load block at the top of this lab.
 getwd() # shows me where R's working directory is currently pointing. 
-write_csv(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.csv")
+write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
 
 ###############################################################################
 # Paths and Directories in R
@@ -127,7 +147,7 @@ write_csv(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.csv")
 # A directory is like a folder on your computer.
 # 
 # A path shows the route to a file or folder. For example, the path
-# ~/SOC-N100-Housing-Precarity/data/census/in_co_renters.csv
+# ~/SOC-N100-Housing-Precarity-2026/data/in_co_renters.csv
 # tells R to look inside several folders, one inside another, until it finds 
 # (or creates) the file called in_co_renters.csv.
 # 
@@ -140,11 +160,14 @@ write_csv(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.csv")
 # (the main folder for your user account).
 ###############################################################################
 
-# You can also save a file by compressing it. There are many compression formats 
-# my favorite is `qs` which stands for "quick serialization". It compresses a 
-# saved object and can read these objects super fast. This is very helpful 
-# when you are working with large datasets. 
-qsave(co_census, "~/SOC-N100-Housing-Precarity/data/in_co_renters.qs")
+# You can also save R objects to disk so you can reload them without re-running
+# expensive queries. Base R provides saveRDS() / readRDS() for this.
+#
+# As a researcher, treat the file format as part of your methods: note in your
+# README or appendix which format you used (.rds, .csv, .qs2, etc.) and which
+# R package versions produced the file. Collaborators — and you, years later —
+# need that metadata to reopen your objects reproducibly.
+saveRDS(co_census, file.path(repo_root, "data/in_co_renters.rds"))
 
 # Now lets merge the census data to the eviction rates
 in_rates <- 
@@ -301,15 +324,6 @@ ggplot(clean_in_rates_adj_2019, aes(x = p_black_renters, y = black_eviction_rate
 # - Best for calculating single summary statistics per group
 # - Automatically drops grouping levels after summarizing
 # Example: Getting average evictions per county
-avg_evictions_county <-
-  indiana_evictions %>%
-  group_by(county) %>%
-  summarize(
-    avg_evictions = mean(filings, na.rm = TRUE),
-    total_evictions = sum(filings)
-
-
-# Calculate average evictions per county
 avg_evictions_county <-
   indiana_evictions %>%
   group_by(county) %>%

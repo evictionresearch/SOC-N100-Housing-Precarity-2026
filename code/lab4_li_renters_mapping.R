@@ -12,9 +12,12 @@
 # functions combined.
 
 # You can install it with:
-install.packages("librarian")
-# Then, you can load it with:
-library(librarian)
+source("code/course_paths.R")
+source("code/course_packages.R")
+source("code/course_data.R")   # eviction_data_qs2, eviction_data_rds path constants
+source("code/course_secrets.R")
+load_pkg("librarian")  # installs only if missing; see code/README.md
+
 # and then you can load the packages you need with:
 shelf(tidyverse, tigris, sf, ggplot2, viridis)
 # If one of these packages is not installed, librarian will install it for you
@@ -24,13 +27,13 @@ shelf(tidyverse, tigris, sf, ggplot2, viridis)
 librarian::shelf(tidyverse, tigris, sf, ggplot2, viridis)
 # Personally, I prefer this route, it makes it cleaner to read.
 
-# You can also use librarian to install packages from github:
-librarian::shelf(posit / tidyverse)
-librarian::shelf(evictionresearch / neighborhood)
-# Just call the organization and repository name.
+# You can also use librarian to install packages from github (shown in class):
+# librarian::shelf(github::evictionresearch/neighborhood)
 
 # For our lesson today, we will draw on these packages:
 librarian::shelf(tidyverse, tidycensus, tigris, sf, ggplot2)
+# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
+ensure_census_api_key()
 # Note that "tigris" is loaded when we load the tidycensus package because
 # it's a dependancy to run the tidycensus package. Tigris is a package for
 # downloading and manipulating spatial data. Tidycensus is a package for
@@ -523,8 +526,12 @@ tm_shape(li_sf3) +
 # =============================================================================
 
 # Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
-librarian::shelf(qs)
-indiana_evictions <- qread("data/evictions/d5_case_aggregated.qs")
+#
+# Same load as lab 3: qs2::qs_read() on the .qs2 file (see lab 3 for backup
+# instructions if qs2 does not work — comment out qs2 line, uncomment readRDS).
+load_pkg("qs2")
+indiana_evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+# indiana_evictions <- readRDS(file.path(repo_root, eviction_data_rds))
 
 # Which years seem to have complete data?
 indiana_evictions %>%

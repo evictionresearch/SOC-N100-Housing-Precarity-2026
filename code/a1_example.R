@@ -1,4 +1,6 @@
-librarian::shelf(tidyverse, tidycensus)
+source("code/course_paths.R")
+source("code/course_packages.R")
+load_pkgs("tidyverse", "tidycensus")
 
 21901
 rb_vars <- c(

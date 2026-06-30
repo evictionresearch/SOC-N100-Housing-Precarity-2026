@@ -1,6 +1,12 @@
 # Load required packages: tidyverse for data manipulation/visualization, tidycensus for accessing Census data
-install.packages("librarian")
-librarian::shelf(tidyverse, tidycensus, evictionresearch/neighborhood)
+source("code/course_paths.R")
+source("code/course_packages.R")
+source("code/course_secrets.R")
+load_pkgs("tidyverse", "tidycensus", "librarian")
+# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
+ensure_census_api_key()
+ensure_github("evictionresearch/neighborhood")
+library(neighborhood)
 
 # Define ACS variable codes for gross rent as a percentage of household income
 # Each code corresponds to a specific rent burden category
@@ -94,7 +100,9 @@ seg_adj <-
 
 glimpse(seg_adj)
 
-write_csv(seg_adj, "~/SOC-N100-Lab-Code/seg_adj.csv")
-write_csv(sf_rb, "~/SOC-N100-Lab-Code/sf_rb.csv")
+dir.create(file.path(repo_root, "output"), recursive = TRUE, showWarnings = FALSE)
+# Export CSV for Datawrapper (external tool — interchange format, not RDS).
+write_csv(seg_adj, file.path(repo_root, "output", "seg_adj.csv"))
+write_csv(sf_rb, file.path(repo_root, "output", "sf_rb.csv"))
 
 # Now we're going to map this using a great free websource called datawrapper.de

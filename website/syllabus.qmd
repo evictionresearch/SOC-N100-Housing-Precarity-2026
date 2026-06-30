@@ -115,7 +115,7 @@ The primary materials for the course are available on this website. I'll teach y
 
 #### RStudio
 
-The software that we'll be using for our data analysis is the free and open-source language called R that we'll be interacting with via software called RStudio. As a Berkeley student, you have your own version of RStudio waiting you on a special [data hub](https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity&urlpath=rstudio%2F). This data hub syncs the class materials, giving you access to most of what you need. Most students taking this course have no experience programming; I'll teach you everything you need to know!
+The software that we'll be using for our data analysis is the free and open-source language called R that we'll be interacting with via software called RStudio. As a Berkeley student, you have your own version of RStudio waiting you on a special [data hub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F). This data hub syncs the class materials, giving you access to most of what you need. Most students taking this course have no experience programming; I'll teach you everything you need to know!
 
 ### Workload
 *   4 hours of class time (2 hours of lecture, 2 hours of lab)
