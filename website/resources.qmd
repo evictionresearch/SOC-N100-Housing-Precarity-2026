@@ -11,7 +11,7 @@ format: html
 
 ## Other datasets or data points
 
-* [HUD Fair Market Rent (FMR)](https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2025_code/2025summary.odn)
+* [HUD Fair Market Rent (FMR), FY2026](https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2026_code/2026summary.odn)
 * [Apartmentlist.com monthly rents](https://www.apartmentlist.com/research/category/data-rent-estimates)
 * [Consumer Price Index (CPI) calculator](https://www.bls.gov/data/inflation_calculator.htm)
 * [Tim's neighborhood package](https://github.com/evictionresearch/neighborhood). This helps create segregated census tracts for any area using tidycensus. 
@@ -19,4 +19,4 @@ format: html
 ## Additional Recommendations
 [Decolonizing Methodologies](https://gordonconwell.store/products/decolonizing-methodologies-research-and-indigenous-peoples-3rd-edition)
 
-[The Color of Law]()
+[The Color of Law](https://wwnorton.com/books/the-color-of-law/)

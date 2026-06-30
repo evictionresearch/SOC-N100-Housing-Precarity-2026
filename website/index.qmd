@@ -3,104 +3,100 @@ title: "Housing Precarity and Displacement"
 subtitle: "Racial and Gender Inequality in Gentrification and Eviction"
 toc: true
 author-title: Instructor
-author: 
-  - Tim Thomas
+author:
+  - "Tim Thomas, Ph.D."
   - <timthomas@berkeley.edu>
 ---
-Tuesdays & Thursdays | 10am to 12pm | July 8 to August 14   
-[Class Zoom Link](https://berkeley.zoom.us/j/99494916996?pwd=IQBGF2aswPwTpemADGSM3dK0zICgHy.1&jst=2)  
-[bCourse Site](https://bcourses.berkeley.edu/courses/1546264)  
-[Class Discussion Page](https://bcourses.berkeley.edu/courses/1546264/discussion_topics)  
+Sociology N100, Sec 002 (Class #13195) | 2 units | Summer Session D | Online via Zoom\
+Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
+[Class Zoom Link](https://berkeley.zoom.us/j/92041866237)\
+[bCourse Site](https://bcourses.berkeley.edu/courses/1555635)\
+[Class Discussion Page](https://bcourses.berkeley.edu/courses/1555635/discussion_topics)
 
-**Office Hours**: By appointment (email me to schedule a time). 5-7pm weekdays and most any time on the weekend are often best but I will have some availability during working hours through the week. I will announce group-wide office hours for more than one person to join. 
+**Office Hours**: Schedule a time with me at [cal.com/timthomas](https://cal.com/timthomas). Evenings and weekends are also available by email request.
 
 ## Week 1
-#### Tuesday July 8 - Lecture
-* [Slides](https://docs.google.com/presentation/d/1nHe2SQmLnlvXZnCW8O6uzEcM15XqA3w2flZ4ntPqbM0)
-* [Syllabus](syllabus.qmd)
-* Class Recording
-  * [Video 1](https://drive.google.com/drive/folders/1e2GNPfaqiuiEkfac4mfEL6bF2y4vCeUo?usp=drive_link)
-  * [Video 2](https://berkeley.zoom.us/rec/share/3fLK5nFCklPA1iXs3_D591fofoRwb--61f18MeChXdXykII7oiEDLZQzRuHF6XA5.D6XjsmytyWgvQDJ3?startTime=1751995954000) - Passcode: Qb.V$0yg
+#### Tuesday July 7 - Lecture
+* Course introduction and [syllabus](syllabus.qmd)
+* How to use AI in this course - discussion and live demo
 
-#### Thursday July 10 - Lab
-* [Class Recording](https://berkeley.zoom.us/rec/share/dFEsknv01skouItQ4qEHIBRkxRnaSXwb1n1abcbZOhP0TPulLCnqbE3RwIfRlbej.WQzdk5ahWgz0emhF) - Passcode: Xs1ux!6L
+#### Thursday July 9 - Lab
+* Lab 1: getting started in RStudio on the DataHub (we walk through it together online), intro to R, and your first Census number
+* AI tutorial: debugging with AI, verifying answers, and sharing your conversation link
+
+#### Set up this week
+* Get a free census API key at <https://api.census.gov/data/key_signup.html> (a couple minutes); we use it in lab.
+* Set up a free account on an AI assistant that can share a public conversation link (Perplexity recommended; ChatGPT, Gemini, or Claude also work). Sign in with a **personal** account, not your CalNet login, so that link-sharing works. [See the AI policy for details.](syllabus.html#ai-policy)
 
 ## Week 2
 
-#### Assignments
-***Due before July 17***
-
-* Acquire a census API key at <https://api.census.gov/data/key_signup.html> (takes a couple minutes).
-* Sign up for a Perplexity AI Pro Account by using Google to sign in and then enter in your Berkeley email address. 
-
 #### Readings
-***Due Tuesday July 15***  
+***Due Tuesday July 14***
 
 * [Zuk et al. (2015) "Gentrification, Displacement and the Role of Public Investment: A Literature Review"](https://www.researchgate.net/profile/Karen-Chapple/publication/334638363_Gentrification_Displacement_and_the_Role_of_Public_Investment_A_Literature_Review/links/5d37697f4585153e591c453f/Gentrification-Displacement-and-the-Role-of-Public-Investment-A-Literature-Review.pdf)
 
-***Due Thursday July 17***
+***Due Thursday July 16***
 
 * [Walker (2023) “Analyzing US Census Data: Methods, Maps, and Models in R”: Preface, Ch 1, & Ch 2](https://walker-data.com/census-r/index.html)
 
-#### Tuesday July 15 - Lecture
+#### Tuesday July 14 - Lecture
 
-* [Slides](https://docs.google.com/presentation/d/1sAHFBSSwSBNzVZs7TF1Rk_gCMOIjwkNiHmo3nlTylB8/edit?slide=id.g32100058b3b_0_3#slide=id.g32100058b3b_0_3)
-* [Class Recording](https://berkeley.zoom.us/rec/share/81wQSGTNgl5wSa481qIEOjRQvLAtxxhWudRobXHQCQiHfWusO6bAYqEvyXINQBLj.84RPyfmYaeUOtxIC)  
-    * Passcode: C%$0rR4R
-
-#### Thursday July 17 - Lab
-* [Class Recording](https://berkeley.zoom.us/rec/share/EZXOSiRRiQQ6UKMXiUGZm2eegadrSyN7akBR0vrGmHQ1jVYId4uDzriN2qImjL6Q.iSYxymVyv_FSUYHe)  
-    * Passcode: 24zn&F5E
+#### Thursday July 16 - Lab
 
 ## Week 3
-#### Readings 
-***Due July 23 before lab***
+#### Readings
+***Due before lab, Thursday July 23***
 
 * [Walker (2023) Chapter 3 & Chapter 4](https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html)
 
-#### Tuesday July 22 - Lab
+#### Tuesday July 21 - Lab
 
-* [Class Recording](https://drive.google.com/drive/folders/158b8hFcRzpQiEnouhDBDgB-W5_ykzoQ0?usp=sharing)
+#### Thursday July 23 - Lab - working with Census data cont.
 
-#### Thursday July 24 - Lab - working with Census data cont.
+#### **Assignment 1** - *Due Monday, July 27 @5pm*
 
-* [Lab Recording](https://drive.google.com/file/d/1n_s14PwgzAfVIWlZlEajiWOXo3N7xzyl/view?usp=drive_link)
+A short solo warm-up, and the first step of a thread you carry through Assignment 2 and your final project. Pick a county, set of counties, or region you care about - you will keep working with this same area all term.
+
+1. Use `get_acs()` to pull one ACS variable that says something about housing precarity (for example, rent burden, median rent, or the share of households that rent).
+2. Make one chart of it (a bar chart across your counties works well).
+3. Write two or three sentences describing what the chart shows and anything that surprised you.
+
+Submit your R script, the chart, your sentences, and the share link(s) to any AI you used. Keep it simple - no bibliography or ASA formatting needed yet. Submit to bCourses.
 
 ## Week 4
 
-#### Readings 
+#### Readings
 
-***Due Thursday July 31***   
+***Due Thursday July 30***
 [Walker (2023) Chapters 5 & 6](https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html)
 
-#### Tuesday July 29 - Lab - pulling in external datasets
+#### Tuesday July 28 - Lab - pulling in external datasets
 
-* [Lab Recording](https://drive.google.com/drive/folders/15HCR-AFKFXu3G39HNjccfwTZAey1oR1J?dmr=1&ec=wgc-drive-globalnav-goto)
-
-#### Thursday July 31 - Lab
+#### Thursday July 30 - Lab
 
 * [Review San Diego Displacement Study](https://urban-displacement.github.io/edr-sandag/)
-* [Lab Recording](https://drive.google.com/drive/folders/1VWuA2Ov2yD3z6tmDMTW3gVVtBAWXUkvp?usp=drive_link)
 
 ## Week 5
 
-#### **Assignment 1** - *Due Monday, August 4 @5pm*
+#### **Assignment 2** - *Due Monday, August 3 @5pm*
 
-Choose a county or set of counties of interest and create a measure of displacement risk, inequality, or some other housing precarity measure using the American Community Survey. Include descriptive statistics, plots, and a brief interpretation of what you found. Submit to bCourses. 
+Build directly on Assignment 1: stay with the same area and go deeper. This becomes the seed of your final group project.
+
+Add two or three more ACS variables and combine them into a measure of displacement risk, inequality, or some other housing precarity measure using the American Community Survey. Include descriptive statistics, plots, and an interpretation of what you found. End with a draft research question and at least two hypotheses you could test about the disparate impact of displacement in your area. Submit to bCourses.
 
 For this assignment you will submit:
 
-1. R code script that is replicable by the grader, 
+1. R code script that is replicable by the grader,
 
-2. a brief writeup explaining your assignment with plots and context, 
-    * Include one or more introductory paragraphs summarizing what you are analyzing and your overall findings. 
-    * Text and plots walking the reader through a more detailed understanding of what you found. Make sure to describe your plots. 
-    * Summary conclusion and anecdotal insights.
-        
+2. a brief writeup explaining your assignment with plots and context,
+    * Include one or more introductory paragraphs summarizing what you are analyzing and your overall findings.
+    * Text and plots walking the reader through a more detailed understanding of what you found. Make sure to describe your plots.
+    * A draft research question and at least two hypotheses for your final project.
+
 3. Bibliography and inline citations in ASA (American Sociological Association) format.
-    
-4. List of URL links to any and all AI usage (only use Perplexity.ai). 
-    * In your code, put the URL in comments next to the relevant area. 
+
+4. List of URL links to any and all AI usage (use any approved AI tool that can share a public conversation link).
+    * In your code, put the URL in comments next to the relevant area.
     * In your writeup, put the URL in footnotes near the section or text in which you used AI. [See AI policy in the Syllabus for more info.](syllabus.html#ai-policy)
 
 
@@ -108,37 +104,30 @@ These assignments will be graded on the [scale in the syllabus](syllabus.html#co
 
 #### Readings
 
-***Due Tuesday August 4***  
+***Due Tuesday August 4***
 [Bates (2013) "Gentrification and Displacement Study: Implementing an Equitable Inclusive Development Strategy in the Context of Gentrification"](https://www.portland.gov/sites/default/files/2020-01/2-gentrification-and-displacement-study-05.18.13.pdf)
 
+#### Tuesday August 4 - Lecture
 
-
-#### Tuesday August 5 - Lecture
-
-* Form randomly assigned groups of 2 or 3 and discussion on final group project  
+* Form randomly assigned groups of 2 or 3 and discussion on final group project
 * Draft some ideas on your final group project
-    * Include what area you want to study (at least two counties or a region), 
-    * what you want to explore about displacement (at least 3-5 different data points/plots), 
-    * what data you will use to capture this. 
+    * Include what area you want to study (at least two counties or a region),
+    * what you want to explore about displacement (at least 3-5 different data points/plots),
+    * what data you will use to capture this.
 * Present your idea to the group and get a sign-off from Tim
-* [Class Recording](https://drive.google.com/drive/folders/1ai9KxwTX2vwlONxFueHc8jCwQW_Dc9PH?usp=drive_link)
-* [Slides](https://docs.google.com/presentation/d/1RygZAh2hjctNzeS3_bgidrAefdnZyydGzj_Dta1vSZw/edit?pli=1&slide=id.g32100058b3b_0_3#slide=id.g32100058b3b_0_3)
 
-#### Thursday August 7 - Lab
+#### Thursday August 6 - Lab
 
-* [Class Recording](https://drive.google.com/drive/folders/1pvLfrWyjLSNheCdsdLB6XFZ3TKsh6OSE?usp=drive_link)
-
-## Week 6 
-
-#### Tuesday August 12 - Group Lab
+## Week 6
+#### Tuesday August 11 - Group Lab
 
 * [How to make an effective presentation video](https://drive.google.com/drive/folders/12WupIg1R57WOgEjr2yfvfYm-QoJy1mOE?usp=drive_link)
 
 * Example presentation: [Tim's Testimony Slides to the WA State Senate](https://docs.google.com/presentation/d/1x7SCdTeBdczY5Ga5wvixMxtvTv-a4rTph6LIQWLsIk0/edit?pli=1&slide=id.g32100058b3b_1_1#slide=id.g32100058b3b_1_1)
     * [Recorded testimony (starts at 40 minutes)](https://tvw.org/video/senate-housing-2024121118/)
 
-#### Thursday August 14 - Presentation
+#### Thursday August 13 - Presentation
 
-* 10-15 minute presentation on your research. No more than 15 slides and aim for 5. 
+* 10-15 minute presentation on your research. No more than 15 slides and aim for 5.
 
-Final Assignment Due Friday August 15th
+Final Assignment Due Friday August 14th

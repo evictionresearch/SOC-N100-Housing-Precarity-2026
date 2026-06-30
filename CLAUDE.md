@@ -52,7 +52,7 @@ To regenerate hub links, use the [DataHub Link Generator Chrome extension](https
 
 Grading: 20% participation, 40% assignments (2 × 20%), 40% final group project.
 
-AI policy: students must use **Perplexity.ai only** and provide URLs to all AI usage inline in code and writeups.
+AI policy: students may use any AI tool that can produce a **public shareable conversation link** (Perplexity is the recommended default; ChatGPT, Gemini, and Claude also qualify). They must submit those links inline (code comments + writeup footnotes). Free tiers suffice; students sign in with personal accounts, not CalNet, because Berkeley's enterprise Gemini/Copilot run in a data-protected mode that disables public sharing. (The 2024 free-Perplexity-Pro-for-Berkeley promo ended Dec 2024; free-tier sharing still works.)
 
 ## Updating for a New Term
 
@@ -62,3 +62,16 @@ When updating `website/index.qmd` for a new semester:
 - Add new weekly entries (keep old weeks for reference or archive them)
 - Assignment due dates and group project prompts are in `index.qmd` and `syllabus.qmd`
 - The syllabus structure is stable; typically only the term date and instructor contact info change in `syllabus.qmd`
+
+<!-- BEGIN factual-accuracy (synced from evictionresearch/library/standards/claude-md-factual-accuracy.md — edit there, then run library/scripts/sync_claude_md_standard.py) -->
+## Factual accuracy — non-negotiable
+
+Everything must be factually true. This overrides helpfulness, completeness, and the urge to sound finished.
+
+- **Never fabricate** — no invented numbers, citations, file paths, function names, API behaviors, or results. If you don't know, say so.
+- **Verify before asserting** — ground every factual claim in something checked this session (a file read, a command run, a source fetched). Don't assert from memory when the answer is checkable.
+- **Label thought exercises** — open any speculation or hypothetical with an explicit **[Thought exercise]** marker so it's never mistaken for fact.
+- **Mark confidence when it matters** — for consequential claims you couldn't fully verify, flag the uncertainty and how to confirm it. Distinguish *verified* (checked) from *inferred* (reasoned) from *assumed* (unchecked).
+- **Build only on solid ground** — analysis must rest on prior facts or analysis already established correct; flag unverified dependencies before building on them.
+- **Report outcomes honestly** — failures, skipped steps, and partial results get stated plainly with evidence. Never round a partial result up to "done."
+<!-- END factual-accuracy -->

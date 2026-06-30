@@ -1,416 +1,250 @@
 # =============================================================================
-# Week 1 R In Class Exercise: Introduction to R and RStudio
-# Course: Housing Precarity and Displacement: Racial and Gender Inequality in Gentrification and Eviction
+# Lab 1 — Intro to R, using the Census from line one
+# Course: SOC-N100, Housing Precarity and Displacement
 # =============================================================================
-
-# Welcome to your first R coding class! This script will help you get comfortable
-# with the basics of R and RStudio. We will cover:
-#   - What is R and RStudio?
-#   - How to run code
-#   - Basic math and variable assignment
-#   - Data types in R
-#   - Vectors and data frames
-#   - Reading in data
-#   - Basic data exploration
-#   - Introduction to tidyverse
-
-# The goal is to make you comfortable with the basics so you can build on these
-# skills in future weeks.
-
-# =============================================================================
-# 1. What is R and RStudio?
-# -----------------------------------------------------------------------------
-# R is a programming language for data analysis and statistics.
-# RStudio is an interface (IDE) that makes R easier to use.
-# You will be using RStudio, which is already set up for you on the server.
-
-# =============================================================================
-# 2. How to Run Code in RStudio
-# -----------------------------------------------------------------------------
-# - You can run a line of code by clicking on it and pressing Ctrl+Enter (Windows) or Cmd+Return (Mac).
-# - You can also highlight multiple lines and run them together.
-# - Try running the line below:
-
-1 + 1  # This should print 2 in the Console
-
-# If I want to comment something, I need to add a #
-# if I don't comment, then I don't use a hash
-# for a mac, a shortcut for commenting out something is cmd+/
-
-# =============================================================================
-# 3. Basic Math and Variables
-# -----------------------------------------------------------------------------
-# You can use R like a calculator:
-
-2 * 5      # Multiplication
-10 / 2     # Division
-2^3        # Exponentiation (2 to the power of 3)
-
-# You can store values in variables using the "<-" symbol:
-
-x <- 10    # Assigns the value 10 to x
-y <- 5
-x + y      # Adds x and y
-
-rabbit <- x + y 
-
-# You can print the value of a variable by typing its name:
-
-x
-y
-rabbit
-
-# =============================================================================
-# 4. Data Types in R
-# -----------------------------------------------------------------------------
-# R has several types of data:
-# - Numeric (numbers)
-# - Character (text)
-# - Logical (TRUE or FALSE)
-
-a <- 7.5          # Numeric
-b <- "Eviction"   # Character (note the quotes)
-c <- FALSE         # Logical
-
-# You can check the type of a variable with the class() function:
-
-class(a)
-class(b)
-class(c)
-
-a
-b
-c
-
-# Help!! Anytime you want to know more about a function, you can search it in
-# the help section.
-
-# =============================================================================
-# 5. Vectors: Collections of Values
-# -----------------------------------------------------------------------------
-# A vector is a list of values of the same type.
-
-numbers <- c(1, 2, 3, 4, 7)      # Numeric vector
-names <- c("Alice", "Bob", "Carmen") # Character vector
-
-numbers
-names
-
-# You can access elements in a vector using square brackets:
-
-numbers[5]   # The third element (remember: R starts counting at 1)
-numbers[2:3]
-numbers[4:5]
-
-# =============================================================================
-# 6. Data Frames: Tables of Data
-# -----------------------------------------------------------------------------
-# A data frame is like a spreadsheet or table.
-
-# Let's create a simple data frame:
-
-students <- data.frame(
-  name = c("Ana", "Ben", "Carlos"),
-  age = c(20, 21, 19),
-  gender = c("F", "M", "M")
-)
-
-students
-
-# Access a column using $:
-
-students$name
-students$age
-
-# Access a specific value (row 2, column "age"):
-
-students$age[2]
-
-w = 3
 #
-# Side note: What's the difference between an = and <- sign? 
-# <- is used to create objects (x <- 10)
-# = is used to apply values to a field, vector, or column (x <- data.frame(age = c(20, 21, 19))). 
-# Usually you'll use = to 
+# Welcome to your first coding lab! We start by getting you set up in RStudio on
+# the DataHub and connected to the Census, then you learn the basics of R *while*
+# working with real housing data. By the end you will have made your first
+# chart: how rent-burdened are the counties of a state you care about.
 #
+# +-------------------------------------------------------------------------+
+# | FOUNDATIONS (the coding ideas hiding in today's lab)                     |
+# |   - Console vs. script: experiment in the Console; save the recipe here. |
+# |   - Objects & assignment: <- stores a value under a name you choose.     |
+# |   - Packages: install once, library() every session.                    |
+# |   - A data frame is a table: rows = cases, columns = variables.          |
+# +-------------------------------------------------------------------------+
+#
+# +-------------------------------------------------------------------------+
+# | DATA HUMILITY (the measurement idea hiding in today's lab)              |
+# |   The Census surveys a *sample*, not everyone, so every value is an     |
+# |   ESTIMATE, not an exact count. Each estimate carries a margin of error |
+# |   (the `moe` column). We'll see it at the end.                          |
+# +-------------------------------------------------------------------------+
 
 # =============================================================================
-# 7. Reading in Data
+# 0. First-time setup — do this once
 # -----------------------------------------------------------------------------
-# Let's read in a CSV file. We'll use a sample dataset that comes with R.
-# some_data.csv
+# Two quick things before any R: (A) get oriented in RStudio on the DataHub, and
+# (B) get a free Census API key so R can talk to the Census.
+#
+# (A) RStudio on the DataHub
+#   Click the DataHub link on the course website. It logs in with your CalNet,
+#   copies the class materials into your account, and opens RStudio in your
+#   browser — nothing to install. Open this file (lab1_intro_to_.R) in RStudio.
+#   Run a line of code by clicking it and pressing:
+#       Cmd + Return   (Mac)          Ctrl + Enter   (Windows)
+#   Try it on the line below:
 
-# First, see where your working directory is:
-getwd()
+1 + 1   # the answer (2) appears in the Console, the panel below
 
-# Let's use the built-in 'mtcars' dataset for now:
-# Below is an example of reading in data that's stored within a package. 
-# In this case we use the `data` function to pull in this mtcars dataset
-# that lives inside R base package. 
+#   Anything after a "#" is a comment — a note for humans that R ignores.
+#
+# (B) Your Census API key (one-time)
+#   The Census lets anyone download its data with a free "API key" — think of it
+#   as a password that lets R talk to the Census. Request one here (2 minutes):
+#       https://api.census.gov/data/key_signup.html
+#   Check your email for the key, paste it between the quotes below, and run the
+#   line. You only do this ONCE — install = TRUE remembers it for next time.
 
-data(mtcars)   # Loads the dataset
-head(mtcars)   # Shows the first 6 rows
+library(tidycensus)
+census_api_key("PASTE-YOUR-KEY-HERE", install = TRUE)
 
-# If we wanted to read in data on our computer, we would use something 
-# like read.csv, which is a base function. What is a base function you ask? it's what gets loaded anytime you open R. In other words, you don't have to call it in. 
-
-car_speeds <- read.csv("~/SOC-N100-Housing-Precarity/data/software_carpentry/car-speeds.csv")
-
-# ~ means home directory
-# / means find what's inside the next section of the directory. 
-
-head(car_speeds)
-
-# This is likely the most common way you will pull in data from a machine or location. 
-# There are also other ways to pull in data online, using something called an API. We'll be tapping into the U.S. Census' API a lot in this class. 
+#   If R asks you to restart, do it: Session > Restart R. Then keep going.
 
 # =============================================================================
-# 8. Basic Data Exploration
+# 1. Running code, the Console, and comments
 # -----------------------------------------------------------------------------
-# Let's look at some basic information about mtcars:
+# Click a line and press Cmd+Return (Mac) / Ctrl+Enter (Windows) to run it.
 
-dim(mtcars)        # Number of rows and columns
-names(mtcars)      # Column names
-summary(mtcars)    # Summary statistics
+2 * 5    # R is a calculator
+10 / 2
+2^3      # 2 to the power of 3
 
-# Calculate the mean and median of a column:
-
-mean(mtcars$mpg)   # Average miles per gallon
-median(mtcars$mpg)   # Median miles per gallon
+# A "#" makes a comment — notes for humans, ignored by R. Shortcut to toggle a
+# comment on the current line: Cmd+Shift+C (Mac) / Ctrl+Shift+C (Windows).
 
 # =============================================================================
-# 9. Introduction to tidyverse
+# 2. Objects and assignment ( <- )
 # -----------------------------------------------------------------------------
-# tidyverse is a collection of R packages for data science.
-# Let's install and load it (do this only once):
+# Store a value under a name with the assignment arrow "<-". Then reuse it.
 
-# Uncomment the next line if you have not installed tidyverse before:
-install.packages("tidyverse")
+my_state <- "CA"   # a piece of text (in quotes)
+threshold <- 30    # a number: the rent-burden line, in percent
+
+# Type a name to see what it holds:
+my_state
+threshold
+
+# Tip: name things clearly. `my_state` tells future-you what it is; `x` doesn't.
+
+# =============================================================================
+# 3. Packages: load the tools we need
+# -----------------------------------------------------------------------------
+# A package is a toolbox. You INSTALL it once (already done for you on DataHub),
+# and you LOAD it with library() every time you start R.
+#   - tidyverse: tools for wrangling and plotting data
+#   - tidycensus: tools for downloading Census data
 
 library(tidyverse)
+library(tidycensus)
 
-# Let's use tidyverse to select columns and filter rows:
-# Before we do that, we're going to use an thing called a pipe "%>%"
-
-mtcars %>%
-  select(mpg, cyl, gear) %>%     # Select only some columns
-  filter(mpg > 20)               # Only cars with mpg > 20
+# (Only if working on your own computer, not DataHub, you'd first run once:
+#  install.packages(c("tidyverse", "tidycensus"))  )
 
 # =============================================================================
-# 10. Your Turn: Practice!
+# 4. Your first Census pull: a data frame
 # -----------------------------------------------------------------------------
-# Try these on your own:
-# - Create a vector of your favorite foods
-# - Make a data frame of three cities and their populations
-# - Find the average age in the students data frame
+# get_acs() downloads American Community Survey data. We ask for the rent burden
+# (median gross rent as a % of household income) for every county in a state.
 
-# Example (uncomment and fill in your answers):
-
-foods <- c("Burritos", "Sushi", "Phad Thai")
-cities <- data.frame(
-  city = c("Seattle", "Oakland", "Baltimore"),
-  population = c(400000, 300000, 50)
+rent_burden <- get_acs(
+  geography = "county",
+  variables = "B25071_001",  # median gross rent as a % of household income
+  state     = my_state,       # we stored "CA" above; reuse it here
+  year      = 2023
 )
-mean(students$age)
+
+# What came back is a DATA FRAME — a table. Each row is one county.
+rent_burden
 
 # =============================================================================
-# 12. Data Viewing and Exploration
+# 5. Looking at your data
 # -----------------------------------------------------------------------------
-# Before we start plotting, let's practice exploring and viewing data.
+head(rent_burden)        # the first few rows
+dim(rent_burden)         # how many rows (counties) and columns
+names(rent_burden)       # the column names
+summary(rent_burden)     # quick summary of each column
+View(rent_burden)        # opens a spreadsheet-style viewer in RStudio
 
-# View the first few rows:
-head(mtcars)
-
-# View the last few rows:
-tail(mtcars)
-
-# View the structure of the data frame:
-str(mtcars)
-
-# Get a summary of the data:
-summary(mtcars)
-
-# View the data in a spreadsheet-like viewer (in RStudio):
-View(mtcars)  # This will open a new tab in RStudio
-
-# Check for missing values:
-anyNA(mtcars)
+# The columns you'll use most:
+#   NAME     = the county's name
+#   estimate = the rent-burden value (a percent)
+#   moe      = the margin of error around that estimate (more on this below)
 
 # =============================================================================
-# 12a. Data Manipulation with dplyr (a package within the tidyverse)
+# 6. Data types — and the leading-zero trap
 # -----------------------------------------------------------------------------
-# The dplyr package (part of tidyverse) provides simple and powerful functions
-# for manipulating data. These commands are called "verbs" or "functions" and let you select,
-# filter, arrange, create, and summarize data in a clear and readable way.
+# Every column has a TYPE. Numbers are "numeric"; text is "character".
+class(rent_burden$estimate)   # numeric — we can do math on it
+class(rent_burden$GEOID)      # character — it's an ID code, not a quantity
 
-# The most common dplyr commands are:
-#   - select(): Pick columns (variables)
-#   - filter(): Pick rows based on values
-#   - arrange(): Reorder rows
-#   - mutate(): Create new columns or change existing ones
-#   - summarise(): Collapse data into summary statistics
-#   - group_by(): Group data for grouped operations
-
-# Let's practice these using the mtcars dataset.
-
-# ---- 12a.1 select(): Pick Columns ----
-
-# Select only the mpg and cyl columns
-mtcars %>%
-  select(mpg, cyl)
-
-# ---- 12a.2 filter(): Pick Rows ----
-
-# Filter for cars with more than 6 cylinders
-mtcars %>%
-  filter(cyl > 6)
-
-# ---- 12a.3 arrange(): Reorder Rows ----
-
-# Arrange cars by mpg, from lowest to highest
-mtcars %>%
-  arrange(mpg)
-
-# Arrange cars by mpg, from highest to lowest
-mtcars %>%
-  arrange(desc(mpg))
-
-# ---- 12a.4 mutate(): Create or Change Columns ----
-
-# Add a new column for weight in kilograms (wt is in 1000 lbs)
-mtcars %>%
-  mutate(wt_kg = wt * 1000 * 0.453592) %>%
-  str()
-
-# ---- 12a.5 summarise(): Summary Statistics ----
-
-# Find the average mpg for all cars
-mtcars %>%
-  summarise(avg_mpg = mean(mpg)) 
-
-# ---- 12a.6 group_by(): Grouped Operations ----
-
-# Find the average mpg for each cylinder group
-mtcars %>%
-  group_by(cyl) %>%
-  summarise(avg_mpg = mean(mpg))
-
-# ---- 12a.7 Chaining Commands with the Pipe (%>%) ----
-
-# You can chain multiple commands together for more complex tasks.
-# Example: For cars with more than 4 cylinders, find the average mpg by cylinder group.
-
-mtcars %>%
-  filter(cyl > 4) %>%
-  group_by(cyl) %>%
-  summarise(avg_mpg = mean(mpg))
-
-# ---- 12a.8 Practice: Try These! ----
-
-# - Select the columns hp and wt
-# - Filter for cars with mpg greater than 25
-# - Arrange cars by horsepower (hp), highest to lowest
-# - Create a new column that is mpg divided by cyl
-# - Group by gear and find the max mpg for each group
-
-# Example (uncomment and fill in):
-mtcars %>% select(hp, wt)
-mtcars %>% filter(mpg > 25)
-mtcars %>% arrange(desc(hp))
-mtcars %>% mutate(mpg_per_cyl = mpg / cyl)
-mtcars %>% group_by(gear) %>% summarise(max_mpg = max(mpg))
-
-# For more details, see the dplyr documentation and cheatsheets.
-# =============================================================================
-
+# Why is GEOID text and not a number? It's the county's Census ID (a "FIPS"
+# code). Alameda County is "06075" — that leading zero MATTERS. If R treated it
+# as a number it would become 6075 and no longer match the real code. Keep ID
+# codes as text. You'll meet this trap again with ZIP codes.
 
 # =============================================================================
-# 13. Creating Plots with ggplot2: Step-by-Step
+# 7. The tidyverse verbs: reshaping data, one step at a time
 # -----------------------------------------------------------------------------
-# ggplot2 is part of the tidyverse and is used for making plots.
-# We'll start with very simple plots and build up.
+# The "pipe" %>% means "and then": take the data, AND THEN do the next step.
+# Five verbs do most of the work: select, filter, arrange, mutate, summarise.
 
-# ---- 13.1 The Simplest Plot: Histogram of mpg ----
+# ---- 7.1 select(): keep only some columns ----
+rent_burden %>%
+  select(NAME, estimate, moe)
 
-ggplot(mtcars, aes(x = mpg)) + # in ggplot, we use a + instead of %>%
-  geom_histogram()  # Default bins
+# ---- 7.2 filter(): keep only some rows ----
+# Only counties where renters pay MORE than 35% of income on rent:
+rent_burden %>%
+  filter(estimate > 35)
 
-# ---- 13.2 Add Labels and Change Color ----
+# YOUR TURN: change 35 to the cost-burden line of 30. How many counties appear?
+rent_burden %>%
+  filter(estimate > __)
 
-ggplot(mtcars, aes(x = mpg)) +
-  geom_histogram(fill = "#7ECDBB", color = "yellow") +
-  labs(title = "Histogram of Miles Per Gallon", x = "Miles Per Gallon", y = "Frequency")
+# ---- 7.3 arrange(): sort the rows ----
+# Most rent-burdened counties at the top (desc = descending):
+rent_burden %>%
+  arrange(desc(estimate))
 
-# Colors!! https://r-charts.com/color-palettes/
-# https://colorbrewer2.org/#type=diverging&scheme=RdBu&n=7
+# YOUR TURN: sort from LEAST to MOST rent-burdened (delete desc()):
+rent_burden %>%
+  arrange(________)
 
-# ---- 13.3 Bar Plot: Number of Cars by Cylinder ----
+# ---- 7.4 mutate(): add or change a column ----
+# Flag whether each county's typical renter is cost-burdened (over 30%):
+rent_burden %>%
+  mutate(cost_burdened = estimate > 30) %>%
+  select(NAME, estimate, cost_burdened)
 
-ggplot(mtcars, aes(x = factor(cyl))) +
-  geom_bar(fill = "orange") +
-  labs(title = "Number of Cars by Cylinder", x = "Cylinders", y = "Count")
+# ---- 7.5 summarise() + group_by(): collapse to a summary ----
+# The average rent burden across all counties in the state:
+rent_burden %>%
+  summarise(avg_burden = mean(estimate, na.rm = TRUE))
+# (na.rm = TRUE tells R to ignore missing values when averaging.)
 
-# ---- 13.4 Scatter Plot: MPG vs. Horsepower ----
+# ---- 7.6 Chaining steps together ----
+# The 10 most rent-burdened counties, just the columns we care about:
+rent_burden %>%
+  arrange(desc(estimate)) %>%
+  slice_head(n = 10) %>%
+  select(NAME, estimate)
 
-ggplot(mtcars, aes(x = hp, y = mpg)) +
-  geom_point() +
-  labs(title = "MPG vs. Horsepower", x = "Horsepower", y = "Miles Per Gallon") 
+# =============================================================================
+# 8. Your first chart
+# -----------------------------------------------------------------------------
+# ggplot builds a plot in layers, joined by "+". We plot the 10 most
+# rent-burdened counties as a bar chart, with a dashed line at the 30% line.
 
-# Add a fitted line to your points
-ggplot(mtcars, aes(x = hp, y = mpg)) +
-  geom_point() +
-  labs(title = "MPG vs. Horsepower", x = "Horsepower", y = "Miles Per Gallon") + 
-  geom_smooth()
-
-# ---- 13.5 Boxplot: MPG by Cylinder ----
-
-ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
-  geom_boxplot(fill = "lightgreen") +
-  labs(title = "MPG by Cylinder", x = "Cylinders", y = "Miles Per Gallon")
-
-mtcars %>% group_by(cyl) %>% summarize(median = median(mpg))
-
-ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
-  geom_violin(fill = "blue") +
-  labs(title = "MPG by Cylinder", x = "Cylinders", y = "Miles Per Gallon")
-  
-
-# ---- 13.6 Customizing Plots: Themes and Colors ----
-
-ggplot(mtcars, aes(x = hp, y = mpg, color = factor(gear))) +
-  geom_point(size = 3) +
-  labs(title = "MPG vs. Horsepower by Gear", x = "Horsepower", y = "Miles Per Gallon", color = "Gear") +
+rent_burden %>%
+  arrange(desc(estimate)) %>%
+  slice_head(n = 10) %>%
+  ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
+  geom_col(fill = "#7ECDBB") +
+  geom_vline(xintercept = 30, linetype = "dashed") +
+  labs(
+    title = "The most rent-burdened counties",
+    subtitle = "Median rent as a share of renter income, 2019–2023",
+    x = "Rent burden (% of income)",
+    y = NULL,
+    caption = "Source: ACS 5-year. Dashed line = 30% cost-burden threshold."
+  ) +
   theme_minimal()
 
-# ---- 13.7 Saving a Plot ----
-
-# Save your last plot to a file (uncomment to use):
-ggsave("my_first_plot.png")
-ggsave("~/SOC-N100-Lab-Code/plots/my_first_plot.png")
+# Save your plot to a file (optional):
+# ggsave("rent_burden_plot.png", width = 8, height = 5)
 
 # =============================================================================
-# 14. Your Turn: Try Making Plots!
+# 9. Data humility: these are estimates, not facts
 # -----------------------------------------------------------------------------
-# Try these on your own:
-# - Make a histogram of another variable (e.g., hp)
-# - Make a scatter plot of wt vs. mpg
-# - Make a bar plot of the number of cars by gear
+# The `moe` column is the margin of error. A burden of 32 with an moe of 4 means
+# the true value could plausibly be anywhere from 28 to 36. The smallest, least-
+# populated counties usually have the SHAKIEST estimates — big margins of error:
 
-# Example (uncomment and fill in your answers):
+rent_burden %>%
+  arrange(desc(moe)) %>%
+  select(NAME, estimate, moe) %>%
+  slice_head(n = 10)
 
-ggplot(mtcars, aes(x = hp)) + geom_histogram()
-ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
-ggplot(mtcars, aes(x = factor(gear))) + geom_bar()
+# Lesson: don't make a big deal of a 1- or 2-point gap between two counties.
+# Part of being a good analyst is knowing how much *not* to trust a number.
 
 # =============================================================================
-# 15. Next Steps
+# 10. Your turn
 # -----------------------------------------------------------------------------
-# In future weeks, we will use real data about housing, race, and income.
-# We will use the tidyverse and tidycensus packages to explore and analyze data
-# about housing precarity and displacement.
+# (a) Pull rent burden for a state you care about. Change "__" to its two-letter
+#     abbreviation (e.g., "NY", "TX", "GA").
 
-# Remember: Coding is a skill you build with practice. Don't be afraid to make mistakes!
+my_rent_burden <- get_acs(
+  geography = "county",
+  variables = "B25071_001",
+  state     = "__",
+  year      = 2023
+)
+
+# (b) Make a bar chart of its 10 most rent-burdened counties (copy from §8 and
+#     swap in `my_rent_burden`).
+
+# (c) In one sentence (as a comment), describe what you see. Are these counties
+#     you'd expect? What might explain it?
+# YOUR SENTENCE:
 
 # =============================================================================
-# END OF WEEK 1 SCRIPT
+# Next week (Lab 2): we'll pull several variables at once and COMPUTE rent
+# burden ourselves — rent, income, who rents vs. owns — and compare places.
+#
+# Remember: coding is a skill you build by practice. Errors are normal. Read
+# them, search them, ask a neighbor or the AI — then keep going.
 # =============================================================================

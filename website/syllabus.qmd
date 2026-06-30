@@ -1,14 +1,14 @@
 ---
-title: "Syllabus"
+title: "Sociology N100 Syllabus, Summer 2026"
 subtitle: "Housing Precarity and Displacement: Racial and Gender Inequality in Gentrification and Eviction"
 toc: true
-published: "Summer 2025"
+published: "Summer 2026"
 published-title: Term
 author:
-    - Tim Thomas
+    - "Tim Thomas, Ph.D."
     - <timthomas@berkeley.edu>
 author-title: Instructor
-abstract: "This course introduces students to the intersecting crises of eviction, displacement, and gentrification through data-driven analysis. Using the U.S. Census and R programming, you’ll learn to quantify racial inequality, track segregation patterns, and map gentrification’s impact on vulnerable communities. Through weekly lectures, coding labs, and interactive online modules, we’ll explore how housing precarity disproportionately affects marginalized groups while building practical skills in R and data visualization. By term’s end, you’ll create dynamic maps and interactive dashboards that reveal hidden stories behind eviction trends, rent burden disparities, and neighborhood change – equipping you to communicate complex social issues through both sociological theory and cutting-edge data tools. Designed for beginners in coding, this fully online course emphasizes real-world applications, with case studies ranging from urban displacement in coastal cities to rural housing instability."
+abstract: "This course introduces students to the intersecting crises of eviction, displacement, and gentrification through a sociological lens and data-driven analysis. Using the U.S. Census and R programming, you’ll learn to quantify racial inequality, track segregation patterns, and map gentrification’s impact on vulnerable communities. Through weekly lectures, coding labs, and interactive online modules, we’ll explore how housing precarity disproportionately affects marginalized groups while building practical skills in R and data visualization. By term’s end, you’ll create dynamic maps and interactive dashboards that reveal hidden stories behind eviction trends, rent burden disparities, and neighborhood change – equipping you to communicate complex social issues through both sociological theory and cutting-edge data tools. A central goal is to use data as public scholarship: to show a policymaker or community stakeholder how to understand a common trend or problem and help inform legislation, using sociology and theory to turn evidence into a clear, honest case you can make to real people. Designed for beginners in coding, this fully online course emphasizes real-world applications, with case studies ranging from urban displacement in coastal cities to rural housing instability."
 
 # "Residential displacement is the involuntary relocation of residents from their homes or neighborhoods due to factors beyond their control. This can occur when households are forced to move because of evictions, rent increases, building demolitions, or other changes that make their current housing unaffordable or uninhabitable. The consequences of displacement are dire, leading to long-term housing and financial instability; worse health outcomes; and reinforces racial, gender, and economic disparities. Today, a large share of the United States is facing housing precarity and are at great risk of displacement. Roughly 50% of renters are rent-burdened (paying more than 30% of their income to rent), about 1/3rd (32%) of adults are likely to miss next month’s rent or mortgage payment, and homelessness is higher now than it was during the 2008 Great Recession. Institutions are determined to understand the prevalence and risk of displacement because it affects both households at the micro level and shapes cities and regions at the macro level. But how do we measure displacement and what can be done about it?
 # <br><br>
@@ -17,7 +17,31 @@ abstract: "This course introduces students to the intersecting crises of evictio
 # Each week will serve as a building block for the final project—meaning in-class participation, readings, and on-time assignments are vital requirements. Classes will begin with a mini-lecture on the week’s topic followed by in-class exercises on how to use the U.S. Census as a primary data source to measure displacement drivers and indicators. In-class exercises will set you up to work independently on two assignments. The final group project and presentation will combine what you’ve learned so you can build an analysis on a pressing topic that may interest governmental stakeholders. "
 abstract-title: ""
 theme: cosmo
+format:
+  html: default
+  pdf:
+    toc: true
+    documentclass: scrartcl
+    geometry: margin=1in
 ---
+
+**Sociology N100, Section 002** (Class #13195) | 2 units | Summer Session D 2026\
+Tuesdays & Thursdays, 5-7pm | July 7 to August 13, 2026 | Online via Zoom\
+Links: [Class Zoom](https://berkeley.zoom.us/j/92041866237) | [bCourses](https://bcourses.berkeley.edu/courses/1555635) | [Discussion](https://bcourses.berkeley.edu/courses/1555635/discussion_topics)\
+Office Hours: schedule at [cal.com/timthomas](https://cal.com/timthomas); evenings and weekends also available by email request.
+
+### Course Schedule
+
+| Week | Dates | Topic |
+|------|-------|-------|
+| 1 | Jul 7 & 9 | Intro to housing precarity & displacement; R/RStudio setup; Census/ACS basics; how to use AI |
+| 2 | Jul 14 & 16 | Quantifying racial inequality; tidycensus wrangling (Read: Zuk et al. 2015; Walker Pref-Ch2) |
+| 3 | Jul 21 & 23 | Segregation measures and mapping with sf/tigris; Assignment 1 due Mon Jul 27 (Read: Walker Ch3-4) |
+| 4 | Jul 28 & 30 | Gentrification and neighborhood change; rent burden (Read: Walker Ch5-6) |
+| 5 | Aug 4 & 6 | Eviction trends + ggplot; interactive maps; Assignment 2 due Mon Aug 3 (Read: Bates 2013) |
+| 6 | Aug 11 & 13 | Dashboards (Quarto) and final project presentations (last class Aug 13) |
+
+Final project due Friday, August 14, 2026.
 
 ### Course Culture
 
@@ -132,7 +156,7 @@ These assignments will be graded on using the scale below. Anything above a D wi
 
 #### Final group project (40%). 
 
-For your final group project you and 2-3 of your peers will choose a city or county and come up with a research question you can answer with one of the datasets from the class that tests at least two hypotheses about the disparate impact or unique problem of displacement in that area. You will need to do some research about your chosen area and may even need to do some exploratory analysis of the area to see what might be a suitable research question and driver of displacement. For example, in Marin County, CA high rents are displacing the county’s workforce-age adults and young families, resulting in school closures and deterring needed residents to keep the county sustainable. Another example is Salt Lake City’s most affordable neighborhoods are also experiencing high rates of displacement, meaning there is no where for displaced residents to move to that is affordable. Find something that would be compelling for the city or county to know about the problem of displacement in their area. 
+For your final group project you and 2-3 of your peers will choose (or be assigned) a city or county and come up with a research question you can answer with one of the datasets from the class that tests at least two hypotheses about the disparate impact or unique problem of displacement in that area. You will need to do some research about your chosen area and may even need to do some exploratory analysis of the area to see what might be a suitable research question and driver of displacement. For example, in Marin County, CA high rents are displacing the county’s workforce-age adults and young families, resulting in school closures and deterring needed residents to keep the county sustainable. Another example is Salt Lake City’s most affordable neighborhoods are also experiencing high rates of displacement, meaning there is no where for displaced residents to move to that is affordable. Find something that would be compelling for the city or county to know about the problem of displacement in their area. Write for a policymaker or community stakeholder: your job is to help them understand the trend or problem and act on it. **Bonus points** for a strong, well-supported set of policy recommendations for the problem at hand. 
 
 * You will submit a final report, R code, and a short slide presentation (no longer than 10 slides) showcasing your question, your methods and key results. 
 * On the last day you will present your project to the class. 
@@ -151,7 +175,7 @@ F 0-59
 
 ### Late work policy
 
-No late work will be accepted.
+No late work will be accepted except for documented DSP accommodations or arrangements made with the instructor in advance.
 
 ### AI Policy
 
@@ -177,9 +201,29 @@ AI is allowed and encouraged in this course as it is crucial to learn how to use
 
 *Be vigilant about model changes moving forward:* As AI advances, be aware of both improvements to models as well as possible problems (i.e., increasing censorship, how it was trained, developer intent, etc.). 
 
-In this class you will use [perplexity.ai](https://perplexity.ai) because it allows you to test and use multiple language models (e.g., OpenAI, Claude, Lamma, and a few more) and searches the web to find the most recent information about a topic. Access to the web supplements its knowledge and usefulness. Sign up for a discounted perplexity pro account at <https://plex.it/referrals/OXHAU39O>
+*Which AI tool you use, and the one hard rule*
 
-Do not use any other AI platform without permission. You will be required to provide URLs to your use of Perplexity so we can understand your use of it and help develop your skills. 
+You may use any AI assistant you like in this class **as long as it can produce a public, shareable link to your conversation that I can open and read without logging in.** You will submit those links with your work (URLs in your code comments and footnotes in your writeup). I read them to understand how you worked and to help you get better at it. If a tool cannot give me a link I can open, you cannot use it for graded work.
+
+Any of these meet the bar, and a **free account is enough** (you never need a paid plan for this course). If you are not sure where to start, use Perplexity:
+
+* **[Perplexity](https://perplexity.ai)** (recommended) searches the web, shows its sources, and lets you compare several models. Share a Thread by setting it to "Anyone with the link."
+* **[ChatGPT](https://chatgpt.com)**: use the **Share** button to make a public link.
+* **[Google Gemini](https://gemini.google.com)**: use **Share** to make a public link.
+* **[Claude](https://claude.ai)**: use **Share** to make a public link.
+
+Two things that trip people up:
+
+1. **Sign in with a personal account, not your CalNet/Berkeley login.** Berkeley's free versions of Gemini and Copilot run in a protected mode that turns public sharing *off*. We only use public Census data in this class, so a personal account is the right choice here.
+2. **Test your link before you submit it.** Paste it into a private/incognito browser window. If it shows your whole conversation without asking you to log in, you are good. If it does not, I cannot grade it.
+
+*Free AI access through Berkeley*
+
+Berkeley gives every student free access to some AI tools through the campus AI hub, currently the **Google Gemini app** and **Microsoft Copilot**, signed in with your CalNet (Berkeley) account. See the campus list, and the current set of tools, at <https://ai.berkeley.edu/tools-services/licensed-ai-tools>. These are a good choice for general use and are the safer option for any sensitive or private information.
+
+One catch for *this* class: those Berkeley accounts run in a privacy-protected mode that usually turns public link-sharing **off**. Since your graded work here requires a link I can open, use a **personal** account (listed above) when you need to share a conversation. We only work with public Census data, so a personal account is fine for our purposes.
+
+(These offers and free tiers change often. Re-check the tool's "share" help page if a link will not generate.)
 
 *Responsible AI Use*
 
