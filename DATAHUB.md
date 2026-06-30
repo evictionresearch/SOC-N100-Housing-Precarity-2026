@@ -202,7 +202,7 @@ source("code/install_course_packages.R")
 
 Students can use the [primary git-pull link](#course-datahubs) above; no `gh auth` required. Keep `gh` on the image for optional workflows (issues, PRs, other repos).
 
-## Package installs and `qs`
+## Package installs
 
 ### Two-layer pattern
 
@@ -213,25 +213,9 @@ Documented in [`code/README.md`](code/README.md):
 
 Re-running a lab is idempotent: packages already installed are not reinstalled.
 
-### The `qs` warning on r.datahub
+### Eviction data (`.rds`, not `qs`)
 
-Labs **3** and **4** use `qread()` on `data/evictions/d5_case_aggregated.qs`. The message:
-
-```text
-package 'qs' is not available for this version of R
-```
-
-means the original [`qs` package was archived from CRAN on 2026-01-17](https://cran.r-project.org/package=qs) — **not** that R 4.4.2 is unsupported. The successor [`qs2`](https://cran.r-project.org/package=qs2) cannot read legacy `.qs` course files.
-
-`code/course_packages.R` installs **qs 0.27.3** from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/) via `remotes::install_version()`. After pulling the latest branch, verify (source compile may take a few minutes):
-
-```r
-source("code/install_course_packages.R")
-requireNamespace("qs")   # should be TRUE
-packageVersion("qs")     # 0.27.3
-```
-
-If source compile fails, ask CDSS to pre-install `qs` 0.27.3 from the CRAN Archive tarball (and ensure `libatomic` is available — see [qsbase/qs#88](https://github.com/qsbase/qs/issues/88)).
+Labs **3** and **4** use `readRDS("data/evictions/d5_case_aggregated.rds")`. The course no longer depends on the archived [`qs`](https://cran.r-project.org/package=qs) package — it was removed from CRAN 2026-01-17 and fails to compile on r.datahub.
 
 ### RStudio “Updating Loaded Packages” dialog
 
