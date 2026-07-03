@@ -1,0 +1,21 @@
+--- a/code/lab3_evictions.R
++++ b/code/lab3_evictions.R
+@@ -47,12 +47,12 @@
+ 
+ # Pedagogical counterexample (fails — co_totrent has many rows per group).
+ # Compare to first(co_totrent) in the next block.
+-indiana_evictions %>%
+-  group_by(county, year) %>%
+-  summarize(
+-    evictions = sum(filings),
+-    renters = co_totrent
+-  )
++# indiana_evictions %>%
++#   group_by(county, year) %>%
++#   summarize(
++#     evictions = sum(filings),
++#     renters = co_totrent
++#   )
+ 
+ indiana_evictions %>%
+   group_by(county, year) %>%

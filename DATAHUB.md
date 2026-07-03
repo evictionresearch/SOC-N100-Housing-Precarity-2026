@@ -239,7 +239,7 @@ Re-running a lab is idempotent: packages already installed are not reinstalled.
 
 ### Eviction data (`qs2` primary, `.rds` fallback)
 
-Labs **3** and **4** load eviction data with **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2`. A commented **`readRDS()`** line points to `.rds` if qs2 fails. Staff background: [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd).
+Labs **3** and **4** load eviction data with **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2`. A commented **`readRDS()`** line points to `.rds` if qs2 fails. Staff background: [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd).
 
 **Quick check after `source("code/install_course_packages.R")`:**
 
@@ -260,7 +260,7 @@ Students need a free Census API key. **Do not commit keys in lab scripts.**
 
 Sign up: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
 
-**One-time setup** — open lab 2 in RStudio and run through `ensure_census_api_key()`. A dialog asks for your key the first time; it is saved to `~/.Renviron` on your DataHub account.
+**One-time setup** — open lab 1 in RStudio and run the Census API key block at the top. A dialog asks for your key the first time; tidycensus saves it to `~/.Renviron` on your DataHub account.
 
 Or in the Console: `census_api_key("YOUR_KEY", install = TRUE)`
 
@@ -276,7 +276,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 6. [ ] Lab 2: first run prompts for Census key (or key already in `~/.Renviron`); `get_acs()` returns data
 7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
-9. [ ] Optional full batch: `Rscript website/run_all_labs.R` from repo root (see `website/maintainer-notes.qmd`)
+9. [ ] Optional full batch: `Rscript website/maintainer/run_all_labs.R` from repo root (see `website/maintainer/notes.qmd`)
 10. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 
 Record results and any package gaps in this file after testing.

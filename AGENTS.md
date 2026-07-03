@@ -58,7 +58,7 @@ Lab scripts live in `code/`:
 
 See [`code/README.md`](code/README.md) for package install conventions.
 
-**Maintainers:** data formats (qs → qs2 + RDS fallback) — [`website/maintainer-notes.qmd`](website/maintainer-notes.qmd) (draft; not published to students).
+**Maintainers:** data formats (qs → qs2 + RDS fallback) — [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd) (draft; not published to students).
 
 ## Student Environment
 

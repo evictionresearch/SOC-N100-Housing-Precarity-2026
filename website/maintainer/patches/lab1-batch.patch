@@ -1,0 +1,43 @@
+--- a/code/lab1_intro_to_.R
++++ b/code/lab1_intro_to_.R
+@@ -149,8 +149,8 @@
+   filter(estimate > 35)
+ 
+ # YOUR TURN: change 35 to the cost-burden line of 30. How many counties appear?
+-rent_burden %>%
+-  filter(estimate > __)
++# rent_burden %>%
++#   filter(estimate > __)
+ 
+ # ---- 7.3 arrange(): sort the rows ----
+ # Most rent-burdened counties at the top (desc = descending):
+@@ -158,8 +158,8 @@
+   arrange(desc(estimate))
+ 
+ # YOUR TURN: sort from LEAST to MOST rent-burdened (delete desc()):
+-rent_burden %>%
+-  arrange(________)
++# rent_burden %>%
++#   arrange(________)
+ 
+ # ---- 7.4 mutate(): add or change a column ----
+ # Flag whether each county's typical renter is cost-burdened (over 30%):
+@@ -231,12 +231,12 @@
+ # -----------------------------------------------------------------------------
+ # (a) Pull rent burden for a state you care about. Change "__" to its two-letter
+ #     abbreviation (e.g., "NY", "TX", "GA").
+-my_rent_burden <- get_acs(
+-  geography = "county",
+-  variables = "B25071_001",
+-  state     = "__",
+-  year      = 2023
+-)
++# my_rent_burden <- get_acs(
++#   geography = "county",
++#   variables = "B25071_001",
++#   state     = "__",
++#   year      = 2023
++# )
+ 
+ # (b) Make a bar chart of its 10 most rent-burdened counties (copy from §8 and
+ #     swap in `my_rent_burden`).

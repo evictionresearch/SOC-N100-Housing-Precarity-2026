@@ -45,6 +45,8 @@ vignettes/*.pdf
 # Local lab / batch run artifacts (not course materials)
 output/
 my_first_plot.png
+data/in_co_renters.csv
+data/in_co_renters.rds
 
 # Agent web research scratch (promote manually if needed)
 search-artifacts/
@@ -57,5 +59,11 @@ rsconnect/
 
 /.quarto/
 
+# Patch reject files (batch runner) — keep out of code/
+*.rej
+*.rej.orig
+website/maintainer/patches/*.rej
+
 # Staff-only draft (draft: true) - never publish its rendered HTML to the public site
 docs/maintainer-notes.html
+docs/maintainer/notes.html
