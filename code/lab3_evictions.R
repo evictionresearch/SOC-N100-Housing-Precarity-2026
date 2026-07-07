@@ -4,10 +4,8 @@
 source("code/course_paths.R")
 source("code/course_packages.R")
 source("code/course_data.R")
-source("code/course_secrets.R")
 load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
-# Key from ~/.Renviron (set in lab 2 via census_api_key(..., install = TRUE))
-ensure_census_api_key()
+# Census API key: set up once in lab 1 (~/.Renviron)
 
 # ==========================================================================
 # Over the past couple weeks, we've been working with tidycensus to get data
@@ -48,16 +46,13 @@ indiana_evictions %>%
   )
 
 # Pedagogical counterexample (fails — co_totrent has many rows per group).
-# Compare to first(co_totrent) in the next block. run_all_labs.R temporarily
-# comments the BATCH-SKIP block during maintainer smoke tests, then restores it.
-# BATCH-SKIP-BEGIN
+# Compare to first(co_totrent) in the next block.
 indiana_evictions %>%
   group_by(county, year) %>%
   summarize(
     evictions = sum(filings),
     renters = co_totrent
   )
-# BATCH-SKIP-END
 
 indiana_evictions %>%
   group_by(county, year) %>%

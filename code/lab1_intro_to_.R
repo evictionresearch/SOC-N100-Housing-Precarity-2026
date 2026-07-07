@@ -12,7 +12,7 @@
 # | FOUNDATIONS (the coding ideas hiding in today's lab)                     |
 # |   - Console vs. script: experiment in the Console; save the recipe here. |
 # |   - Objects & assignment: <- stores a value under a name you choose.     |
-# |   - Packages: install once, library() every session.                    |
+# |   - Packages: install once, load_pkg() every session (see code/README.md).|
 # |   - A data frame is a table: rows = cases, columns = variables.          |
 # +-------------------------------------------------------------------------+
 #
@@ -22,6 +22,10 @@
 # |   ESTIMATE, not an exact count. Each estimate carries a margin of error |
 # |   (the `moe` column). We'll see it at the end.                          |
 # +-------------------------------------------------------------------------+
+
+# Course helpers. See code/README.md.
+source("code/course_paths.R")
+source("code/course_packages.R")
 
 # =============================================================================
 # 0. First-time setup — do this once
@@ -42,16 +46,16 @@
 #   Anything after a "#" is a comment — a note for humans that R ignores.
 #
 # (B) Your Census API key (one-time)
-#   The Census lets anyone download its data with a free "API key" — think of it
-#   as a password that lets R talk to the Census. Request one here (2 minutes):
-#       https://api.census.gov/data/key_signup.html
-#   Check your email for the key, paste it between the quotes below, and run the
-#   line. You only do this ONCE — install = TRUE remembers it for next time.
+#   Free signup: https://api.census.gov/data/key_signup.html
+#   First time in RStudio, run the block below — paste your key in the dialog.
+#   tidycensus saves it to ~/.Renviron on your DataHub account (not this repo).
+#   Later labs and sessions load it automatically. Never commit your key to git.
 
-library(tidycensus)
-census_api_key("PASTE-YOUR-KEY-HERE", install = TRUE)
-
-#   If R asks you to restart, do it: Session > Restart R. Then keep going.
+load_pkgs("tidyverse", "tidycensus")
+if (!nzchar(Sys.getenv("CENSUS_API_KEY", unset = ""))) {
+  key <- rstudioapi::askForPassword("Census API key (free: https://api.census.gov/data/key_signup.html)")
+  tidycensus::census_api_key(key, overwrite = TRUE, install = TRUE)
+}
 
 # =============================================================================
 # 1. Running code, the Console, and comments
@@ -80,18 +84,12 @@ threshold
 # Tip: name things clearly. `my_state` tells future-you what it is; `x` doesn't.
 
 # =============================================================================
-# 3. Packages: load the tools we need
+# 3. Packages (already loaded above)
 # -----------------------------------------------------------------------------
-# A package is a toolbox. You INSTALL it once (already done for you on DataHub),
-# and you LOAD it with library() every time you start R.
-#   - tidyverse: tools for wrangling and plotting data
-#   - tidycensus: tools for downloading Census data
-
-library(tidyverse)
-library(tidycensus)
-
-# (Only if working on your own computer, not DataHub, you'd first run once:
-#  install.packages(c("tidyverse", "tidycensus"))  )
+# A package is a toolbox. On DataHub, bulk install once:
+#   source("code/install_course_packages.R")
+# Each lab calls load_pkgs() to load what it needs. Under the hood that is
+# library() after a quick check that the package is installed.
 
 # =============================================================================
 # 4. Your first Census pull: a data frame
@@ -188,7 +186,7 @@ rent_burden %>%
 # ggplot builds a plot in layers, joined by "+". We plot the 10 most
 # rent-burdened counties as a bar chart, with a dashed line at the 30% line.
 
-rent_burden %>%
+rent_burden_plot <- rent_burden %>%
   arrange(desc(estimate)) %>%
   slice_head(n = 10) %>%
   ggplot(aes(x = estimate, y = reorder(NAME, estimate))) +
@@ -203,8 +201,15 @@ rent_burden %>%
   ) +
   theme_minimal()
 
-# Save your plot to a file (optional):
-# ggsave("rent_burden_plot.png", width = 8, height = 5)
+rent_burden_plot
+
+dir.create(file.path(repo_root, "output", "plots"), recursive = TRUE, showWarnings = FALSE)
+ggsave(
+  file.path(repo_root, "output", "plots", "rent_burden_plot.png"),
+  rent_burden_plot,
+  width = 8,
+  height = 5
+)
 
 # =============================================================================
 # 9. Data humility: these are estimates, not facts
@@ -226,7 +231,6 @@ rent_burden %>%
 # -----------------------------------------------------------------------------
 # (a) Pull rent burden for a state you care about. Change "__" to its two-letter
 #     abbreviation (e.g., "NY", "TX", "GA").
-
 my_rent_burden <- get_acs(
   geography = "county",
   variables = "B25071_001",

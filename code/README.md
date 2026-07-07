@@ -18,10 +18,14 @@
 ```r
 source("code/course_paths.R")
 source("code/course_packages.R")
-source("code/course_secrets.R")   # labs 2–5 (Census API)
 
 load_pkgs("tidyverse", "tidycensus")   # example
-ensure_census_api_key()                # labs 2–5 (reads ~/.Renviron)
+
+# Lab 1 only — one-time Census API key (inline):
+if (!nzchar(Sys.getenv("CENSUS_API_KEY", unset = ""))) {
+  key <- rstudioapi::askForPassword("Census API key (free: https://api.census.gov/data/key_signup.html)")
+  tidycensus::census_api_key(key, overwrite = TRUE, install = TRUE)
+}
 ```
 
 Labs 3–4 also `source("code/course_data.R")` for eviction file paths, then `qs2::qs_read()`.
@@ -32,7 +36,7 @@ Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolv
 
 We teach **tidycensus's built-in method** — not a custom `.env` file. tidycensus documents this workflow; it keeps keys out of git.
 
-**One-time setup (lab 2, in RStudio):** run the lab script (or `ensure_census_api_key()`). On first use, RStudio shows a dialog to paste your key; tidycensus saves it to `~/.Renviron`. Later labs load it with no prompt.
+**One-time setup (lab 1, in RStudio):** run the inline block at the top of lab 1. On first use, RStudio shows a dialog to paste your key; tidycensus saves it to `~/.Renviron`. Labs 2–5 rely on that file — no prompt.
 
 Manual alternative in the Console: `census_api_key("YOUR_KEY", install = TRUE)`
 
@@ -58,15 +62,6 @@ Sign up: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_s
 
 Path constants: `eviction_data_qs2`, `eviction_data_rds` (labs 3–4).
 
-### `course_secrets.R`
-
-| Function | Purpose |
-|----------|---------|
-| `ensure_census_api_key()` | Prompt once in RStudio if missing; else reload `~/.Renviron` |
-| `prompt_for_census_api_key()` | RStudio password dialog (or `readline` fallback) |
-
-See file header for why we use tidycensus's `census_api_key(..., install = TRUE)` and DataHub security notes.
-
 Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
 
 ## Course eviction data: `qs2` + `.rds` backup
@@ -78,7 +73,7 @@ Installs use the session default repos (Posit PM on DataHub). If a package is mi
 
 Legacy `.qs` is provenance only. Regenerate course files: `Rscript code/convert_eviction_data.R`.
 
-**Maintainers:** [`website/maintainer-notes.qmd`](../website/maintainer-notes.qmd).
+**Maintainers:** [`website/maintainer/notes.qmd`](../website/maintainer/notes.qmd).
 
 ## `librarian` in lab 4
 

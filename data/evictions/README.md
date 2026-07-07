@@ -12,7 +12,7 @@
 Rscript code/convert_eviction_data.R
 ```
 
-Background: [`website/maintainer-notes.qmd`](../../website/maintainer-notes.qmd).
+Background: [`website/maintainer/notes.qmd`](../../website/maintainer/notes.qmd).
 
 ## Verify on DataHub (after install_course_packages)
 
