@@ -15,12 +15,15 @@ website:
         href: resources.qmd
       - text: RStudio
         href: https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
+        target: _blank
     tools:
       - icon: r-circle-fill
         href: https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
         aria-label: RStudio
+        target: _blank
       - icon: github
         href: https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
+        target: _blank
 
 format:
   html:
@@ -28,5 +31,6 @@ format:
       cosmo
     css: styles.css
     toc: true
+    link-external-newwindow: true
 
 editor: visual

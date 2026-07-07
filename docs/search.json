@@ -88,14 +88,14 @@
     "href": "index.html#week-1",
     "title": "Housing Precarity and Displacement",
     "section": "Week 1",
-    "text": "Week 1\n\nTuesday July 7 - Lecture\n\nCourse introduction and syllabus\nHow to use AI in this course - discussion and live demo\n\n\n\nThursday July 9 - Lab\n\nLab 1: getting started in RStudio on the DataHub (we walk through it together online), intro to R, and your first Census number\nAI tutorial: debugging with AI, verifying answers, and sharing your conversation link\n\n\n\nSet up this week\n\nGet a free census API key at https://api.census.gov/data/key_signup.html (a couple minutes); we use it in lab.\nSet up a free account on an AI assistant that can share a public conversation link (Perplexity recommended; ChatGPT, Gemini, or Claude also work). Sign in with a personal account, not your CalNet login, so that link-sharing works. See the AI policy for details."
+    "text": "Week 1\n\nReadings\n\nChapple (2017) “Income Inequality and Urban Displacement: The New Gentrification” (10 pp.) — the argument that frames the course: focus on displacement, not just gentrification, and treat it as an income crisis, not only a housing one.\n\n\n\nTuesday July 7 - Lecture\n\nCourse introduction and syllabus\nHow to use AI in this course - discussion and live demo\n\n\n\nThursday July 9 - Lab\n\nLab 1: getting started in RStudio on the DataHub (we walk through it together online), intro to R, and your first Census number\nAI tutorial: debugging with AI, verifying answers, and sharing your conversation link\n\n\n\nSet up this week\n\nGet a free census API key at https://api.census.gov/data/key_signup.html (a couple minutes); we use it in lab.\nSet up a free account on an AI assistant that can share a public conversation link (Perplexity recommended; ChatGPT, Gemini, or Claude also work). Sign in with a personal account, not your CalNet login, so that link-sharing works. See the AI policy for details."
   },
   {
     "objectID": "index.html#week-2",
     "href": "index.html#week-2",
     "title": "Housing Precarity and Displacement",
     "section": "Week 2",
-    "text": "Week 2\n\nReadings\nDue Tuesday July 14\n\nZuk et al. (2015) “Gentrification, Displacement and the Role of Public Investment: A Literature Review”\n\nDue Thursday July 16\n\nWalker (2023) “Analyzing US Census Data: Methods, Maps, and Models in R”: Preface, Ch 1, & Ch 2\n\n\n\nTuesday July 14 - Lecture\n\n\nThursday July 16 - Lab"
+    "text": "Week 2\n\nReadings\nDue Thursday July 16\n\nWalker (2023) “Analyzing US Census Data: Methods, Maps, and Models in R”: Preface, Ch 1, & Ch 2\n\nOptional deeper dive on the Week 1 Chapple reading: Zuk et al. (2015) “Gentrification, Displacement and the Role of Public Investment: A Literature Review”\n\n\nTuesday July 14 - Lecture\n\n\nThursday July 16 - Lab"
   },
   {
     "objectID": "index.html#week-3",
@@ -126,11 +126,88 @@
     "text": "Week 6\n\nTuesday August 11 - Group Lab\n\nHow to make an effective presentation video\nExample presentation: Tim’s Testimony Slides to the WA State Senate\n\nRecorded testimony (starts at 40 minutes)\n\n\n\n\nThursday August 13 - Presentation\n\n10-15 minute presentation on your research. No more than 15 slides and aim for 5.\n\nFinal Assignment Due Friday August 14th"
   },
   {
+    "objectID": "maintainer/lab1-merge-proposal.html",
+    "href": "maintainer/lab1-merge-proposal.html",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "Status: proposed (branch lab1-datahub-merge)\nAuthor: maintainer merge (Aaron / CiDR)\nFor review by: Tim Thomas\n\n\nKeep Tim’s census-first Lab 1 on main (intro, get_acs, tidyverse verbs, data humility, student __ exercises). Wire it to the same DataHub patterns already used in labs 2–5 so students, batch tests, and docs stay consistent.\nLabs 2–5 on main already match datahub-rstudio-2026; only Lab 1 diverged after Tim’s 414a4c5 (init major setup).\n\n\n\n\nCensus-from-line-one narrative and section structure (§0–§10)\nmy_state &lt;- \"CA\", rent burden by county, MOE / data humility\nYOUR TURN exercises with __ blanks (in-class only)\n§10 open-ended state comparison (student fills in)\n\n\n\n\n\n\n\n\n\n\n\nTim’s main lab 1\nMerged lab 1\n\n\n\n\nlibrary(tidycensus) + census_api_key(\"PASTE-YOUR-KEY-HERE\") in script\nsource(\"code/course_*.R\"), load_pkgs(), inline askForPassword + census_api_key(..., install = TRUE) → ~/.Renviron\n\n\nlibrary(tidyverse) / library(tidycensus) twice\nSingle load_pkgs(\"tidyverse\", \"tidycensus\") at top\n\n\nNo repo_root\nggsave() → output/plots/rent_burden_plot.png via repo_root\n\n\nggsave commented out\nActive save for batch smoke test\n\n\n__ blanks break run_all_labs.R\nMaintainer .patch files (lab scripts stay clean)\n\n\n\n\n\n\n\nNo API key in committed source. Tim’s placeholder PASTE-YOUR-KEY-HERE encouraged pasting secrets into a file students commit; merged version uses an inline RStudio dialog in lab 1 only (labs 2–5 read ~/.Renviron).\nPackage pattern matches code/README.md: bulk install_course_packages.R once, load_pkgs() per lab.\n\n\n\n\nwebsite/maintainer/run_all_labs.R applies website/maintainer/patches/lab1-batch.patch and lab3-batch.patch via /usr/bin/patch, then reverses on exit.\nRscript website/maintainer/run_all_labs.R --per-lab   # recommended on DataHub\n\n\n\n\ncode/lab1_intro_to_.R — merged content\nwebsite/maintainer/run_all_labs.R — batch runner + patch apply/restore\nwebsite/maintainer/patches/ — unified diffs (not shown to students)\nwebsite/maintainer/notes.qmd — short cross-reference (this proposal)\n\n\n\n\nMerge Lab 1: keep census-first intro, align with DataHub package/API patterns\n\n\n\n\nDataHub: open SOC-N100.Rproj, run lab 1 line-by-line; dialog saves Census key\nRscript website/maintainer/run_all_labs.R --per-lab → 5/5 OK\nConfirm output/plots/rent_burden_plot.png exists after lab 1\nConfirm lab 1 file on disk still has uncommented __ exercises after batch run\n\n\n\n\n\nReverting Tim’s syllabus / website changes on main\nChanging labs 2–5 (already aligned)"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#summary",
+    "href": "maintainer/lab1-merge-proposal.html#summary",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "Keep Tim’s census-first Lab 1 on main (intro, get_acs, tidyverse verbs, data humility, student __ exercises). Wire it to the same DataHub patterns already used in labs 2–5 so students, batch tests, and docs stay consistent.\nLabs 2–5 on main already match datahub-rstudio-2026; only Lab 1 diverged after Tim’s 414a4c5 (init major setup)."
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#what-we-keep-from-tim-unchanged-pedagogy",
+    "href": "maintainer/lab1-merge-proposal.html#what-we-keep-from-tim-unchanged-pedagogy",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "Census-from-line-one narrative and section structure (§0–§10)\nmy_state &lt;- \"CA\", rent burden by county, MOE / data humility\nYOUR TURN exercises with __ blanks (in-class only)\n§10 open-ended state comparison (student fills in)"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#what-we-add-from-datahub-work",
+    "href": "maintainer/lab1-merge-proposal.html#what-we-add-from-datahub-work",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "Tim’s main lab 1\nMerged lab 1\n\n\n\n\nlibrary(tidycensus) + census_api_key(\"PASTE-YOUR-KEY-HERE\") in script\nsource(\"code/course_*.R\"), load_pkgs(), inline askForPassword + census_api_key(..., install = TRUE) → ~/.Renviron\n\n\nlibrary(tidyverse) / library(tidycensus) twice\nSingle load_pkgs(\"tidyverse\", \"tidycensus\") at top\n\n\nNo repo_root\nggsave() → output/plots/rent_burden_plot.png via repo_root\n\n\nggsave commented out\nActive save for batch smoke test\n\n\n__ blanks break run_all_labs.R\nMaintainer .patch files (lab scripts stay clean)"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#security-consistency",
+    "href": "maintainer/lab1-merge-proposal.html#security-consistency",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "No API key in committed source. Tim’s placeholder PASTE-YOUR-KEY-HERE encouraged pasting secrets into a file students commit; merged version uses an inline RStudio dialog in lab 1 only (labs 2–5 read ~/.Renviron).\nPackage pattern matches code/README.md: bulk install_course_packages.R once, load_pkgs() per lab."
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#batch-testing",
+    "href": "maintainer/lab1-merge-proposal.html#batch-testing",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "website/maintainer/run_all_labs.R applies website/maintainer/patches/lab1-batch.patch and lab3-batch.patch via /usr/bin/patch, then reverses on exit.\nRscript website/maintainer/run_all_labs.R --per-lab   # recommended on DataHub"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#files-changed",
+    "href": "maintainer/lab1-merge-proposal.html#files-changed",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "code/lab1_intro_to_.R — merged content\nwebsite/maintainer/run_all_labs.R — batch runner + patch apply/restore\nwebsite/maintainer/patches/ — unified diffs (not shown to students)\nwebsite/maintainer/notes.qmd — short cross-reference (this proposal)"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#suggested-pr-title",
+    "href": "maintainer/lab1-merge-proposal.html#suggested-pr-title",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "Merge Lab 1: keep census-first intro, align with DataHub package/API patterns"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#test-plan",
+    "href": "maintainer/lab1-merge-proposal.html#test-plan",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "DataHub: open SOC-N100.Rproj, run lab 1 line-by-line; dialog saves Census key\nRscript website/maintainer/run_all_labs.R --per-lab → 5/5 OK\nConfirm output/plots/rent_burden_plot.png exists after lab 1\nConfirm lab 1 file on disk still has uncommented __ exercises after batch run"
+  },
+  {
+    "objectID": "maintainer/lab1-merge-proposal.html#not-in-scope",
+    "href": "maintainer/lab1-merge-proposal.html#not-in-scope",
+    "title": "Lab 1 merge proposal: Tim’s pedagogy + DataHub infrastructure",
+    "section": "",
+    "text": "Reverting Tim’s syllabus / website changes on main\nChanging labs 2–5 (already aligned)"
+  },
+  {
     "objectID": "readme.html",
     "href": "readme.html",
     "title": "SOC-N100",
     "section": "",
-    "text": "This is the location where we edit the qmd website. Website is then exported into the docs folder."
+    "text": "Quarto source for the course website. Rendered output goes to ../docs for GitHub Pages.\nMaintainers only: open SOC-N100-website-for-maintainers.Rproj in this folder to edit .qmd files and render.\nStudents use the published site in docs/ and run labs from the repo root via SOC-N100.Rproj — not this folder."
+  },
+  {
+    "objectID": "readme.html#maintainer-documentation",
+    "href": "readme.html#maintainer-documentation",
+    "title": "SOC-N100",
+    "section": "Maintainer documentation",
+    "text": "Maintainer documentation\nStaff-only tooling lives in maintainer/ (batch runner, patches, notes) — kept out of the student repo surface at the top level.\n\n\n\nDoc\nPurpose\n\n\n\n\n&lt;code&gt;maintainer/notes.qmd&lt;/code&gt;\nData formats, lesson impact, batch lab runner\n\n\nmaintainer/run_all_labs.R\nRscript website/maintainer/run_all_labs.R\n\n\n../DATAHUB.md\nBerkeley DataHub setup, package installs, testing\n\n\n../code/README.md\nR package two-layer pattern for labs\n\n\n../data/evictions/README.md\nRegenerating eviction course files"
   },
   {
     "objectID": "syllabus.html",

@@ -103,14 +103,14 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Resources</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity&amp;urlpath=rstudio%2F"> 
+    <a class="nav-link" href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F" target="_blank"> 
 <span class="menu-text">RStudio</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-    <a href="https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity&amp;urlpath=rstudio%2F" title="" class="quarto-navigation-tool px-1" aria-label="RStudio"><i class="bi bi-r-circle-fill"></i></a>
-    <a href="https://github.com/evictionresearch/SOC-N100-Housing-Precarity" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F" title="" class="quarto-navigation-tool px-1" aria-label="RStudio" target="_blank"><i class="bi bi-r-circle-fill"></i></a>
+    <a href="https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -119,8 +119,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#maintainer-documentation" id="toc-maintainer-documentation" class="nav-link active" data-scroll-target="#maintainer-documentation">Maintainer documentation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
@@ -128,9 +134,45 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This is the location where we edit the qmd website. Website is then exported into the docs folder.</p>
+<p>Quarto <strong>source</strong> for the course website. Rendered output goes to <code>../docs</code> for GitHub Pages.</p>
+<p><strong>Maintainers only:</strong> open <code>SOC-N100-website-for-maintainers.Rproj</code> in this folder to edit <code>.qmd</code> files and render.</p>
+<p>Students use the published site in <code>docs/</code> and run labs from the repo root via <code>SOC-N100.Rproj</code> — not this folder.</p>
+<section id="maintainer-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="maintainer-documentation">Maintainer documentation</h2>
+<p>Staff-only tooling lives in <strong><a href="maintainer/"><code>maintainer/</code></a></strong> (batch runner, patches, notes) — kept out of the student repo surface at the top level.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Doc</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>&lt;code&gt;maintainer/notes.qmd&lt;/code&gt;</td>
+<td>Data formats, lesson impact, batch lab runner</td>
+</tr>
+<tr class="even">
+<td><a href="maintainer/run_all_labs.R"><code>maintainer/run_all_labs.R</code></a></td>
+<td><code>Rscript website/maintainer/run_all_labs.R</code></td>
+</tr>
+<tr class="odd">
+<td><a href="../DATAHUB.md"><code>../DATAHUB.md</code></a></td>
+<td>Berkeley DataHub setup, package installs, testing</td>
+</tr>
+<tr class="even">
+<td><a href="../code/README.md"><code>../code/README.md</code></a></td>
+<td>R package two-layer pattern for labs</td>
+</tr>
+<tr class="odd">
+<td><a href="../data/evictions/README.md"><code>../data/evictions/README.md</code></a></td>
+<td>Regenerating eviction course files</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -220,6 +262,11 @@ ul.task-list li input[type="checkbox"] {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {

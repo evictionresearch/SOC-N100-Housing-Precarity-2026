@@ -64,6 +64,8 @@ rsconnect/
 *.rej.orig
 website/maintainer/patches/*.rej
 
-# Staff-only draft (draft: true) - never publish its rendered HTML to the public site
+# Staff-only maintainer output - never publish to the public site.
+# Ignore the whole rendered maintainer dir: notes.qmd is draft:true, but
+# lab1-merge-proposal.md and run_all_labs.R render/copy here too and are not drafts.
 docs/maintainer-notes.html
-docs/maintainer/notes.html
+docs/maintainer/

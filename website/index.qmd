@@ -16,6 +16,9 @@ Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
 **Office Hours**: Schedule a time with me at [cal.com/timthomas](https://cal.com/timthomas). Evenings and weekends are also available by email request.
 
 ## Week 1
+#### Readings
+* [Chapple (2017) "Income Inequality and Urban Displacement: The New Gentrification"](https://escholarship.org/uc/item/6rb5b8bd) (10 pp.) — the argument that frames the course: focus on *displacement*, not just gentrification, and treat it as an *income* crisis, not only a housing one.
+
 #### Tuesday July 7 - Lecture
 * Course introduction and [syllabus](syllabus.qmd)
 * How to use AI in this course - discussion and live demo
@@ -31,13 +34,11 @@ Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
 ## Week 2
 
 #### Readings
-***Due Tuesday July 14***
-
-* [Zuk et al. (2015) "Gentrification, Displacement and the Role of Public Investment: A Literature Review"](https://www.researchgate.net/profile/Karen-Chapple/publication/334638363_Gentrification_Displacement_and_the_Role_of_Public_Investment_A_Literature_Review/links/5d37697f4585153e591c453f/Gentrification-Displacement-and-the-Role-of-Public-Investment-A-Literature-Review.pdf)
-
 ***Due Thursday July 16***
 
 * [Walker (2023) “Analyzing US Census Data: Methods, Maps, and Models in R”: Preface, Ch 1, & Ch 2](https://walker-data.com/census-r/index.html)
+
+*Optional deeper dive on the Week 1 Chapple reading:* [Zuk et al. (2015) "Gentrification, Displacement and the Role of Public Investment: A Literature Review"](https://www.researchgate.net/profile/Karen-Chapple/publication/334638363_Gentrification_Displacement_and_the_Role_of_Public_Investment_A_Literature_Review/links/5d37697f4585153e591c453f/Gentrification-Displacement-and-the-Role-of-Public-Investment-A-Literature-Review.pdf)
 
 #### Tuesday July 14 - Lecture
 
