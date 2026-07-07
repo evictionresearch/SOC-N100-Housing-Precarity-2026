@@ -17,9 +17,7 @@ Amended 2026-06-29 after a full-site review (all tabs).
 - [x] GitHub Pages is LIVE at https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/. Fixed the deploy (Pages source was pointed at the repo root, so Jekyll choked on the .qmd/.R files; repointed it at `/docs` and added the missing `.nojekyll`). Added a Course Site link to the syllabus logistics block.
 
 ## NEEDS YOUR INPUT / ACTION (I cannot do these)
-- [ ] **DATAHUB CLONE LINKS.** The 2026 repo is now PUBLIC and the website is live. Remaining: the DataHub/RStudio clone links still point to the year-less name (which redirects to last year's `-2025` repo). Once the DataHub/RStudio setup is finalized, confirm the exact repo students clone.
-  - Decide the canonical 2026 repo + naming convention, then **make it public**.
-  - Once decided, I will update all 14 link references: `website/_quarto.yml` (navbar RStudio href, tools RStudio href, `repo-url`, github href), `website/syllabus.qmd` (DataHub link), `website/learn_r.qmd` (cheatsheets link), `DATAHUB.md` (several links + generator instructions), `README.md` (title).
+- [x] **DATAHUB CLONE LINKS.** Resolved; verified 2026-07-07. All student-facing links (`_quarto.yml` navbar + tools + repo-url, `syllabus.qmd`, `DATAHUB.md`) point to the public `SOC-N100-Housing-Precarity-2026` repo via **r.datahub**; grep found zero remaining year-less or `-2025` references. Live site serves the correct navbar link, and an anonymous HTTPS clone (what nbgitpuller runs) succeeds with all `data/` files present. STILL OPEN: Tim click-tests the DataHub link with a CalNet login (only doable from a Berkeley account).
 - [x] All 2026 term links in place: Class Zoom (standard join link `https://berkeley.zoom.us/j/92041866237`; Tim posts join instructions on bCourses), bCourses (course 1555635), Discussion. Home header + syllabus logistics block.
 - [ ] Official listing confirmed (no action, just FYI): Tu/Th 5-7pm, Summer Session D, first class Tue Jul 7, last class Thu Aug 13, Class #13195, 2 units, Online. https://classes.berkeley.edu/content/2026-summer-sociol-n100-002-lec-002
 
@@ -29,5 +27,5 @@ Amended 2026-06-29 after a full-site review (all tabs).
 - [ ] `learn_r.qmd` is only reachable from the Resources tab (not in the navbar). Add it to the navbar if you want it discoverable.
 
 ## SEND
-- [ ] `quarto render` the full site, confirm the syllabus PDF, push, and (once the 2026 repo is public) click the DataHub link to verify the clone works.
-- [ ] Export syllabus to PDF -> send to Sociology (or send the published URL).
+- [x] Render/push verified live 2026-07-07: index + syllabus HTML match the latest sources (new abstract present), `syllabus.pdf` serves HTTP 200, `maintainer-notes.html` correctly 404s. Still open: the CalNet click-test of the DataHub link (above).
+- [ ] Export syllabus to PDF -> send to Sociology (or send the published URL: https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/syllabus.pdf).
