@@ -51,6 +51,10 @@ data/in_co_renters.rds
 # Agent web research scratch (promote manually if needed)
 search-artifacts/
 
+# Local mirrors of official UCB DataHub repos + raw issue dumps (see website/maintainer/mirrors/README.md)
+website/maintainer/mirrors/*
+!website/maintainer/mirrors/README.md
+
 # translation temp files
 po/*~
 

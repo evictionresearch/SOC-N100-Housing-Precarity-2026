@@ -26,6 +26,12 @@ Amended 2026-06-29 after a full-site review (all tabs).
 - [ ] Add per-lecture Slides links and class recordings to the home page week-by-week as the term runs.
 - [ ] `learn_r.qmd` is only reachable from the Resources tab (not in the navbar). Add it to the navbar if you want it discoverable.
 
+## DATAHUB RAM (opened 2026-07-07, from Tim's "Ram upgrade" email)
+- [ ] Aaron reviews + sends reply to Tim: `website/maintainer/tim-ram-email-draft.md` (reframes 16 GB laptop-ask to 4 GB hub request)
+- [ ] Tim confirms enrollment (~50) and that bCourses 1555635 is **Published**
+- [ ] File the RAM issue from `website/maintainer/datahub-resource-request-draft.md` (template: add_memory_config_request.yml); record issue URL in `website/maintainer/REQUESTS.md`
+- [ ] After merge: log out/in on r.datahub, verify 4 GB in RStudio Environment tab
+
 ## SEND
 - [x] Render/push verified live 2026-07-07: index + syllabus HTML match the latest sources (new abstract present), `syllabus.pdf` serves HTTP 200, `maintainer-notes.html` correctly 404s. Still open: the CalNet click-test of the DataHub link (above).
 - [ ] Export syllabus to PDF -> send to Sociology (or send the published URL: https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/syllabus.pdf).

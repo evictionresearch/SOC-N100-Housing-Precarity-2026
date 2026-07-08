@@ -4,6 +4,8 @@
 
 **Optional (higher RAM, restricted access):** the [Stat20 datahub](https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F) has 1GB guarantee / 2GB limit but is **limited to Stat 20 bCourses enrollments** unless CDSS adds SOC-N100 to the allowlist.
 
+**Memory (Summer 2026):** r.datahub defaults to a **1 GB per-student limit**. Each lab fits individually, but multi-lab sessions and final-project work exceed it — a **4 GB RAM request is drafted** pending Tim's approval: [`website/maintainer/datahub-resource-request-draft.md`](website/maintainer/datahub-resource-request-draft.md). Process and evidence: [`website/maintainer/datahub-official-guide.md`](website/maintainer/datahub-official-guide.md) and [`website/maintainer/REQUESTS.md`](website/maintainer/REQUESTS.md).
+
 - [R datahub + clone repo link (primary)](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)
 - [Stat20 datahub + clone repo link (optional)](https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)
 
@@ -97,11 +99,17 @@ To generate the links to the datahubs above, here are the instructions to follow
 
 See the [CDSS datahub link generator instructions](https://cdss.berkeley.edu/dsus/data-science-resources/datahub/setup) for more information.
 
-## Requesting package or hub updates (CDSS)
+## Requesting resources from CDSS (packages, RAM, hub changes)
 
-To add packages for all students on r.datahub, open an issue on [berkeley-dsep-infra/datahub](https://github.com/berkeley-dsep-infra/datahub/issues) or email **balajialwar@berkeley.edu**. For r.datahub, propose changes to [datahub-user-image/install-r-packages.r](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/install-r-packages.r) per [CONTRIBUTING.md](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/CONTRIBUTING.md).
+All formal requests go through issue templates on [berkeley-dsep-infra/datahub](https://github.com/berkeley-dsep-infra/datahub/issues/new/choose); service lead **balajialwar@berkeley.edu**. Full process guide (memory model, templates, semester lifecycle): [`website/maintainer/datahub-official-guide.md`](website/maintainer/datahub-official-guide.md). File **RAM and package requests as separate issues.**
 
-**Draft issue for Tim to file:**
+### RAM (drafted, pending approval)
+
+**4 GB × ~50 students on r.datahub** via the [Increase RAM Request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml). Filled-in draft with submit checklist: [`website/maintainer/datahub-resource-request-draft.md`](website/maintainer/datahub-resource-request-draft.md). Historical approval analysis: [`website/maintainer/REQUESTS.md`](website/maintainer/REQUESTS.md).
+
+### Packages (draft issue for Tim to file)
+
+Use the [package request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=package_request.yml); for r.datahub the image lives at [datahub-user-image](https://github.com/berkeley-dsep-infra/datahub-user-image) ([install-r-packages.r](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/install-r-packages.r), per [CONTRIBUTING.md](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/CONTRIBUTING.md)).
 
 > **Title:** SOC-N100 Summer 2026: request r.datahub packages (tidycensus, janitor, librarian, sf, evictionresearch/neighborhood)
 >
@@ -109,11 +117,13 @@ To add packages for all students on r.datahub, open an issue on [berkeley-dsep-i
 > **Hub:** r.datahub.berkeley.edu (primary)
 > **Repo:** https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
 >
-> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs2`**, `librarian`, `sf`, and GitHub package `evictionresearch/neighborhood`.
+> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs2`**, `librarian`, `sf`, `tmap`, `viridis`, and GitHub package `evictionresearch/neighborhood`.
 >
 > Please add to `datahub-user-image/environment.yml` (conda): `gh` (GitHub CLI).
->
-> Optional: add SOC-N100 bCourses course ID to stat20.datahub allowlist for higher-RAM fallback.
+
+### Stat20 allowlist (optional fallback)
+
+Add SOC-N100 bCourses **1555635** to the stat20.datahub allowlist for a 2 GB fallback hub — only worth filing if the r.datahub RAM request stalls.
 
 ## Student workflow on r.datahub (day one)
 
@@ -192,7 +202,7 @@ cd ~
 gh repo clone evictionresearch/SOC-N100-Housing-Precarity-2026
 cd SOC-N100-Housing-Precarity-2026
 git fetch origin
-git checkout datahub-rstudio-2026   # or main after merge
+git checkout main
 git pull
 git branch --show-current
 ```
@@ -254,7 +264,7 @@ nrow(d)   # 139072
 
 Run `install_course_packages.R` in a **fresh R session** (Session → Restart R) before opening lab scripts. Click **Yes** if RStudio offers to restart before installing.
 
-### Census API key (labs 2–5)
+### Census API key (all labs)
 
 Students need a free Census API key. **Do not commit keys in lab scripts.**
 
@@ -272,11 +282,11 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on expected branch
 3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
 4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
-5. [ ] Lab 1 runs through tidyverse section
-6. [ ] Lab 2: first run prompts for Census key (or key already in `~/.Renviron`); `get_acs()` returns data
+5. [ ] Lab 1: first run prompts for Census key (dialog saves to `~/.Renviron`); runs through tidyverse section
+6. [ ] Lab 2: `get_acs()` returns data with no key prompt
 7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
-9. [ ] Optional full batch: `Rscript website/maintainer/run_all_labs.R` from repo root (see `website/maintainer/notes.qmd`)
+9. [ ] Optional full batch: `Rscript website/maintainer/run_all_labs.R --per-lab` from repo root (see `website/maintainer/notes.qmd`; single-process runs exceed the 1 GB pod)
 10. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server
 
 Record results and any package gaps in this file after testing.
