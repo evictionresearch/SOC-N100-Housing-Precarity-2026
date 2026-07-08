@@ -132,13 +132,14 @@ The final group project asks students to apply lab patterns to places they care 
 1. **4 GB is the established baseline for spatial teaching at Berkeley** — nature.datahub grants it to *all* users; ESPM-157 got it for 120 students on the main hub. We are asking for the same number for a lighter stack, which is an easy story.
 2. Their one-line justification style ("required by the libraries we are using for spatial data") is what sailed; ours adds measured numbers on top.
 3. Their consolidated per-course issue pattern (one thread per course per term) is what staff prefer — our RAM request should stay a single issue, with the package request kept separate per current template guidance.
-4. What we should *not* copy: their dedicated-hub arrangement and cloud-native tooling are overkill for tract-level vector work. If SOC-N100 ever outgrows r.datahub, their duckdb/parquet larger-than-RAM patterns are the escape hatch to teach *before* asking for more RAM.
+4. What we should *not* copy: their dedicated-hub arrangement and cloud-native tooling are overkill for tract-level vector work. If SOC-N100 ever outgrows r.datahub, their duckdb/parquet larger-than-RAM patterns are the escape hatch to teach *before* asking for more RAM. **We now teach exactly this**: the Week 5 bonus lab [`code/lab6_bonus_memory.R`](../../code/lab6_bonus_memory.R) covers memory monitoring, `st_drop_geometry()`, chunked ACS pulls, qs2 caching, and duckdb/duckdbfs/arrow lazy queries — the `duckdb`/`duckdbfs`/`arrow` packages are in the [package request draft](datahub-package-request-draft.md).
 
 ## 7. Recommendation
 
 File the [Increase RAM Request](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml) as drafted in [`datahub-resource-request-draft.md`](datahub-resource-request-draft.md):
 
 - **4 GB × ~50 students on r.datahub**, end date 2026-08-20 (course ends Aug 13–14 + grading buffer)
+- **8 GB instructor/TA subset** (Tim + Aaron + any TA) via a bCourses group in 1555635 — staff hold multiple sessions/students' work open in live labs and need headroom above 4 GB to reproduce and debug student out-of-memory failures
 - Justification: measured lab peaks (874 MB–1 GB), geospatial stack, final-project tier, LEGALST 123 + ESPM precedents
-- Filed by Tim (instructor of record) or Aaron with Tim cc'd; bCourses **1555635** must be Published
+- Filed by Aaron (`@aculich`, aculich@berkeley.edu) mentioning instructor of record `@timathomas`; bCourses **1555635** must be Published
 - If staff push back on the 200 GB threshold: fallback offers are (a) 2 GB for the term + a date-bounded 4 GB window for the final-project weeks (Astro 128 pattern), or (b) bCourses project-group subset targeting

@@ -4,14 +4,18 @@
 
 **Where to file:** [Increase RAM Request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml) on berkeley-dsep-infra/datahub. The template is a form — paste each answer below into the matching field. Background and evidence: [`REQUESTS.md`](REQUESTS.md); process: [`datahub-official-guide.md`](datahub-official-guide.md).
 
+**Who files it:** Aaron Culich (`@aculich`, aculich@berkeley.edu — repo-local git identity is set to this). The issue body mentions instructor of record `@timathomas` (verified handle: `gh api users/timathomas` → Tim Thomas) so he gets notified and can confirm on-thread.
+
 ## How to submit (checklist)
 
 - [ ] Tim confirms enrollment count (~50 assumed below)
 - [ ] Verify bCourses course **1555635** is set to **Published** (required for the hub to assign privileges)
+- [ ] Create a **bCourses group** in course 1555635 for instructional staff (Tim + Aaron + any TA) — needed for the 8 GB staff subset below; note the group-set/group name in the issue (how-to: [`bcourses-staff-group-primer.md`](bcourses-staff-group-primer.md); suggested names: `DataHub RAM tiers` / `SOC-N100 Staff 8GB`)
 - [ ] Tim approves this draft (or files it himself as instructor of record)
 - [ ] Open the [template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml), paste field answers below
 - [ ] Do not assign anyone; labels (`support`, `add memory config`) apply automatically
-- [ ] After staff merge: log out of r.datahub, log back in, verify with RStudio Environment tab
+- [ ] If staff say the 8 GB staff subset needs its own issue, file a second memory request scoped to the staff bCourses group and cross-link the two
+- [ ] After staff merge: log out of r.datahub, log back in, verify with RStudio Environment tab (both a staff account at 8 GB and a student-tier check at 4 GB)
 - [ ] Note the issue URL in `REQUESTS.md` and `syllabus_TODO.md`
 
 ---
@@ -32,7 +36,7 @@
 
 **How many students do you expect in this class?** `~50`
 
-**How much RAM per user is needed?** `4 GB`
+**How much RAM per user is needed?** `4 GB` (class default — the 8 GB instructor/TA subset is described under "additional information" below, since the form has a single RAM dropdown)
 
 **Why does this class need this much RAM?**
 
@@ -47,9 +51,11 @@
 
 **Any additional information we should know about?**
 
-> Instructor of record: Tim Thomas (timthomas@berkeley.edu, Sociology). Technical contact: Aaron Culich (aculich@berkeley.edu), Data Science Director, Eviction Research Network.
+> Instructor of record: Tim Thomas @timathomas (timthomas@berkeley.edu, Sociology). Technical contact and filer: Aaron Culich @aculich (aculich@berkeley.edu), Data Science Director, Eviction Research Network.
 >
-> The instructor's original request to course staff is forwarded below for context. He initially asked for 16 GB in a personal-laptop frame of reference; after profiling the labs (numbers above) we are requesting 4 GB, which covers measured lab peaks plus final-project headroom within the documented instructional ceiling.
+> **Instructor/TA subset at 8 GB.** In addition to the 4 GB class default, we request 8 GB for a small instructional-staff subset (2–3 people: @timathomas, @aculich, plus any TA) via a bCourses group in course 1555635, per the [subset mechanism in the curriculum guide](https://curriculum-guide.datahub.berkeley.edu/support/memory-cpu/). Rationale: during live labs the instructor/TA hold several students' work open at once (their own session plus students' scripts and data reproduced side by side), and when a student hits the 4 GB limit, staff need enough headroom to reproduce the failing workload *plus* diagnostic overhead (profiling, a second copy of the objects) to debug it. The aggregate cost is small: 8 GB × 3 = 24 GB on top of the class allocation. We will create the bCourses staff group and put its name here before filing: `<group-set / group name>`.
+>
+> The instructor's original request to course staff is forwarded below for context. He initially asked for 16 GB in a personal-laptop frame of reference; after profiling the labs (numbers above) we are requesting 4 GB for students, which covers measured lab peaks plus final-project headroom within the documented instructional ceiling, and 8 GB only for the staff subset above.
 >
 > ---------- Forwarded message ---------
 > From: Tim Thomas \<timthomas@berkeley.edu\>

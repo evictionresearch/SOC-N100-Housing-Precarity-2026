@@ -47,6 +47,7 @@ output/
 my_first_plot.png
 data/in_co_renters.csv
 data/in_co_renters.rds
+data/cache/
 
 # Agent web research scratch (promote manually if needed)
 search-artifacts/

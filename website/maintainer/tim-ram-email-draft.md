@@ -28,10 +28,13 @@ And a hub session goes further per GB than a laptop: each student's pod runs *on
 
 **If a specific assignment ever genuinely needs more,** there's a clean path: date-bounded bumps for a single assignment window (Astro 128 got 8 GB for just their final lab), or extra RAM for only a project-group subset. We don't need to pay the big-number tax all term.
 
-The GitHub issue draft is ready in the course repo (`website/maintainer/datahub-resource-request-draft.md`) — it includes your original email for context. Two things I need from you:
+**One more thing — you and I get 8 GB.** In the same request I'm asking for an 8 GB tier for instructional staff (you, me, and any TA). Rationale for the hub team: in a live lab we hold several students' work open at once, and when a student blows past their 4 GB limit we need enough headroom to reproduce their failing workload *plus* the debugging overhead on top. The mechanism is a small bCourses group in course 1555635 that DataHub keys the higher limit to — I've written up the 2-minute setup (`website/maintainer/bcourses-staff-group-primer.md`); you can create it, or add me to the course and I'll do it.
+
+The GitHub issue draft is ready in the course repo (`website/maintainer/datahub-resource-request-draft.md`) — it includes your original email for context. Three things I need from you:
 
 1. Confirm expected enrollment (~50?)
 2. Confirm bCourses course 1555635 is set to **Published** (the hub reads enrollment from it)
+3. Create the staff bCourses group above (or add me to the course so I can)
 
 Say the word and I'll file it — with luck it's live before Thursday's lab.
 

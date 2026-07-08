@@ -27,10 +27,16 @@ Amended 2026-06-29 after a full-site review (all tabs).
 - [ ] `learn_r.qmd` is only reachable from the Resources tab (not in the navbar). Add it to the navbar if you want it discoverable.
 
 ## DATAHUB RAM (opened 2026-07-07, from Tim's "Ram upgrade" email)
+- [x] Repo-local git identity set to `Aaron Culich <aculich@berkeley.edu>` (2026-07-08; global config untouched) so commits/issues match `@aculich`'s Berkeley identity
 - [ ] Aaron reviews + sends reply to Tim: `website/maintainer/tim-ram-email-draft.md` (reframes 16 GB laptop-ask to 4 GB hub request)
 - [ ] Tim confirms enrollment (~50) and that bCourses 1555635 is **Published**
-- [ ] File the RAM issue from `website/maintainer/datahub-resource-request-draft.md` (template: add_memory_config_request.yml); record issue URL in `website/maintainer/REQUESTS.md`
-- [ ] After merge: log out/in on r.datahub, verify 4 GB in RStudio Environment tab
+- [ ] Create the instructional-staff **bCourses group** in 1555635 (Tim + Aaron + any TA) for the 8 GB staff subset; put the group name in the draft before filing — how-to: `website/maintainer/bcourses-staff-group-primer.md`
+- [ ] File the RAM issue from `website/maintainer/datahub-resource-request-draft.md` (template: add_memory_config_request.yml; filed by `@aculich`, mentions `@timathomas`); record issue URL in `website/maintainer/REQUESTS.md`
+- [ ] After merge: log out/in on r.datahub, verify 4 GB (student tier) and 8 GB (staff subset) in RStudio Environment tab
+
+## DATAHUB PACKAGES (lower priority — after RAM resolves)
+- [ ] Run the verify-on-hub check from `website/maintainer/datahub-package-request-draft.md` on r.datahub; prune the package list to what's actually missing (incl. `duckdb`/`duckdbfs`/`arrow` for the Week 5 bonus lab `code/lab6_bonus_memory.R`)
+- [ ] File the package issue (template: package_request.yml); record issue URL in the draft and here
 
 ## SEND
 - [x] Render/push verified live 2026-07-07: index + syllabus HTML match the latest sources (new abstract present), `syllabus.pdf` serves HTTP 200, `maintainer-notes.html` correctly 404s. Still open: the CalNet click-test of the DataHub link (above).

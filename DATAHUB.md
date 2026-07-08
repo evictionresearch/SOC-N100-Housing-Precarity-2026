@@ -4,7 +4,7 @@
 
 **Optional (higher RAM, restricted access):** the [Stat20 datahub](https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F) has 1GB guarantee / 2GB limit but is **limited to Stat 20 bCourses enrollments** unless CDSS adds SOC-N100 to the allowlist.
 
-**Memory (Summer 2026):** r.datahub defaults to a **1 GB per-student limit**. Each lab fits individually, but multi-lab sessions and final-project work exceed it — a **4 GB RAM request is drafted** pending Tim's approval: [`website/maintainer/datahub-resource-request-draft.md`](website/maintainer/datahub-resource-request-draft.md). Process and evidence: [`website/maintainer/datahub-official-guide.md`](website/maintainer/datahub-official-guide.md) and [`website/maintainer/REQUESTS.md`](website/maintainer/REQUESTS.md).
+**Memory (Summer 2026):** r.datahub defaults to a **1 GB per-student limit**. Each lab fits individually, but multi-lab sessions and final-project work exceed it — a **4 GB RAM request (plus an 8 GB instructor/TA subset) is drafted** pending Tim's approval: [`website/maintainer/datahub-resource-request-draft.md`](website/maintainer/datahub-resource-request-draft.md). Process and evidence: [`website/maintainer/datahub-official-guide.md`](website/maintainer/datahub-official-guide.md) and [`website/maintainer/REQUESTS.md`](website/maintainer/REQUESTS.md).
 
 - [R datahub + clone repo link (primary)](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)
 - [Stat20 datahub + clone repo link (optional)](https://stat20.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)
@@ -103,23 +103,15 @@ See the [CDSS datahub link generator instructions](https://cdss.berkeley.edu/dsu
 
 All formal requests go through issue templates on [berkeley-dsep-infra/datahub](https://github.com/berkeley-dsep-infra/datahub/issues/new/choose); service lead **balajialwar@berkeley.edu**. Full process guide (memory model, templates, semester lifecycle): [`website/maintainer/datahub-official-guide.md`](website/maintainer/datahub-official-guide.md). File **RAM and package requests as separate issues.**
 
-### RAM (drafted, pending approval)
+### RAM (drafted, pending approval — file FIRST)
 
-**4 GB × ~50 students on r.datahub** via the [Increase RAM Request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml). Filled-in draft with submit checklist: [`website/maintainer/datahub-resource-request-draft.md`](website/maintainer/datahub-resource-request-draft.md). Historical approval analysis: [`website/maintainer/REQUESTS.md`](website/maintainer/REQUESTS.md).
+**4 GB × ~50 students + an 8 GB instructor/TA bCourses-group subset on r.datahub** via the [Increase RAM Request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml). Filled-in draft with submit checklist: [`website/maintainer/datahub-resource-request-draft.md`](website/maintainer/datahub-resource-request-draft.md). Historical approval analysis: [`website/maintainer/REQUESTS.md`](website/maintainer/REQUESTS.md). Filed by `@aculich`, mentioning instructor of record `@timathomas`.
 
-### Packages (draft issue for Tim to file)
+### Packages (drafted, lower priority — file after RAM resolves)
 
-Use the [package request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=package_request.yml); for r.datahub the image lives at [datahub-user-image](https://github.com/berkeley-dsep-infra/datahub-user-image) ([install-r-packages.r](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/install-r-packages.r), per [CONTRIBUTING.md](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/CONTRIBUTING.md)).
+Filled-in draft with verify-on-hub checklist: [`website/maintainer/datahub-package-request-draft.md`](website/maintainer/datahub-package-request-draft.md). Uses the [package request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=package_request.yml); for r.datahub the image lives at [datahub-user-image](https://github.com/berkeley-dsep-infra/datahub-user-image) ([install-r-packages.r](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/install-r-packages.r), per [CONTRIBUTING.md](https://github.com/berkeley-dsep-infra/datahub-user-image/blob/main/CONTRIBUTING.md)).
 
-> **Title:** SOC-N100 Summer 2026: request r.datahub packages (tidycensus, janitor, librarian, sf, evictionresearch/neighborhood)
->
-> **Course:** SOC-N100 Housing Precarity and Displacement, Summer 2026 (~50 seats)
-> **Hub:** r.datahub.berkeley.edu (primary)
-> **Repo:** https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026
->
-> Please add to `datahub-user-image`: `tidycensus`, `tigris`, `janitor`, **`qs2`**, `librarian`, `sf`, `tmap`, `viridis`, and GitHub package `evictionresearch/neighborhood`.
->
-> Please add to `datahub-user-image/environment.yml` (conda): `gh` (GitHub CLI).
+Scope: the course stack from `code/course_packages.R` (`tidycensus`, `tigris`, `janitor`, **`qs2`**, `librarian`, `sf`, `tmap`, `viridis`, GitHub `evictionresearch/neighborhood`) pruned to what the verify-on-hub check shows missing, **plus the bonus-lab memory tools `duckdb`, `duckdbfs`, `arrow`** (used by `code/lab6_bonus_memory.R`), plus conda `gh` (GitHub CLI) in `datahub-user-image/environment.yml`. Nothing is blocked meanwhile — labs self-install via `ensure_pkg()`.
 
 ### Stat20 allowlist (optional fallback)
 
