@@ -266,16 +266,29 @@ library(tidycensus)
 # The Census Bureau shares its data through an API -- a door that lets
 # programs like R request data over the internet. To use the door you need
 # a free KEY (think: a library card). You should have signed up this week;
-# if not, do it now -- it takes two minutes and the key arrives by email:
+# if not, do it now -- it takes two minutes:
 #
 #     https://api.census.gov/data/key_signup.html
 #
-# Paste your key between the quotes below, then run the line ONCE:
+# The key arrives by EMAIL, and that email contains an ACTIVATION LINK --
+# you must click it before the key works. A key that was never activated
+# (or was typed with a character missing) fails with the exact same
+# "invalid char in json text" error described below, so if you see that
+# error later: go back to the email, click the activation link, then
+# re-run the key line here.
+#
+# FIRST paste your key between the quotes below, THEN run the line. (Order
+# matters: if you run it while it still says PASTE-YOUR-KEY-HERE, R politely
+# saves that nonsense as your key, and every Census request will fail with
+# a confusing error about "invalid char in json text". No harm done if so --
+# paste your real key and run the line again; it self-corrects.)
 
-census_api_key("PASTE-YOUR-KEY-HERE", install = TRUE)
+census_api_key("PASTE-YOUR-KEY-HERE", overwrite = TRUE, install = TRUE)
 
-# What the two inputs mean:
+# What the three inputs mean:
 #   - the text in quotes: your personal key (a long string of letters/numbers)
+#   - overwrite = TRUE : if some key is already saved, replace it -- this is
+#                        what makes re-running the line fix a bad first try
 #   - install = TRUE   : saves the key to your DataHub account permanently,
 #                        so future labs find it automatically. Without this,
 #                        R would forget your key when you log out.
@@ -285,12 +298,18 @@ census_api_key("PASTE-YOUR-KEY-HERE", install = TRUE)
 
 readRenviron("~/.Renviron")
 
+# And CHECK it -- this prints what R will actually send to the Census.
+# It should show your key. If it shows PASTE-YOUR-KEY-HERE, redo the
+# paste-and-run above:
+
+Sys.getenv("CENSUS_API_KEY")
+
 # Housekeeping notes:
-#   - If you ever re-run the key line by accident, R will say a key already
-#     exists. That is fine -- your key is saved. Nothing is broken.
-#   - Once the line has run, your key lives safely in your account settings.
-#     Good habit: change the text in the quotes back to PASTE-YOUR-KEY-HERE
-#     so your key is not sitting in this file when you share or submit code.
+#   - Once the check above shows your real key, put a # in front of the
+#     census_api_key(...) line -- same retire-it move as the install line
+#     in Section 5. Your key is saved in your account; commenting the line
+#     out means re-runs skip it AND your key does not sit in a script you
+#     will later share or submit.
 #   - Your key is yours: don't post it publicly or share it in screenshots.
 #     (If one leaks, you just request a new key -- no harm done.)
 

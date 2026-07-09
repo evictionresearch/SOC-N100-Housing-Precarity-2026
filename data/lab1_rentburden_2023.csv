@@ -1,0 +1,59 @@
+GEOID,NAME,variable,estimate,moe
+06001,"Alameda County, California",B25071_001,29.9,0.4
+06003,"Alpine County, California",B25071_001,20,14.5
+06005,"Amador County, California",B25071_001,29.6,4
+06007,"Butte County, California",B25071_001,35.1,1.7
+06009,"Calaveras County, California",B25071_001,33.1,4.4
+06011,"Colusa County, California",B25071_001,27.3,5.3
+06013,"Contra Costa County, California",B25071_001,32.7,0.7
+06015,"Del Norte County, California",B25071_001,30.7,4.1
+06017,"El Dorado County, California",B25071_001,33,2
+06019,"Fresno County, California",B25071_001,32.7,0.7
+06021,"Glenn County, California",B25071_001,27.8,2.8
+06023,"Humboldt County, California",B25071_001,36.6,1.8
+06025,"Imperial County, California",B25071_001,31.2,1.6
+06027,"Inyo County, California",B25071_001,22.5,5.6
+06029,"Kern County, California",B25071_001,33.2,0.9
+06031,"Kings County, California",B25071_001,29.8,1.5
+06033,"Lake County, California",B25071_001,33.6,3.6
+06035,"Lassen County, California",B25071_001,26.8,2.1
+06037,"Los Angeles County, California",B25071_001,33.9,0.2
+06039,"Madera County, California",B25071_001,32.3,2.5
+06041,"Marin County, California",B25071_001,32.9,1.5
+06043,"Mariposa County, California",B25071_001,29.5,4.1
+06045,"Mendocino County, California",B25071_001,32.8,1.6
+06047,"Merced County, California",B25071_001,30,1.2
+06049,"Modoc County, California",B25071_001,33.3,14.2
+06051,"Mono County, California",B25071_001,26.6,3.8
+06053,"Monterey County, California",B25071_001,32.7,0.8
+06055,"Napa County, California",B25071_001,31.6,1.6
+06057,"Nevada County, California",B25071_001,35.4,3.5
+06059,"Orange County, California",B25071_001,33.2,0.4
+06061,"Placer County, California",B25071_001,33.2,1.1
+06063,"Plumas County, California",B25071_001,24.8,5.5
+06065,"Riverside County, California",B25071_001,34.1,0.4
+06067,"Sacramento County, California",B25071_001,32.7,0.5
+06069,"San Benito County, California",B25071_001,29.9,2.3
+06071,"San Bernardino County, California",B25071_001,34.2,0.5
+06073,"San Diego County, California",B25071_001,33.7,0.3
+06075,"San Francisco County, California",B25071_001,24.4,0.3
+06077,"San Joaquin County, California",B25071_001,31.3,0.6
+06079,"San Luis Obispo County, California",B25071_001,33.8,1.2
+06081,"San Mateo County, California",B25071_001,29.4,0.6
+06083,"Santa Barbara County, California",B25071_001,33.7,0.9
+06085,"Santa Clara County, California",B25071_001,27.6,0.4
+06087,"Santa Cruz County, California",B25071_001,30.8,1.4
+06089,"Shasta County, California",B25071_001,30.5,1.5
+06091,"Sierra County, California",B25071_001,28.1,2.4
+06093,"Siskiyou County, California",B25071_001,34.8,2.7
+06095,"Solano County, California",B25071_001,33.3,0.9
+06097,"Sonoma County, California",B25071_001,32,0.8
+06099,"Stanislaus County, California",B25071_001,31.4,1.1
+06101,"Sutter County, California",B25071_001,31.4,1.9
+06103,"Tehama County, California",B25071_001,31.8,3.6
+06105,"Trinity County, California",B25071_001,23.8,8.9
+06107,"Tulare County, California",B25071_001,29.9,1
+06109,"Tuolumne County, California",B25071_001,34.7,3.6
+06111,"Ventura County, California",B25071_001,34.4,0.7
+06113,"Yolo County, California",B25071_001,33.9,1.4
+06115,"Yuba County, California",B25071_001,31.1,1.3

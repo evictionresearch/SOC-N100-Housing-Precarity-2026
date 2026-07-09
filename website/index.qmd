@@ -28,7 +28,7 @@ Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
 * AI tutorial: debugging with AI, verifying answers, and sharing your conversation link
 
 #### Set up this week
-* Get a free census API key at <https://api.census.gov/data/key_signup.html> (a couple minutes); we use it in lab.
+* Get a free census API key at <https://api.census.gov/data/key_signup.html> (a couple minutes). The key arrives by email — **click the activation link in that email**, or the key won't work in lab.
 * Set up a free account on an AI assistant that can share a public conversation link (Perplexity recommended; ChatGPT, Gemini, or Claude also work). Sign in with a **personal** account, not your CalNet login, so that link-sharing works. [See the AI policy for details.](syllabus.html#ai-policy)
 
 ## Week 2
