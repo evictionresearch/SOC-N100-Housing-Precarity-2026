@@ -105,14 +105,14 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Resources</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F"> 
+    <a class="nav-link" href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F" target="_blank"> 
 <span class="menu-text">RStudio</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
-    <a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F" title="" class="quarto-navigation-tool px-1" aria-label="RStudio"><i class="bi bi-r-circle-fill"></i></a>
-    <a href="https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F" title="" class="quarto-navigation-tool px-1" aria-label="RStudio" target="_blank"><i class="bi bi-r-circle-fill"></i></a>
+    <a href="https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026" title="" class="quarto-navigation-tool px-1" aria-label="" target="_blank"><i class="bi bi-github"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -618,6 +618,11 @@ Office Hours: schedule at <a href="https://cal.com/timthomas">cal.com/timthomas<
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
