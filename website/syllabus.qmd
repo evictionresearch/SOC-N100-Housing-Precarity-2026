@@ -37,10 +37,10 @@ Office Hours: schedule at [cal.com/timthomas](https://cal.com/timthomas); evenin
 |------|-------|-------|
 | 1 | Jul 7 & 9 | Intro to housing precarity & displacement; R/RStudio setup; Census/ACS basics; how to use AI |
 | 2 | Jul 14 & 16 | Quantifying racial inequality; tidycensus wrangling (Read: Zuk et al. 2015; Walker Pref-Ch2) |
-| 3 | Jul 21 & 23 | Segregation measures and mapping with sf/tigris; Assignment 1 due Mon Jul 27 (Read: Walker Ch3-4) |
-| 4 | Jul 28 & 30 | Gentrification and neighborhood change; rent burden (Read: Walker Ch5-6) |
-| 5 | Aug 4 & 6 | Eviction trends + ggplot; interactive maps; Assignment 2 due Mon Aug 3 (Read: Bates 2013) |
-| 6 | Aug 11 & 13 | Dashboards (Quarto) and final project presentations (last class Aug 13) |
+| 3 | Jul 21 & 23 | Lecture (Tue); lab: building a housing-precarity measure from Census tables (Thu); Assignment 1 due Mon Jul 27 (Read: Walker Ch3-4) |
+| 4 | Jul 28 & 30 | Eviction data: rates, joining datasets, and mapping displacement (Read: Walker Ch5-6) |
+| 5 | Aug 4 & 6 | Group formation and project design (Tue); segregation and rent burden lab (Thu); Assignment 2 due Mon Aug 3 (Read: Bates 2013) |
+| 6 | Aug 11 & 13 | Group work session; final project presentations (last class Aug 13) |
 
 Final project due Friday, August 14, 2026.
 

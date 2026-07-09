@@ -121,8 +121,8 @@ Students work at the **repo root**, not in `website/`:
 
 1. Clone the repo (see below)
 2. In RStudio: **File → Open Project →** `SOC-N100.Rproj` (top level of the clone)
-3. Install course packages once per account (or when missing): `source("code/install_course_packages.R")` — see [Package installs](#package-installs)
-4. Open labs from `code/` (start with `code/lab1_intro_to_.R`)
+3. Open labs from `code/` (start with `code/lab1_intro_to_.R`) — lab 1 itself walks through the one `install.packages("tidycensus")` students need; later labs carry their own RUN-ONCE install lines for new packages
+4. Optional speed-up for staff/testing (not required for students): `source("code/install_course_packages.R")` bulk-installs everything — see [Package installs](#package-installs)
 
 The course **website** students read in a browser comes from `docs/` (GitHub Pages). The `website/` folder is Quarto **source** for maintainers only — like a `src/` tree whose built output is `docs/` (the modern equivalent of publishing static HTML from a `gh-pages` branch).
 

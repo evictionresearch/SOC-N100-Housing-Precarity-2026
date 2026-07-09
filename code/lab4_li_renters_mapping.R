@@ -1,580 +1,722 @@
-# =============================================================================
-# Week 4 R In Class Exercise: Mapping displacement
-# Today we're going to go beyond plots and map some of our displacement data
-# points.
-# =============================================================================
-
-# Before we get too far, I want to introduce you to one of my favorite
-# packages: librarian.
-# It helps you install and load packages. Basically, if you don't have a
-# package installed, you can use librarian to install it and then it will
-# load it for you. It's a bit like the library() and install.packages()
-# functions combined.
-
-# You can install it with:
-source("code/course_paths.R")
-source("code/course_packages.R")
-source("code/course_data.R")   # eviction_data_qs2, eviction_data_rds path constants
-load_pkg("librarian")  # installs only if missing; see code/README.md
-
-# and then you can load the packages you need with:
-shelf(tidyverse, tigris, sf, ggplot2, viridis)
-# If one of these packages is not installed, librarian will install it for you
-# and then load it.
-
-# You can also call the shelf function without loading the packages:
-librarian::shelf(tidyverse, tigris, sf, ggplot2, viridis)
-# Personally, I prefer this route, it makes it cleaner to read.
-
-# You can also use librarian to install packages from github (shown in class):
-# librarian::shelf(github::evictionresearch/neighborhood)
-
-# For our lesson today, we will draw on these packages:
-librarian::shelf(tidyverse, tidycensus, tigris, sf, ggplot2)
-# Census API key: set up once in lab 1 (~/.Renviron)
-# Note that "tigris" is loaded when we load the tidycensus package because
-# it's a dependancy to run the tidycensus package. Tigris is a package for
-# downloading and manipulating spatial data. Tidycensus is a package for
-# downloading and manipulating census data.
-
-# =============================================================================
-# Part 1: Census Table Complexity overview
-# =============================================================================
-
-# One of the challenges in the homework was that people were using complex tables inappropriately.
-# Let's go over some of the basic forms of census tables and how to use them.
-
-# First, let's look at the census table.
-acs5_vars <-load_variables(2022, "acs5")
-View(acs5_vars)
-
-######
-# Search for table B19013, which is the median household income.
-# We know this by reading the "label" and "concept" columns.
-# label = Estimate!!Median household income in the past 12 months (in 2022 inflation-adjusted dollars)
-# concept = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars)
-
-# IMPORTANT: "B19013" is giving us a $$$ dollar amount.
-
-######
-# Table B19013 followed by an alpha character is the median household income by race and ethnicity.
-# B19013A_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (White Alone Householder)
-# B19013B_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (Black or African American Alone)
-# B19013C_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (American Indian and Alaska Native Alone)
-# B19013D_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (Asian Alone)
-# B19013E_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (Native Hawaiian and Other Pacific Islander Alone)
-# B19013F_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (Some Other Race Alone)
-# B19013G_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (Two or More Races)
-# B19013H_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (White Alone, Not Hispanic or Latino)
-# B19013I_001 = Median Household Income in the Past 12 Months (in 2022 Inflation-Adjusted Dollars) (Hispanic or Latino)
-
-# IMPORTANT: These tables are also giving us a $$$ dollar amount.
-
-# Something you'll notice is terms like White Alone; White Alone, Not Hispanic or Latino; and Hispanic or Latino.
-# The "White Alone" refers to people who say their RACE is white but their ETHNICITY may or may not be Hispanic.
-# What's the difference between race and ethnicity? Well, let's ask perplexity!
-
-# Back to our discussion, "White Alone, Not Hispanic or Latino" refers to people who identify their RACE as White but their ETHNICITY is NOT Hispanic.
-# Hispanic or Latino refers to people who identify their ETHNICITY as Hispanic but they could be of any race.
-
-# So we run into a problem here. White Alone and Hispanic or Latino are NOT mutually exclusive. Meaning there is an overlap where some White alone people are Hispanic and some Hispanic or Latino people are White.
-
-# If we wanted a mutually exclusive comparison between the two we would have to choose White Alone, Not Hispanic AND Hispanic or Latino.
-# This raises another problem. Asian Alone, Black or African American Alone and a few others do not have an exclusive non-Hispanic category.
-# There are ways to get a mutually exclusive comparison but it requires looking at other datasets (e.g., PUMS data) at much larger geographies (sub-county is the smallest).
-# We want to use census tracts so we can't really get away from this problem.
-
-# The reason I bring this up is so that we realize we have to be careful about which variables we use, what these variables mean, and what they can tell us.
-
-# Ok, back to acs5_vars.
-
-######
-# If we were to just search "B190" we start to see a lot of variable combinations.
-# Let's focus on the B19001 table now. Notice we have many tables with an alpha character, which signifies that this table is broken down by an additional attribute, which is race in this case (it may not always be race).
-# So, if we look for the B19001 without an alpha character we get the overall group (e.g., all race and ethnicity groups combined).
-
-# Tell me what does the Label for B19013_001 say? Estimate!!Total:
-# Now, what does the Label for B19001_002 say? Estimate!!Total:!!Less than $10,000
-# If we go down the list we see incremental increases in income.
-
-# NOW: Tell me. Is table B19001 giving us a dollar amount or a count?
-# It's a count because this table is giving us the number of people in each income group. For example, B19001_002 is the number of people in the "Less than $10,000" income group.
-
-# How would this be useful? Well, we could calculate the percentage of people that are low-income if we know the median household income. It would look something like this:
-
-# For example, if the area median household income is $100,000
-ami <- 100000
-
-# Low income equals 80% of the AMI
-li <- ami * 0.8 # 80000
-# To get the total number of people that are low-income, and subsequently the proportion of people that are low-income, we can get the count of people that fall below the AMI using Table B19001. This gives us the count of people that fall within various income buckets. And, if we know the AMI, we can just sum the budgets that are within close range of the known AMI. 
-
-# For example, if Low-income is at $80,000, then we can sum tables B19001_002 through B19001_012. 
-inc_groups <- c(
-    "B19001_001", # Estimate!!Total:
-    "B19001_002", # Estimate!!Total:!!Less than $10,000 * within the $80k threshold
-    "B19001_003", # Estimate!!Total:!!$10,000 to $14,999 * within the $80k threshold
-    "B19001_004", # Estimate!!Total:!!$15,000 to $19,999 * within the $80k threshold
-    "B19001_005", # Estimate!!Total:!!$20,000 to $24,999 * within the $80k threshold
-    "B19001_006", # Estimate!!Total:!!$25,000 to $29,999 * within the $80k threshold
-    "B19001_007", # Estimate!!Total:!!$30,000 to $34,999 * within the $80k threshold
-    "B19001_008", # Estimate!!Total:!!$35,000 to $39,999 * within the $80k threshold
-    "B19001_009", # Estimate!!Total:!!$40,000 to $44,999 * within the $80k threshold
-    "B19001_010", # Estimate!!Total:!!$45,000 to $49,999 * within the $80k threshold
-    "B19001_011", # Estimate!!Total:!!$50,000 to $59,999 * within the $80k threshold
-    "B19001_012", # Estimate!!Total:!!$60,000 to $74,999 * within the $80k threshold
-    "B19001_013", # Estimate!!Total:!!$75,000 to $99,999 
-    "B19001_014", # Estimate!!Total:!!$100,000 to $124,999
-    "B19001_015", # Estimate!!Total:!!$125,000 to $149,999
-    "B19001_016", # Estimate!!Total:!!$150,000 to $199,999
-    "B19001_017" # Estimate!!Total:!!$200,000 or more
-)
-
-# Pull in the income census data for Marion County Indiana. 
-# Note that we're looking at census tracts. 
-acs_inc <- get_acs(
-  geography = "tract",
-  variables = inc_groups, # another way is to use 'table = "B19001"'
-  state = "IN",
-  county = "Marion", # county that holds Indianapolis, the state capitol of Indiana.
-  year = 2022
-)
-
-acs_inc
-
-# Let's also say that we want the actual median income for Marion, IN because the $80,000 AMI was an example. Let's also pull in median household income for Marion County. 
-
-co_med_inc <- 
-  get_acs(
-    geography = "county", # note we want the county as a whole for reference. 
-    variables = c("median_income" = "B19019_001"), # we can pre-name the variable 
-    state = "IN", 
-    county = "Marion", 
-    year = 2022
-  )
-
-co_med_inc
-co_med_inc$estimate * .8 
-# Marion's median income is $59,504 and Low-income is $47,603
-# Which tables from our inc_groups object will we sum? Take a look and make it close. 
-
-# get the number of people below 80% ami
-li_count <- 
-  acs_inc %>%
-  group_by(GEOID) %>% 
-  select(-moe) %>%
-  pivot_wider(
-    names_from = variable,
-    values_from = estimate
-  ) %>%
-  reframe(
-    li_count = 
-      sum(
-        B19001_002, # Estimate!!Total:!!Less than $10,000
-        B19001_003, # Estimate!!Total:!!$10,000 to $14,999
-        B19001_004, # Estimate!!Total:!!$15,000 to $19,999
-        B19001_005, # Estimate!!Total:!!$20,000 to $24,999
-        B19001_006, # Estimate!!Total:!!$25,000 to $29,999
-        B19001_007, # Estimate!!Total:!!$30,000 to $34,999
-        B19001_008, # Estimate!!Total:!!$35,000 to $39,999
-        B19001_009, # Estimate!!Total:!!$40,000 to $44,999
-        B19001_010 # Estimate!!Total:!!$45,000 to $49,999
-      ),
-    total_count = B19001_001
-  ) %>%
-  mutate(
-    p_li = li_count / total_count
-  )
-
-# NOTE: You ALWAYS ALWAYS ALWAYS want to use the total population of the universe of your table. In this case it's B19001_001.
-
-head(li_count)
-glimpse(li_count)
-
-# Create a histogram of low-income counts across tracts
-ggplot(li_count, aes(x = p_li)) +
-  geom_histogram(binwidth = 0.05, fill = "steelblue", color = "black") +
-  labs(
-    title = "Distribution of Low-Income Population Proportion by Census Tract",
-    x = "Proportion of Low-Income Residents",
-    y = "Frequency"
-  ) +
-  geom_vline(xintercept = median(na.omit(li_count$p_li)), color = "red") +
-  theme_minimal()
-
-# This graph tells us how heavily concentrated low-income residents are across tracts. The plot is left-skewed (the tail is on the left), meaning there are more tracts with low-income residents than tracts with high-income residents.
-
-# Let's quickly see what Alameda County, CA has to offer. Just go up to the top of the script and change the state and county variables. Make sure to change it back before running the rest of the script.
-
-# Alameda County, CA is right-skewed meaning there are more tracts with high-income residents than low-income residents.
-
-alameda_acs_inc <- 
-  get_acs(
-    geography = "tract",
-    variables = inc_groups, # another way is to use 'table = "B19001"'
-    state = "CA",
-    county = "Alameda", # county that holds Indianapolis, the state capitol of Indiana.
-    year = 2022
-  )
-
-alameda_acs_inc
-
-# Let's also say that we want the actual median income for Marion, IN because the $80,000 AMI was an example. Let's also pull in median household income for Marion County. 
-
-alameda_co_med_inc <- 
-  get_acs(
-    geography = "county", # note we want the county as a whole for reference. 
-    variables = c("median_income" = "B19019_001"), # we can pre-name the variable 
-    state = "CA", 
-    county = "Alameda", 
-    year = 2022
-  )
-
-alameda_co_med_inc
-alameda_co_med_inc$estimate * .8 
-
-# get the number of people below 80% ami
-alameda_li_count <- 
-  alameda_acs_inc %>%
-  group_by(GEOID) %>% 
-  select(-moe) %>%
-  pivot_wider(
-    names_from = variable,
-    values_from = estimate
-  ) %>%
-  reframe(
-    li_count = 
-      sum(
-        B19001_002, # Estimate!!Total:!!Less than $10,000
-        B19001_003, # Estimate!!Total:!!$10,000 to $14,999
-        B19001_004, # Estimate!!Total:!!$15,000 to $19,999
-        B19001_005, # Estimate!!Total:!!$20,000 to $24,999
-        B19001_006, # Estimate!!Total:!!$25,000 to $29,999
-        B19001_007, # Estimate!!Total:!!$30,000 to $34,999
-        B19001_008, # Estimate!!Total:!!$35,000 to $39,999
-        B19001_009, # Estimate!!Total:!!$40,000 to $44,999
-        B19001_010, # Estimate!!Total:!!$45,000 to $49,999
-        B19001_011,# Estimate!!Total:!!$50,000 to $59,999 
-        B19001_012, # Estimate!!Total:!!$60,000 to $74,999 
-        B19001_013 # Estimate!!Total:!!$75,000 to $99,999 
-      ),
-    total_count = B19001_001
-  ) %>%
-  mutate(
-    p_li = li_count / total_count
-  )
-
-head(alameda_li_count)
-glimpse(alameda_li_count)
-summary(alameda_li_count)
-
-# Create a histogram of low-income counts across tracts
-ggplot(alameda_li_count, aes(x = p_li)) +
-  geom_histogram(binwidth = 0.05, fill = "steelblue", color = "black") +
-  labs(
-    title = "Distribution of Low-Income Population Proportion by Census Tract",
-    x = "Proportion of Low-Income Residents",
-    y = "Frequency"
-  ) +
-  geom_vline(xintercept = median(na.omit(alameda_li_count$p_li)), color = "red") +
-  theme_minimal()
-
-######
-# Ok, let's look at another complex variable: B25118
-# This table is the same as B19001 but it's broken down by tenure.
-
-# B25118_001 = the total number of owner and renter occupied housing units. However, we have two other sub-total variables:
-# B25118_002 = the number of owner occupied housing units.
-# B25118_014 = the number of renter occupied housing units.
-
-# Let's say we want to know the proportion of renter occupied housing units that are low-income.
-
-renter_inc_groups <- c(
-    "B25118_014", # Estimate!!Total:!!Renter occupied:
-    "B25118_015", # Estimate!!Total:!!Renter occupied:!!Less than $5,000
-    "B25118_016", # Estimate!!Total:!!Renter occupied:!!$5,000 to $9,999
-    "B25118_017", # Estimate!!Total:!!Renter occupied:!!$10,000 to $14,999
-    "B25118_018", # Estimate!!Total:!!Renter occupied:!!$15,000 to $19,999
-    "B25118_019", # Estimate!!Total:!!Renter occupied:!!$20,000 to $24,999
-    "B25118_020", # Estimate!!Total:!!Renter occupied:!!$25,000 to $34,999
-    "B25118_021", # Estimate!!Total:!!Renter occupied:!!$35,000 to $49,999
-    "B25118_022", # Estimate!!Total:!!Renter occupied:!!$50,000 to $74,999
-    "B25118_023", # Estimate!!Total:!!Renter occupied:!!$75,000 to $99,999
-    "B25118_024", # Estimate!!Total:!!Renter occupied:!!$100,000 to $149,999
-    "B25118_025" # Estimate!!Total:!!Renter occupied:!!$150,000 or more
-)
-
-# NOTE: the top end for this group is $150,000 or more. The top end for B19001 is $200,000 or more. Pay attention to your labels as the monitary values could change on you depending on what you're looking at.
-# ALSO NOTE:
-
-acs_inc_reanters <- get_acs(
-    geography = "tract",
-    variables = renter_inc_groups,
-    state = "IN",
-    county = "Marion",
-    year = 2022
-)
-
-# get the number of renter occupied housing units below 80% ami
-li_count <- acs_inc_reanters %>%
-    group_by(GEOID) %>%
-    select(-moe) %>%
-    pivot_wider(
-        names_from = variable,
-        values_from = estimate
-    ) %>%
-    reframe(
-        li_count = sum(
-            B25118_015, # Estimate!!Total:!!Renter occupied:!!Less than $5,000
-            B25118_016, # Estimate!!Total:!!Renter occupied:!!$5,000 to $9,999
-            B25118_017, # Estimate!!Total:!!Renter occupied:!!$10,000 to $14,999
-            B25118_018, # Estimate!!Total:!!Renter occupied:!!$15,000 to $19,999
-            B25118_019, # Estimate!!Total:!!Renter occupied:!!$20,000 to $24,999
-            B25118_020, # Estimate!!Total:!!Renter occupied:!!$25,000 to $34,999
-            B25118_021 # Estimate!!Total:!!Renter occupied:!!$35,000 to $49,999
-        ),
-        total_renters = B25118_014
-    ) %>%
-    mutate(
-        p_li = li_count / total_renters
-    )
-
-li_count
-summary(li_count)
-
-# Notice that we have a NaN in the p_li column. This is because we have a tract with 0 renter occupied housing units and 0 low-income renter occupied housing units. This can throw an error so we need to correct this.
-
-li_count_adj <- li_count %>%
-    mutate(
-        p_li = ifelse(is.nan(p_li), 0, p_li)
-    )
-
-li_count_adj
-summary(li_count_adj)
-
-# Take note that p_li does NOT have any values above 1 or below 0. This is good because proportions should be bound between 0 and 1. If you see values above 1 or below 0, you know that something is wrong with your data. Often, you might be dividing the wrong table or sums are off. Could be something else but this is a good place to start.
-
-# Create a histogram of low-income counts across tracts
-ggplot(li_count_adj, aes(x = p_li)) +
-    geom_histogram(binwidth = 0.05, fill = "steelblue", color = "black") +
-    labs(
-        title = "Distribution of Low-Income Population Proportion by Census Tract",
-        x = "Proportion of Low-Income Residents",
-        y = "Frequency"
-    ) +
-    theme_minimal()
-
-# I'm often a little suspicious when I see things out of place. For example, I have a lot of zeros. Seven in fact. Let's check to make sure that this is correct in our data.
-
-li_count_adj %>% filter(p_li == 0)
-
-# Ok, this looks good. There are some tracts with 0 renter households and all of them have 0 li_count, meaning all the renter households are above 80% AMI.
-
-# =============================================================================
-# Part 2: Mapping
-# =============================================================================
-
-# Let's map this puppy!!
-
-# There are several packages that map data.
-# ggplot2 provides static maps.
-# tmap provides both static and interactive maps.
-# mapview also provides interactive maps
-# leaflet provides interactive maps.
-
-# For this lesson, we will use tmap.
-# The first thing we need is spatial data. When we download census data using get_acs(), the option "geometry = TRUE" will give us a spatial object in an SF format (stands for Simple Feature). Other spatial formats include shape files, SPDF, SpatialPolygonsDataFrame, and SpatialPointsDataFrame. SF is a more recent format that is easier to work with than others so I recommend sticking with SF. Spatial analysis and GIS is a whole field of study in itself so we won't dive too deep into it today.
-
-# So we didn't use the "geometry = TRUE" feature above so our data is non-spatial (just a lonely dataframe). We could amend the code above or we could just download the spatial data by itself from the tigris package and join it to the census data. This is a common practice as dealing with spatial data, especially when you're trying to do calculations on it, can slow your computer down because spatial data adds a lot more complexity to your data frame.
-# I recommend this route of calculating your data and then joining the spatial data on.
-
-# Let's download the spatial data.
-
-indiana_tracts <- tracts(state = "IN", county = "Marion", year = 2022) # I could download all the tracts in Indiana by omitting the county argument. Also make sure that your year matches between the ACS data you pulled and the year of spatial data you want to pull. 
-
-# let's look at the data
-
-head(indiana_tracts)
-# Here's our output:
-
-# Simple feature collection with 6 features and 12 fields
-# Geometry type: POLYGON
-# Dimension:     XY
-# Bounding box:  xmin: -86.28995 ymin: 39.7744 xmax: -85.99118 ymax: 39.92739
-# Geodetic CRS:  NAD83
-#     STATEFP COUNTYFP TRACTCE       GEOID    NAME             NAMELSAD MTFCC
-# 207      18      097  360800 18097360800    3608    Census Tract 3608 G5020
-# 208      18      097  354800 18097354800    3548    Census Tract 3548 G5020
-# 238      18      097  310110 18097310110 3101.10 Census Tract 3101.10 G5020
-# 239      18      097  310310 18097310310 3103.10 Census Tract 3103.10 G5020
-# 240      18      097  330109 18097330109 3301.09 Census Tract 3301.09 G5020
-# 241      18      097  330804 18097330804 3308.04 Census Tract 3308.04 G5020
-#     FUNCSTAT   ALAND AWATER    INTPTLAT     INTPTLON
-# 207        S 2632088      0 +39.7890329 -086.0548820
-# 208        S  543485      0 +39.7778947 -086.1172338
-# 238        S 1889711      0 +39.8453099 -086.2830259
-# 239        S 2119564      0 +39.8606826 -086.2626487
-# 240        S 5286006      0 +39.9161418 -086.0196226
-# 241        S 1315938      0 +39.8371672 -086.0006819
-#                           geometry
-# 207 POLYGON ((-86.06441 39.7963...
-# 208 POLYGON ((-86.12139 39.7812...
-# 238 POLYGON ((-86.28995 39.8525...
-# 239 POLYGON ((-86.27463 39.8637...
-# 240 POLYGON ((-86.03303 39.9125...
-# 241 POLYGON ((-86.0102 39.84066...
-
-# The first few columns should look familiar. The last column is the geometry, which is the spatial data.
-class(indiana_tracts)
-# I use the class() function often when working with spatial data to check the class of the object.
-class(li_count_adj)
-# This is a tbl_df, which is a tibble. A dplyr object.
-
-# Now let's join the data.
-
-li_sf <- 
-  li_count_adj %>% # our data frame
-  left_join(indiana_tracts, by = c("GEOID" = "GEOID")) # left joining the spatial object
-
-glimpse(li_sf)
-class(li_sf)
-# Uh oh, we have a geometry column but it's not an sf object.
-# To make it an sf object, we can do one of two things.
-# we can switch around the order of the join:
-li_sf2 <- 
-  indiana_tracts %>% # our spatial object
-  left_join(li_count_adj, by = c("GEOID" = "GEOID")) # left joining the data frame
-
-glimpse(li_sf2)
-class(li_sf2)
-# Now it's an sf object.
-# Or we can use the st_as_sf() function.
-
-li_sf3 <- st_as_sf(li_sf) 
-
-glimpse(li_sf3)
-class(li_sf3)
-# Now it's an sf object.
-
-# NOTE: Always make sure you end up with the expected number of tracts.
-indiana_tracts %>% nrow()
-li_sf3 %>% nrow()
-li_count_adj %>% nrow()
-# These are all the same so we're golden. If they're not, it likely go messed up somewhere in the join.
-
-######
-# Ok, NOW let's plot this map using tmap.
-librarian::shelf(tmap)
-
-# tm_shape() defines the spatial object to be mapped
-tm_shape(li_sf3) +
-    tm_polygons(
-        col = "p_li",
-        title = "Proportion of Low-Income Residents",
-        palette = "Blues"
-    )
-# tm_polygons() adds the polygon layer with:
-# col = "p_li" - colors polygons based on p_li column
-# title - sets the legend title
-# palette - uses the "Blues" color scheme from RColorBrewer
-
-# This gives us a static choropleth map.
-# We can make it interactive by turning on activity using the tm_view() function.
-tmap_mode("view")
-
-# We can change the aesthetics by using the tm_fill() function.
-tm_shape(li_sf3) +
-    tm_fill(col = "p_li",
-        title = "Proportion of Low-Income Residents",
-        palette = "Blues"
-    )
-
-# We can also make some other changes like changing the alpha.
-tm_shape(li_sf3) +
-    tm_fill(col = "p_li",
-        title = "Proportion of Low-Income Residents",
-        palette = "Blues",
-        alpha = .5
-    )
-
-# When you're working with a chorepleth map, it's important to make sure that your colors do what you want them to do.
-# One way is to find good colors. Another important thing to consider is the point at which the colors break. Our map currently breaks at 0.2 intervals. That is an equaldistance break.
-# We can change this by using the style argument.
-# Jenks is a natural break classification method that groups values into distinct, non-overlapping intervals based on their statistical distribution. It aims to create visually meaningful and statistically sound breaks that reflect the underlying data patterns.
-
-tm_shape(li_sf3) +
-    tm_fill(col = "p_li",
-        title = "Proportion of Low-Income Residents",
-        palette = "Reds",
-        alpha = .5,
-        style = "jenks")
-
-# Another break style is standard deviation.
-tm_shape(li_sf3) +
-    tm_fill(col = "p_li",
-        title = "Proportion of Low-Income Residents",
-        palette = "Reds",
-        alpha = .5,
-        style = "sd")
-# Note that this changed the breaks in the legend.
-# Review the tmap documentation for more information on the different styles and parameters. https://r-tmap.github.io/tmap/
-
-# =============================================================================
-# Part 3: Mapping eviction data
-# =============================================================================
-
-# Let's pull in our eviction data from last week into this map. Let's say we want to look at one year of eviction data.
+# ==========================================================================
+# Lab 4: Real eviction records -- and your first maps
+# SOC-N100: Housing Precarity and Displacement | Summer 2026
+# Instructor: Tim Thomas
+# ==========================================================================
 #
-# Same load as lab 3: qs2::qs_read() on the .qs2 file (see lab 3 for backup
-# instructions if qs2 does not work — comment out qs2 line, uncomment readRDS).
-load_pkg("qs2")
-indiana_evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
-# indiana_evictions <- readRDS(file.path(repo_root, eviction_data_rds))
+# This lab spans TWO sessions:
+#   PART A (Tuesday)  -- load real eviction data, compute eviction rates,
+#                        and join them to Census data
+#   PART B (Thursday) -- put those rates on a map
+#
+# WHERE WE ARE: in labs 1-3 every number came from the Census API through
+# get_acs(). Real research almost always means combining that with data
+# someone HANDS you -- a file. Today that file is real: eviction court
+# filings collected by the Eviction Research Network (ERN), the research
+# group I direct at Berkeley. Every row summarizes actual households who
+# had an eviction case filed against them in Indiana. Treat it with the
+# respect that deserves: these are people in the worst weeks of their
+# housing lives, not just rows in a table.
+#
+# WHAT YOU ALREADY KNOW (labs 1-3): get_acs(), the pipe %>%, filter /
+# arrange / select / mutate, pivot_wider(), group_by() + summarize(),
+# ggplot charts built layer by layer. We use all of it today.
 
-# Which years seem to have complete data?
-indiana_evictions %>%
-group_by(year) %>%
-summarize(filings = sum(filings, na.rm = TRUE))
-# It looks like there were more evictions prior to the pandemic and 2021 and 2022 have less than 75k filings, which is about the average for the pre-pandemic numbers. Let's look at 2022.
+library(tidyverse)
+library(tidycensus)
 
-# Let's look at 2022 and join it to our spatial data.
-indiana_evictions_2022 <- 
-  indiana_evictions %>%
-  filter(year == 2022) %>% 
-  group_by(tract_geoid) %>%
-  summarize( # each row is a month so we want to sum filings within the year. 
-    total_filings = sum(filings), 
-    renters = first(tr_totrent)
-    ) %>%
-  mutate(eviction_rate = total_filings/renters)
+# (Nothing new to install for Part A. If any library() line ever says
+# "there is no package called ...", the fix is the same as always:
+# install.packages("that-package-name") once, then library() again.)
 
-glimpse(indiana_evictions_2022)
-# It doesn't have a geometry column so we need to add that.
+# ==========================================================================
+# ==========================================================================
+# PART A -- TUESDAY: EVICTION DATA
+# ==========================================================================
+# ==========================================================================
 
-ie <- indiana_tracts %>%
-    left_join(indiana_evictions_2022, by = c("GEOID" = "tract_geoid"))
+# ==========================================================================
+# A1. Reading a data file: readRDS()
+# ==========================================================================
+# R has a native file format for saved data objects, called RDS. Reading
+# one takes a single base-R function -- no packages at all:
 
-glimpse(ie)
-class(ie)
-# Note that this subset our dataset to only the tracts within Marion county.
+indiana_evictions <- readRDS("data/evictions/d5_case_aggregated.rds")
 
-# Now, let's map the eviction data.
-tm_shape(ie) +
-    tm_fill(col = "total_filings",
-        title = "Number of Evictions in 2022",
-        palette = "Reds",
-        alpha = .5, 
-        style = "jenks")
+# That path is RELATIVE: it starts from your project folder (that is why
+# we always open SOC-N100.Rproj first -- it plants R in the right spot).
+# data/ then evictions/ then the file. Forward slashes, even on Windows.
+#
+# (Next to the .rds you will see the same data as a .qs2 file -- a faster
+# format we use in my lab for big files. Same table, fancier container.)
+#
+# Where did this file come from? ERN collects raw eviction case records
+# from county courts, cleans them, links names to demographics, and
+# aggregates them to census tracts by month. What you have is that
+# tract-by-month summary. You cannot download this from a website -- this
+# is the "someone hands you their data" experience, which is most of
+# real-world sociology.
 
-# We can calculate the rate, which is more informative using the eviction_rate field we created above. 
+# ==========================================================================
+# A2. Meeting a big unfamiliar table
+# ==========================================================================
+# Same ritual as always -- but this table is bigger than anything we have
+# touched, so we add one new tool.
 
-tm_shape(ie) +
-  tm_fill(col = "eviction_rate",
-          title = "Eviction Rate in 2022",
-          palette = "Reds",
-          alpha = .5, 
-          style = "jenks")
+nrow(indiana_evictions)   # 139,072 rows
+ncol(indiana_evictions)   # 58 columns
 
-# You could do the same with evictions by race. How would you do that? 
+# With 58 columns, head() would wrap into an unreadable mess. glimpse()
+# is the tidyverse's answer: one COLUMN per line, with its type and first
+# few values. It is the standard first move on any new dataset:
+
 glimpse(indiana_evictions)
 
+# You do not need all 58 columns. Here are the ones we use today:
+#
+#   tract_geoid  = the census tract's ID code (text! leading zeros)
+#   county       = county name
+#   year, month  = when the filings happened (2016 through 2022)
+#   filings      = number of eviction cases filed in that tract that month
+#   black_head   = filings whose head of household is estimated to be
+#                  Black. ERN estimates race statistically from names and
+#                  neighborhood demographics, so the race columns carry
+#                  DECIMALS -- they are expected counts, not exact tallies.
+#                  (Court records do not list race; estimation is how all
+#                  eviction-by-race research works. Another reason for
+#                  humility when the groups get small.)
+#   tr_totrent   = renter households in that TRACT (from the census)
+#   co_totrent   = renter households in that COUNTY (from the census)
+#   state_code, county_code = the two pieces of a county's GEOID
+#
+# (You will also spot columns named latine_*: ERN uses "Latine" as the
+# gender-neutral term for Latino/Latina/Latinx populations.)
+#
+# So the GRAIN of this table -- what one row IS -- is one tract in one
+# month. Check that claim instead of trusting it: pick one tract, one
+# year, and count the rows. Twelve months, twelve rows:
+
+indiana_evictions %>%
+  filter(tract_geoid == "18001030300", year == 2019) %>%
+  select(tract_geoid, year, month, filings)
+
+# Knowing the grain is THE first question to ask of any dataset. Almost
+# every wrong number in a beginner's analysis comes from mistaking the
+# grain -- counting something twice, or summing what was already a total.
+
+# ==========================================================================
+# A3. Your first aggregation: the pandemic, visible from orbit
+# ==========================================================================
+# The table is tract-by-month. Most questions are bigger than that:
+# "how many filings per YEAR?" That is what group_by() + summarize() do
+# (you met them in lab 3 -- here is the one-minute rebuild).
+#
+# Step 1: group_by() alone. Run it -- and notice that almost nothing
+# happens. The printout just gains a small "Groups: year" note at the top.
+# group_by() only plants a flag that says "treat each year as a team."
+
+indiana_evictions %>%
+  group_by(year)
+
+# Step 2: summarize() collapses each team down to ONE row, using a rule
+# you write. Our rule: add up the filings.
+
+indiana_evictions %>%
+  group_by(year) %>%
+  summarize(total_filings = sum(filings))
+
+# Read that little table slowly, because it contains a national story:
+# roughly 72-78 thousand filings every year from 2016 to 2019... and then
+# 2020 collapses to about 42 thousand. That is the COVID-19 eviction
+# moratorium -- courts closed and federal/state protections paused most
+# filings. 2021 (~54k) and 2022 (~60k) climb back toward "normal" as the
+# protections expired. You just found a major policy event in seven rows
+# of output. Policy leaves fingerprints in data.
+#
+# It deserves a quick chart (nothing new here -- lab 1 skills):
+
+indiana_evictions %>%
+  group_by(year) %>%
+  summarize(total_filings = sum(filings)) %>%
+  ggplot(aes(x = year, y = total_filings)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Eviction filings in Indiana collapsed during the pandemic",
+    x     = NULL,
+    y     = "Filings per year",
+    caption = "Source: Eviction Research Network, Indiana court records."
+  ) +
+  theme_minimal()
+
+# YOUR TURN (1): change the grouping to county -- which Indiana counties
+# have the most total filings across all years? Sort your answer with
+# arrange(desc(...)). [PUT YOUR ANSWER BELOW]
+
+
+# ==========================================================================
+# A4. Aggregating to county-years -- and a very instructive mistake
+# ==========================================================================
+# For eviction RATES we need county-by-year counts (rates need a
+# denominator, and our renter counts live at the county level). You can
+# group by TWO things at once -- every county-year combination becomes
+# a team:
+
+indiana_evictions %>%
+  group_by(county, year) %>%
+  summarize(evictions = sum(filings))
+
+# 644 rows: 92 counties x 7 years. So far so good.
+#
+# Now the mistake, on purpose. We also want each county's renter count,
+# which sits in co_totrent. The tempting move is to just name it:
+
+indiana_evictions %>%
+  group_by(county, year) %>%
+  summarize(
+    evictions = sum(filings),
+    renters   = co_totrent
+  )
+
+# R complains -- read the message. It says summarize() expected ONE value
+# per group and got many, warns you this is deprecated, and suggests
+# reframe(). Here is what actually went wrong: sum(filings) collapses a
+# group's many rows to one number, but co_totrent is just a column with
+# HUNDREDS of values per county (one per tract-month). R does not know
+# which one you meant. (On newer versions of R this same mistake stops
+# with an error instead of a warning -- same cause, louder alarm. And
+# reframe() is the tool for the rare case where you WANT many rows back;
+# that is not what we want here.)
+#
+# The fix: within a county, co_totrent repeats the SAME county total on
+# every row -- so just take the first one. first() is a summarizing rule
+# like sum(), it collapses many values to one:
+
+county_year <- indiana_evictions %>%
+  group_by(county, year) %>%
+  summarize(
+    evictions       = sum(filings),
+    black_evictions = sum(black_head),
+    renters         = first(co_totrent)
+  )
+
+county_year
+
+# One more column before we can talk to the Census: a join key. Census
+# county GEOIDs are state code + county code glued together: "18" (Indiana)
+# + "001" (Adams County) = "18001". paste0() glues text end to end --
+# and because these are TEXT codes, the leading zeros survive (lab 1's
+# leading-zero trap, still paying rent):
+
+county_year <- indiana_evictions %>%
+  group_by(county, year) %>%
+  summarize(
+    evictions       = sum(filings),
+    black_evictions = sum(black_head),
+    renters         = first(co_totrent),
+    county_geoid    = first(paste0(state_code, county_code))
+  )
+
+county_year
+
+# ==========================================================================
+# A5. The Census side: renter households by county
+# ==========================================================================
+# For rates BY RACE we need denominators by race, and it is good practice
+# to pull our own fresh census numbers rather than lean only on columns
+# someone baked into a file. Table B25003 is "Tenure" (own vs rent), and
+# like income in lab 2, it comes in race flavors: B25003B is Tenure for
+# Black householders. Line _003 is "Renter occupied" in both.
+# Named-vector renaming, exactly like lab 2:
+
+co_census <- get_acs(
+  geography = "county",
+  variables = c(
+    total_renters = "B25003_003",   # renter households, everyone
+    black_renters = "B25003B_003"   # renter households, Black householder
+  ),
+  state = "IN",
+  year  = 2022
+)
+
+co_census
+
+# Two variables per county means the table is LONG: two rows per county.
+# To do math BETWEEN the variables we widen it -- and, as in lab 3, we
+# must first drop the columns that would make each row unique (moe, and
+# NAME while we are at it; the GEOID is a better key anyway):
+
+co_census_wide <- co_census %>%
+  select(-NAME, -moe) %>%
+  pivot_wider(
+    names_from  = variable,
+    values_from = estimate
+  )
+
+co_census_wide
+nrow(co_census_wide)   # 92 -- one row per Indiana county. Always check.
+
+# ==========================================================================
+# A6. left_join(): gluing two tables together
+# ==========================================================================
+# We now have two tables that describe the same counties:
+#   county_year     (from ERN)    -- has a county_geoid column
+#   co_census_wide  (from Census) -- has a GEOID column
+# A JOIN matches rows across tables using a shared ID -- the KEY. Same
+# idea as VLOOKUP in a spreadsheet, but sturdier.
+#
+# left_join(x, y) keeps EVERY row of x and attaches matching columns
+# from y. The by = argument says which column in x equals which in y:
+
+county_rates <- county_year %>%
+  left_join(co_census_wide, by = c("county_geoid" = "GEOID"))
+
+county_rates
+
+# JOIN DISCIPLINE -- run these checks every single time you join, forever.
+# A silently broken join is the most dangerous bug in data work, because
+# everything downstream still LOOKS fine.
+#
+# Check 1: the row count must not change (left_join keeps x's rows;
+# if it GREW, some key matched more than one row):
+
+nrow(county_year)
+nrow(county_rates)
+# 644 and 644. Good.
+
+# Check 2: did every row find a partner? anti_join() shows the rows of x
+# that found NO match in y -- you want to SEE the leftovers, not guess:
+
+anti_join(county_year, co_census_wide, by = c("county_geoid" = "GEOID"))
+# 0 rows. Every county-year matched a census county. A clean join.
+
+# ==========================================================================
+# A7. Rates at last -- and the divide-by-zero trap
+# ==========================================================================
+# A count alone ("Marion County had thousands of filings") mostly measures
+# how BIG a place is. A RATE -- filings per renter household -- measures
+# how INTENSE eviction is, and lets small and large counties be compared
+# fairly. mutate() does the arithmetic on every row at once:
+
+county_rates <- county_rates %>%
+  mutate(
+    eviction_rate       = evictions / renters,
+    black_eviction_rate = black_evictions / black_renters
+  )
+
+# Meet your new columns before trusting them:
+
+summary(county_rates)
+
+# Look at black_eviction_rate: the maximum is "Inf" -- infinity. R is
+# telling you that somewhere it divided by ZERO. Never shrug at a weird
+# value; go find it:
+
+county_rates %>%
+  filter(is.infinite(black_eviction_rate)) %>%
+  select(county, year, black_evictions, black_renters)
+
+# There it is: counties where the ACS estimates ZERO Black renter
+# households -- 28 of Indiana's 92 counties -- while the court records
+# still show eviction filings against Black-headed households there.
+# Sit with that for a second, because it is not a bug. It is two datasets
+# disagreeing about whether a small population exists: the ACS is a
+# sample, and in a mostly white rural county its estimate for a tiny
+# group can round to zero, while the courthouse still met real Black
+# families. Small groups are exactly where estimates are weakest -- lab
+# 1's margin-of-error lesson, back with teeth.
+#
+# So what value SHOULD the rate have there? Not 0 -- that would claim "no
+# eviction risk for Black renters," which is false. The honest answer is
+# "cannot compute": NA, R's missing value. if_else() picks row by row --
+# if_else(condition, value_if_yes, value_if_no):
+
+county_rates <- county_rates %>%
+  mutate(
+    black_eviction_rate = if_else(
+      black_renters > 0,
+      black_evictions / black_renters,
+      NA
+    )
+  )
+
+# Verify the repair -- no more Inf, and the impossible cases are now
+# honestly missing:
+
+summary(county_rates$black_eviction_rate)
+
+# ==========================================================================
+# A8. The question that matters: is eviction racially unequal?
+# ==========================================================================
+# Take one clean pre-pandemic year -- 2019 -- and put the overall rate
+# against the Black rate, county by county:
+
+rates_2019 <- county_rates %>%
+  filter(year == 2019)
+
+# Base scatter (lab 1 layers, new geom): each point is one county.
+
+ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
+  geom_point()
+
+# Now the layer that turns a scatter into an argument: the EQUALITY LINE.
+# geom_abline() draws y = x. If eviction touched everyone equally, every
+# county would sit ON that line. A point ABOVE the line is a county where
+# Black renters are evicted at a HIGHER rate than renters overall:
+
+ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed")
+
+# (A note appeared in the Console: "Removed 28 rows containing missing
+# values". That is not an error -- it is our NA fix from A7 showing up.
+# The 28 counties where the rate cannot be computed are left off the
+# chart, and R is transparently telling you so. Always read those notes
+# and make sure you can explain them.)
+#
+# Finish it properly -- labels, the works:
+
+ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  labs(
+    title    = "Black renters face higher eviction rates in most Indiana counties",
+    subtitle = "Each point is a county, 2019. Dashed line = racial equality.",
+    x        = "Eviction filings per renter household (all renters)",
+    y        = "Eviction filings per Black renter household",
+    caption  = "Source: Eviction Research Network; ACS 2018-2022 (B25003)."
+  ) +
+  theme_minimal()
+
+# Count it instead of eyeballing it: among the counties where the Black
+# rate is computable, how many sit above the line?
+
+rates_2019 %>%
+  filter(!is.na(black_eviction_rate)) %>%
+  summarize(
+    counties_with_a_rate = n(),
+    black_rate_higher    = sum(black_eviction_rate > eviction_rate)
+  )
+
+# 38 of 64. And remember the denominators: rates in counties with very
+# few Black renter households swing wildly (five families, one filing =
+# a huge "rate"). The disparity story is strongest where the population
+# -- and therefore the estimate -- is solid. That is why Desmond studied
+# Milwaukee and ERN studies whole states: patterns, not anecdotes.
+#
+# One last data-humility note. Our file came with a renters column baked
+# in (co_totrent), and we ALSO pulled total_renters fresh from the 2022
+# ACS. Compare them -- they disagree slightly in every county (Marion:
+# 174,535 vs 174,973). Neither is wrong; they are different ACS releases.
+# Real analysts write down WHICH vintage they used (see the chart caption
+# above) so others can reproduce the number exactly.
+
+county_rates %>%
+  filter(year == 2022) %>%
+  select(county, renters, total_renters) %>%
+  mutate(difference = renters - total_renters)
+
+# YOUR TURN (2): remake the 2019 scatter for 2022. Does the pandemic
+# recovery year look more or less unequal? [PUT YOUR ANSWER BELOW]
+
+
+# YOUR TURN (3) -- stretch: the Tenure table has other race iterations,
+# e.g. B25003I_003 is renter households with a Hispanic or Latino
+# householder, and the ERN file has latine_head filings. Build a
+# latine_eviction_rate the same way we built the Black rate -- traps,
+# fixes, and all. [PUT YOUR ANSWER BELOW]
+
+
+# ============================== STOP HERE ================================
+# End of Part A (Tuesday). Thursday we take these rates to the map.
+# ==========================================================================
+
+# ==========================================================================
+# ==========================================================================
+# PART B -- THURSDAY: PUTTING EVICTION ON THE MAP
+# ==========================================================================
+# ==========================================================================
+#
+# Quick recap of Tuesday: readRDS() loaded ERN's tract-month eviction
+# file; group_by + summarize aggregated it; first() grabbed repeated
+# totals; left_join attached census denominators (with row-count checks);
+# rates + if_else handled divide-by-zero; the equality-line scatter
+# showed Black renters evicted at higher rates in most counties.
+#
+# Today's question is WHERE. "Which tracts in Indianapolis carry the
+# eviction crisis?" is a map question. The San Diego displacement study
+# linked on the course website is the professional version of what you
+# build today: a CHOROPLETH -- a map where each area is shaded by a
+# value. Ours: census tracts shaded by eviction rate.
+#
+# If you are starting fresh today, run these to catch up:
+
+library(tidyverse)
+library(tidycensus)
+
+indiana_evictions <- readRDS("data/evictions/d5_case_aggregated.rds")
+
+# ==========================================================================
+# B1. Spatial data: tables where each row has a SHAPE
+# ==========================================================================
+# A map needs geometry -- the actual polygon outline of every tract.
+# The Census publishes those shapes, and the tigris package downloads
+# them. tigris and sf (the package that lets tables carry shapes) both
+# arrived on your account with tidycensus back in lab 1 -- nothing to
+# install, just open them:
+
+library(tigris)
+library(sf)
+
+# tracts() downloads tract outlines. State, county, year -- and the year
+# should match your data's era so boundaries line up:
+
+marion_tracts <- tracts(state = "IN", county = "Marion", year = 2022)
+
+# (First run prints download progress -- it is fetching the shapes from
+# the Census. Marion County is Indianapolis: Indiana's biggest city and
+# county, and where the filings are concentrated.)
+
+marion_tracts
+
+# Look at the printout header: "Simple feature collection with 253
+# features". A FEATURE is a row-with-a-shape; sf is the "simple features"
+# format. Scroll right conceptually: familiar columns (GEOID!), plus a
+# special geometry column holding each tract's polygon. Confirm what
+# kind of object this is:
+
+class(marion_tracts)
+
+# "sf" AND "data.frame" -- it is still a table (every verb you know still
+# works on it), it just carries shapes on its back.
+
+# ==========================================================================
+# B2. Prepare the eviction side: one row per tract
+# ==========================================================================
+# Our eviction file is tract-by-MONTH; the map needs tract totals. Same
+# aggregation pattern as Tuesday, one level down the geography ladder --
+# and note we sum a YEAR of filings, 2022, the most recent year:
+
+marion_2022 <- indiana_evictions %>%
+  filter(county == "Marion", year == 2022) %>%
+  group_by(tract_geoid) %>%
+  summarize(
+    filings = sum(filings),
+    renters = first(tr_totrent)
+  ) %>%
+  mutate(eviction_rate = filings / renters)
+
+marion_2022
+nrow(marion_2022)   # 253 tracts -- same count as the shapes. Promising.
+
+# Tuesday's reflex: before trusting eviction_rate, look for trouble.
+# is.finite() is FALSE for Inf, NaN, and NA all at once:
+
+marion_2022 %>%
+  filter(!is.finite(eviction_rate))
+
+# One tract, with zero renter households recorded. You know this movie
+# and you know the fix -- undefined, not zero:
+
+marion_2022 <- marion_2022 %>%
+  mutate(
+    eviction_rate = if_else(renters > 0, filings / renters, NA)
+  )
+
+# YOUR TURN (4): how many filings did Marion County record in 2022 in
+# total, and which single tract has the highest eviction rate? (Hint:
+# summarize for the first, arrange(desc()) for the second.)
+# [PUT YOUR ANSWER BELOW]
+
+
+# ==========================================================================
+# B3. Joining a table to shapes -- ORDER MATTERS
+# ==========================================================================
+# We join eviction numbers to tract shapes with left_join, keyed on the
+# tract GEOID. But with spatial data there is a real trap: the result
+# keeps the CLASS of the table you START from.
+#
+# Wrong order -- start from the plain table, attach shapes:
+
+flat_join <- marion_2022 %>%
+  left_join(marion_tracts, by = c("tract_geoid" = "GEOID"))
+
+class(flat_join)
+
+# Just a plain table. The geometry column is IN there, but the object
+# forgot it is spatial -- mapping tools will refuse it.
+#
+# Right order -- start from the SHAPES, attach the numbers:
+
+marion_map_data <- marion_tracts %>%
+  left_join(marion_2022, by = c("GEOID" = "tract_geoid"))
+
+class(marion_map_data)
+
+# Still sf. Rule of thumb: THE SHAPES GO FIRST. (If you ever do get stuck
+# with a flat table that has a geometry column, st_as_sf() re-awakens it:
+# st_as_sf(flat_join) -- your rescue hatch, not your habit.)
+#
+# And because it is a join, the join discipline applies -- rows kept,
+# leftovers seen:
+
+nrow(marion_tracts)
+nrow(marion_map_data)
+anti_join(marion_tracts %>% st_drop_geometry(), marion_2022,
+          by = c("GEOID" = "tract_geoid"))
+# 253 in, 253 out, 0 tracts without eviction data. (st_drop_geometry()
+# peels the shapes off for the check -- anti_join wants plain tables.)
+
+# ==========================================================================
+# B4. The map, one layer at a time: tmap
+# ==========================================================================
+# Several packages draw maps; we use tmap because it thinks in layers,
+# exactly like ggplot. It is already on the DataHub. Open it:
+
+library(tmap)
+
+# HEADS UP before your first map: depending on the tmap version, you may
+# see chatty notes like "[v3->v4] ..." suggesting newer argument names.
+# Those are suggestions from a newer tmap translating our commands, NOT
+# errors -- the map draws either way. Read them, then move on.
+#
+# Layer 1: tm_shape() declares WHICH spatial object we are drawing --
+# like ggplot()'s data argument. Plus tm_polygons() to actually draw
+# the shapes:
+
+tm_shape(marion_map_data) +
+  tm_polygons()
+
+# Indianapolis appears -- every tract outlined, all the same color.
+# A map, but not yet an argument.
+#
+# Layer 2, one new input: col = names the column whose VALUES color the
+# tracts. This is the aes() moment -- data becomes shade:
+
+tm_shape(marion_map_data) +
+  tm_polygons(col = "eviction_rate")
+
+# A choropleth! Darker tracts = higher eviction rates. Now refine it,
+# one argument per step, same as lab 1's chart build.
+#
+# A legend title (people cannot read "eviction_rate"):
+
+tm_shape(marion_map_data) +
+  tm_polygons(col = "eviction_rate", title = "Filings per renter household, 2022")
+
+# A color palette that means something -- sequential red reads as
+# "more = worse" at a glance:
+
+tm_shape(marion_map_data) +
+  tm_polygons(
+    col     = "eviction_rate",
+    title   = "Filings per renter household, 2022",
+    palette = "Reds"
+  )
+
+# ==========================================================================
+# B5. Where the colors BREAK: the quiet power move of map-making
+# ==========================================================================
+# tmap just chopped the rates into equal-width bins. Equal bins are
+# honest but can hide structure when values bunch up. style = "jenks"
+# asks for "natural breaks" -- bin edges placed where the data itself
+# has gaps:
+
+tm_shape(marion_map_data) +
+  tm_polygons(
+    col     = "eviction_rate",
+    title   = "Filings per renter household, 2022",
+    palette = "Reds",
+    style   = "jenks"
+  )
+
+# Compare the two maps and their legends. Same data, different story
+# strength. WHERE THE BREAKS FALL IS AN EDITORIAL CHOICE -- two honest
+# analysts can make the same data whisper or shout. When you publish a
+# choropleth, say which break method you used. (This is "Pie Chart with
+# a Bayesian Chaser" in map form: the sophistication is in the choices,
+# the output stays simple.)
+
+# YOUR TURN (5): change style = "jenks" to style = "quantile" (equal
+# COUNTS of tracts per bin). Which of the three tells the starkest
+# story? Which feels most honest here, and why?
+# [PUT YOUR ANSWER BELOW]
+
+
+# ==========================================================================
+# B6. Interactive mode -- and saving your map
+# ==========================================================================
+# One line flips tmap from static pictures to a pannable, zoomable web
+# map (leaflet under the hood -- the same tech as the San Diego study):
+
+tmap_mode("view")
+
+# Re-run the jenks map from B5 now -- it opens in the Viewer pane. Zoom
+# into downtown Indianapolis. Hover a tract. THIS is the moment to ask
+# the sociological question: which neighborhoods are dark red? What do
+# you know -- or need to learn -- about them?
+#
+# Flip back to static mode (static is what goes in a paper):
+
+tmap_mode("plot")
+
+# To save a map, store it in an object (arrow, as ever), then
+# tmap_save():
+
+eviction_map <- tm_shape(marion_map_data) +
+  tm_polygons(
+    col     = "eviction_rate",
+    title   = "Filings per renter household, 2022",
+    palette = "Reds",
+    style   = "jenks"
+  )
+
+tmap_save(eviction_map, "lab4_eviction_map.png", width = 7, height = 7)
+
+# Check the Files pane -- lab4_eviction_map.png is in your project
+# folder, ready for a writeup.
+
+# ==========================================================================
+# B7. Counts vs rates -- the map version of an old lesson
+# ==========================================================================
+# YOUR TURN (6): map col = "filings" (the raw count) instead of the rate,
+# side by side with the rate map. Where do they disagree? Which tracts
+# look alarming in counts but calm in rates -- and what does that tell
+# you about what raw counts actually measure? [PUT YOUR ANSWER BELOW]
+
+
+# YOUR TURN (7) -- stretch: map a different year (2019, say) and compare
+# to 2022. Did the pandemic reshape WHERE eviction concentrates, or just
+# how much of it there is? [PUT YOUR ANSWER BELOW]
+
+
+# ==========================================================================
+# B8. What you can do now (and what's next)
+# ==========================================================================
+# After this lab you can:
+#   - load a data file with readRDS() and size it up with glimpse()
+#   - state the GRAIN of a table and verify it with a filter
+#   - aggregate with group_by() + summarize(), including first() for
+#     repeated group values -- and explain the many-values-per-group trap
+#   - build GEOID join keys with paste0() and text codes
+#   - left_join() two data sources WITH row-count and anti_join checks
+#   - turn counts into rates, and handle divide-by-zero honestly with NA
+#   - argue about inequality with an equality-line scatter
+#   - download tract shapes (tigris), join shapes-first, and build
+#     choropleths in tmap with deliberate break choices
+#
+# ASSIGNMENT 2 is due Monday Aug 3 at 5pm: stay in your Assignment 1
+# area, add 2-3 more ACS variables, and combine them into a measure of
+# displacement risk or housing precarity -- with descriptive statistics,
+# plots, interpretation, and a draft research question plus two
+# hypotheses for your final project. Everything you need is now in your
+# hands: multi-variable pulls (lab 2), building measures (lab 3), and
+# joins, rates, and maps (today). A map is not required -- but a good
+# one talks.
+#
+# NEXT LAB (Thursday Aug 6): the last new tool -- measuring racial
+# segregation with ERN's neighborhood package -- and a working session
+# to point everything you have learned at your group's final project.
+#
+# As always: errors are normal, read them out loud, ask your AI to
+# explain before it fixes (and keep the share link for your submission).
+# ==========================================================================

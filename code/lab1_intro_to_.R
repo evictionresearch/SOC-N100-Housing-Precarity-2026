@@ -26,13 +26,17 @@
 # starts with # (like this one) is a COMMENT -- a note for humans that R
 # skips over. The notes are the lecture; the code is the practice.
 #
+# So all you need to do is read through the commented text (things that
+# start with # and execute the uncommented text (like on line 67 below).
+#
 # ==========================================================================
 # 0. Getting set up (we do this together, step by step)
 # ==========================================================================
 #
 # (a) Open RStudio on the DataHub
-#     - Click the DataHub link on the course website. It signs you in with
-#       your CalNet ID and opens RStudio in your browser. Nothing to install.
+#     - Click the RStudio link on the course website (in the header). It
+#       signs you in with your CalNet ID and opens RStudio in your browser.
+#       Nothing to install.
 #     - In the Files pane (bottom-right), click the folder
 #       "SOC-N100-Housing-Precarity-2026", then click "SOC-N100.Rproj"
 #       and choose "Yes" when it asks to open the project.
@@ -84,6 +88,24 @@
 # YOUR TURN (1): the federal government calls a household "cost-burdened"
 # when it spends more than 30% of its income on housing. What is 30% of a
 # $4,000 monthly income? Type the math on the line below and run it:
+
+# [PUT YOUR ANSWER BELOW]
+
+# Let's do another exercise. By HUD's standards, 80% of the area median income
+# is considered "low income", 50% is considered "very low income", and 30% is 
+# "extremely low income". Below are 6 Bay county median household incomes
+# (2022 ACS 5-year estimates -- in lab 2 you will pull fresher ones yourself).
+# Calculate Low, very low, and extremely low income for one or more of these
+# counties. 
+# 
+# San Francisco: 136689
+# San Mateo: 149907
+# Santa Clara: 153792
+# Alameda: 122488
+# Contra Costa: 120020
+# Marin: 142019
+
+# [Below, write your equation and comment your answer next to it]
 
 
 # ==========================================================================
@@ -266,6 +288,9 @@ readRenviron("~/.Renviron")
 # Housekeeping notes:
 #   - If you ever re-run the key line by accident, R will say a key already
 #     exists. That is fine -- your key is saved. Nothing is broken.
+#   - Once the line has run, your key lives safely in your account settings.
+#     Good habit: change the text in the quotes back to PASTE-YOUR-KEY-HERE
+#     so your key is not sitting in this file when you share or submit code.
 #   - Your key is yours: don't post it publicly or share it in screenshots.
 #     (If one leaks, you just request a new key -- no harm done.)
 
@@ -358,10 +383,17 @@ View(rent_burden)    # opens the whole table in a spreadsheet-style tab
 # other Census files. ID codes are text, not quantities. The same trap
 # bites people with ZIP codes ("02115" is Boston).
 
+# The way that a GEIOD is broken up is by state (e.g., "06" for California), 
+# county FIPS code (e.g., "001" for Alameda). Combined, they create a complete
+# county GEOID. When we get into census tracts, smaller geographic units that 
+# are about the size of neighborhoods, an additional 6 digits will be added. 
+# Looking at the GEOID, I can tell it's a county one because it only has 5
+# digits. 
+
 # ==========================================================================
 # 9. Asking questions of your table: the pipe and three verbs
 # ==========================================================================
-# The tidyverse gives you a small set of VERBS for working with tables,
+# The tidyverse package gives you a small set of VERBS for working with tables,
 # and a symbol %>% called the PIPE. The pipe means "and then": take the
 # thing on the left, AND THEN do the next step to it.
 #
@@ -377,7 +409,7 @@ View(rent_burden)    # opens the whole table in a spreadsheet-style tab
 rent_burden %>%
   filter(estimate > 35)
 
-# How it works: for every row, R asks "is estimate bigger than 35?" and
+# How it works: for every row, R asks "is 'estimate' bigger than 35?" and
 # keeps the rows that answer yes. The original rent_burden is untouched --
 # we only printed a filtered view of it, we did not save a new object.
 # Notice only a handful of counties clear that 35% bar.
@@ -403,6 +435,13 @@ rent_burden %>%
 
 rent_burden %>%
   arrange(desc(estimate))
+
+# Something you want to notice here is that each function operates by calling
+# the function (or verb) and then putting a set of parentheses around what you 
+# want it to do (like in line 430)
+
+# In line 436, we have a function within a function so we want to make sure we 
+# put parentheses in the appropriate spaces. 
 
 # --------------------------------------------------------------------------
 # 9.3 select(): keep only some COLUMNS
@@ -431,8 +470,8 @@ rent_burden %>%
 # question you were asking.
 
 # YOUR TURN (5): flip it -- the 10 LEAST rent-burdened counties. Copy the
-# chain above onto the lines below and delete desc() (keep the column name
-# inside arrange).
+# chain above onto the lines below and delete desc() but keep the column name
+# inside arrange.
 
 
 # ==========================================================================
@@ -495,7 +534,11 @@ ggplot(top10, aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_col()
 
 # Now the longest bar is on top and the story is visible at a glance:
-# highest burden to lowest, top to bottom.
+# highest burden to lowest, top to bottom. What reorder did was sort the NAME 
+# by the estimate column (the rent burden values). So now, the y axis is ordered
+# by the rent burden values, not by the default alphabetical order. You'll get
+# familiar with how basic R thinks (e.g., it will try to order characters 
+# alphabetically). 
 
 # --------------------------------------------------------------------------
 # 10.5 labs(): say what the chart shows
@@ -577,7 +620,7 @@ ggplot(top10, aes(x = estimate, y = reorder(NAME, estimate))) +
 # R knows hundreds of color names ("steelblue", "tomato", "forestgreen")
 # and any hex code (try fill = "#7ECDBB"). Browse palettes here:
 #   https://r-charts.com/color-palettes/
-#   https://colorbrewer2.org
+#   https://colorbrewer2.org, my favorite!
 #
 # Two optional labels you will use in assignments -- subtitle (the years,
 # so readers know exactly what data this is) and caption (the source):

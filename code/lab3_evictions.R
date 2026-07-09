@@ -1,369 +1,485 @@
-# -----------------------------------------------------------------------------
-# Before we start, we need to install and load the necessary packages for this
-# exercise. See code/README.md for the two-layer package pattern.
-source("code/course_paths.R")
-source("code/course_packages.R")
-source("code/course_data.R")
-load_pkgs("tidyverse", "tidycensus", "lubridate", "janitor", "qs2")
-# Census API key: set up once in lab 1 (~/.Renviron)
+# ==========================================================================
+# Lab 3: Reading Census tables like a researcher -- your first real measure
+# SOC-N100: Housing Precarity and Displacement | Summer 2026
+# Instructor: Tim Thomas
+# ==========================================================================
+#
+# Where we are. After labs 1 and 2 you can already:
+#   - save objects with <- and chain steps with the pipe %>%
+#   - pull Census data with get_acs() and question it with filter(),
+#     arrange(), select(), and mutate()
+#   - find any variable in the Census catalog with load_variables() + View()
+#   - build a labeled bar chart in ggplot layers and save it with ggsave()
+#
+# Tonight we level up from LOOKING UP numbers to BUILDING one. By the end
+# you will have constructed the course's first real measure from raw
+# Census counts: the share of renter households in every Alameda County
+# neighborhood that is rent-burdened. Along the way you learn the three
+# skills that separate a Census user from a Census researcher:
+#
+#   1. Reading table names like a librarian (dollars vs. counts, and the
+#      all-important "universe" rule).
+#   2. Reshaping data from long to wide with pivot_wider().
+#   3. Summarizing groups of rows with group_by() and summarize().
+#
+# Assignment 1 is due Monday July 27 at 5pm. The last section of this lab
+# walks through a complete example so you know exactly what to submit.
+#
+# Open the toolboxes (installed back in lab 1 -- nothing new to install):
+
+library(tidyverse)
+library(tidycensus)
 
 # ==========================================================================
-# Over the past couple weeks, we've been working with tidycensus to get data
-# from the US Census Bureau. Now, we're going to work with data from the
-# The Eviction Research Network (ERN) at the University of California,
-# Berkeley and link it to census conditions.
+# 1. How Census tables are named
 # ==========================================================================
-
-# Course eviction data (Indiana tract-level filings).
+# Every ACS variable code has two parts. Take B25070_001:
 #
-# We load the ERN extract with qs2::qs_read() — a fast way to save and reload
-# large R objects (.qs2 files). qs2 is the maintained CRAN package for this job
-# (successor to the older qs package).
+#   B25070  = the TABLE (one topic: "Gross Rent as a Percentage of
+#             Household Income" -- sound familiar? That is rent burden.)
+#   _001    = the LINE within the table (line 001 is almost always the
+#             total -- everyone the table counts)
 #
-# If qs2::qs_read() fails on your computer — for example, the qs2 package did not
-# install when you ran install_course_packages.R — use the backup instead:
-#   1. Put a # at the start of the qs2::qs_read() line below (to comment it out)
-#   2. Remove the # from the readRDS() line
-# The .rds file in data/evictions/ is the same table in base R format; it does
-# not require the qs2 package.
-indiana_evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
-# indiana_evictions <- readRDS(file.path(repo_root, eviction_data_rds))
+# Two kinds of tables will cover most of what you do in this course, and
+# mixing them up is the most common Census mistake there is:
+#
+#   DOLLAR tables report an amount. B19013_001 is "median household income
+#   in dollars" -- ONE number that summarizes a place.
+#
+#   COUNT tables report how many households fall in each bucket. B19001
+#   splits households into income buckets: line 002 is "less than
+#   $10,000", line 017 is "$200,000 or more". Each line is a COUNT of
+#   households, not a dollar amount.
+#
+# Let's look at both in the catalog. (load_variables() is from lab 2; the
+# cache = TRUE input just makes it load faster next time.)
 
-glimpse(indiana_evictions)
-summary(indiana_evictions)
+vars_2023 <- load_variables(2023, "acs5", cache = TRUE)
+View(vars_2023)
 
-# Lets calculate overall eviction rates at the county level
-# These data are at the census tract level and need to be aggregated to the
-# county level.
+# In the View search box, type  B19013  -- read the label column: "Median
+# household income..." That is a dollar amount.
+# Now search  B19001  -- lines 002 through 017 are income buckets. Counts.
+#
+# One more thing you will see in the catalog: letters after a table
+# number, like B19013B. The letter is a RACE OR ETHNICITY version of the
+# same table (A = White alone, B = Black alone, D = Asian alone,
+# I = Hispanic or Latino -- we used these in lab 2). Same table, same
+# meaning, restricted to householders in that group.
+#
+# +------------------------------------------------------------------+
+# | THE UNIVERSE RULE (the one rule to never break)                  |
+# |                                                                  |
+# | Every count table counts a specific UNIVERSE -- the group of     |
+# | people or households it describes. Line _001 IS that universe.   |
+# | When you turn counts into a percentage, you ALWAYS ALWAYS ALWAYS |
+# | divide by that same table's _001 -- never by a total from some   |
+# | other table. Different tables count different universes (all     |
+# | households vs. renter households vs. people), and mixing them    |
+# | produces percentages that are quietly, confidently wrong.        |
+# +------------------------------------------------------------------+
 
-# This sums evictions
-indiana_evictions %>%
-  select(county, year, plot_date, filings) %>%
-  group_by(county, year) %>% 
-  # mutate(evictions = sum(filings))
-  summarize(
-    evictions = sum(filings)
-  )
+# YOUR TURN (1): search the catalog for  B25064 . Read its label and
+# concept. Is it a dollar table or a count table? What is it measuring,
+# in plain English?
+# [PUT YOUR ANSWER BELOW AS A COMMENT]
+#
 
-# Pedagogical counterexample (fails — co_totrent has many rows per group).
-# Compare to first(co_totrent) in the next block.
-indiana_evictions %>%
-  group_by(county, year) %>%
-  summarize(
-    evictions = sum(filings),
-    renters = co_totrent
-  )
+# ==========================================================================
+# 2. Tonight's question: what SHARE of renters are burdened?
+# ==========================================================================
+# In lab 1 we used B25071: the rent burden of the TYPICAL (median) renter
+# household. One number per place. Useful -- but it hides everyone who is
+# not the typical household. A county where the median renter pays 29%
+# looks "fine" even if a third of renters pay over half their income.
+#
+# The researcher's move is to ask about the DISTRIBUTION: what share of
+# renter households pay 30% or more? For that we need a count table:
+#
+#   B25070 -- "Gross Rent as a Percentage of Household Income"
+#   Universe (line 001): renter-occupied housing units
+#
+#   B25070_001  total renter households        <- the universe
+#   B25070_002  paying < 10% of income
+#     ... (buckets climb in steps) ...
+#   B25070_007  paying 30.0 - 34.9%            <- burdened starts here
+#   B25070_008  paying 35.0 - 39.9%
+#   B25070_009  paying 40.0 - 49.9%
+#   B25070_010  paying 50% or more             <- "severe" burden
+#   B25070_011  not computed (no cash rent, or no income reported)
+#
+# Our measure: (007 + 008 + 009 + 010) / 001 -- the share of renter
+# households at or past the 30% cost-burden line. This is a measure the
+# Eviction Research Network actually uses, and you are about to build it
+# from scratch.
+#
+# One more new idea tonight: GEOGRAPHY. So far we compared counties. But
+# displacement is a neighborhood story, so we drop down to CENSUS TRACTS
+# -- small areas of roughly 1,200 to 8,000 people (about 4,000 on
+# average) that the Census designs to approximate neighborhoods. Same
+# get_acs(), one new value in the geography slot.
 
-indiana_evictions %>%
-  group_by(county, year) %>%
-  summarize(
-    evictions = sum(filings),
-    renters = first(co_totrent) # use first() to get the first value in the group
-  )
+# ==========================================================================
+# 3. Pulling several variables at once
+# ==========================================================================
+# We need six variables, so we hand get_acs() a c() vector of codes --
+# exactly like the county vectors from lab 2, just with variable codes.
+# Good practice you should copy: comment every code with its plain-English
+# meaning. Your future self will thank you; so will your grader.
 
-# now we can calculate eviction rates
-in_rates <- 
-  indiana_evictions %>%
-  group_by(county, year) %>%
-  summarize(
-    evictions = sum(filings),
-    renters = first(co_totrent),
-    county_geoid = first(paste(state_code, county_code, sep = "")) # use first() to get the first value in the group
-  ) %>%
-  mutate(
-    eviction_rate = evictions / renters
-  )
-
-in_rates
-
-in_rates %>% filter(eviction_rate == max(in_rates$eviction_rate))
-summary(in_rates)
-
-in_rates %>% arrange(desc(eviction_rate))
-
-# Now lets attach percent black renters and total renters by
-# county from the census to the eviction rates.
-# First we have to get the table numbers from the census
-vars_acs5_2022 <- load_variables(2022, 'acs5', cache = TRUE)
-View(vars_acs5_2022)
-# search for "Tenure (Black" to find the right table.
-
-co_census <- get_acs(
-  geography = "county",
-  variables = c("black_renters" = "B25003B_003", "total_renters" = "B25003_003"),
-  state = "IN"
-) %>%
-pivot_wider(
-    names_from = variable,
-    values_from = estimate
+rb_vars <- c(
+  "B25070_001",  # total renter households (the universe)
+  "B25070_007",  # paying 30.0 - 34.9% of income on rent
+  "B25070_008",  # paying 35.0 - 39.9%
+  "B25070_009",  # paying 40.0 - 49.9%
+  "B25070_010"   # paying 50% or more
 )
 
-co_census
+rb_vars
 
-#### Why did it give us NA's? ####
-# Because the MOE also has unique values for each estimate and therefore takes 
-# account for these unique values when pivoting wider.
+# Now the pull. Compare this call to lab 1's: the only NEW thing is
+# geography = "tract" plus naming a county. (A whole state of tracts is a
+# big download -- one county is plenty, and kinder to the DataHub.)
+# We use Alameda County -- home of Oakland and Berkeley.
 
-# Let's do this again and remove these unique values before we pivot wider. 
-
-co_census <- get_acs(
-  geography = "county",
-  variables = c("black_renters" = "B25003B_003", "total_renters" = "B25003_003"),
-  state = "IN"
-) %>%
-select(-NAME, -moe) %>%
-pivot_wider(
-    names_from = variable,
-    values_from = estimate
+alameda_raw <- get_acs(
+  geography = "tract",       # one row per census tract now, not county
+  variables = rb_vars,       # our commented vector of codes
+  state     = "CA",
+  county    = "Alameda",
+  year      = 2023
 )
 
-co_census
+# Meet the data, lab-1 style:
 
-# Now let's save this file. 
-# We can save it in several different ways — pick based on who needs the file next:
-# 1. CSV (comma separated values): readable by Excel, Python, Stata, etc. — best for
-#    *sharing* across tools. Large tables can get big; types (dates, categories) may
-#    not round-trip perfectly.
-# 2. RDS (below): base R — reliable fallback if qs2 is unavailable; also fine for
-#    small objects you may share with non-qs2 workflows (qs2 can convert to RDS).
-# 3. qs2: qs2::qs_save() / qs2::qs_read() on .qs2 files — default for large ERN
-#    extracts in R; see the eviction load block at the top of this lab.
-getwd() # shows me where R's working directory is currently pointing. 
-write_csv(co_census, file.path(repo_root, "data/in_co_renters.csv"))
+alameda_raw
+nrow(alameda_raw)
 
-###############################################################################
-# Paths and Directories in R
-# 
-# When you save a file in R, you need to tell your computer where you want that 
-# file to go. Computers organize files in folders, which we call directories in
-# coding. A path is just the “address” that tells R how to find a specific file 
-# or folder.
-# 
-# A directory is like a folder on your computer.
-# 
-# A path shows the route to a file or folder. For example, the path
-# ~/SOC-N100-Housing-Precarity-2026/data/in_co_renters.csv
-# tells R to look inside several folders, one inside another, until it finds 
-# (or creates) the file called in_co_renters.csv.
-# 
-# R always “starts” in a certain directory called the working directory. You can
-# see what that is by using:
-#   
-# getwd()
-# 
-# If you give a path that starts with ~, it means “start at my home directory” 
-# (the main folder for your user account).
-###############################################################################
-
-# You can also save R objects to disk so you can reload them without re-running
-# expensive queries. Base R provides saveRDS() / readRDS() for this.
+# 1,895 rows. Why so many? Alameda County has 379 tracts, and we asked
+# for 5 variables: 379 x 5 = 1,895. Every tract-variable pair gets its
+# OWN ROW. Look at the printout: the same tract appears five times, once
+# per variable, stacked vertically.
 #
-# As a researcher, treat the file format as part of your methods: note in your
-# README or appendix which format you used (.rds, .csv, .qs2, etc.) and which
-# R package versions produced the file. Collaborators — and you, years later —
-# need that metadata to reopen your objects reproducibly.
-saveRDS(co_census, file.path(repo_root, "data/in_co_renters.rds"))
+# This shape is called LONG data. The Census always hands you long data.
 
-# Now lets merge the census data to the eviction rates
-in_rates <- 
-  in_rates %>%
-  left_join(co_census, by = c("county_geoid" = "GEOID"))
+# ==========================================================================
+# 4. Reshaping: pivot_wider()
+# ==========================================================================
+# For math BETWEEN variables ("add columns 007 through 010, divide by
+# 001") we want each tract on ONE row with the five variables side by
+# side as COLUMNS. That shape is called WIDE data.
+#
+# The verb that goes from long to wide is pivot_wider(). It needs to know
+# two things:
+#   names_from  = which column holds the future COLUMN NAMES
+#   values_from = which column holds the future CELL VALUES
+#
+# Try the obvious version first:
 
-in_rates
-
-# we can use glimpse to get a better view of the variables
-glimpse(in_rates)
-
-# This is interesting, but what's the rate of Black evictions?
-# To do this, we need the number of Black evictions and black renters.
-# We can get the number of Black evictions from the evictions data.
-
-in_rates <- 
-  indiana_evictions %>%
-  group_by(county, year) %>%
-  summarize(
-    evictions = sum(filings),
-    black_evictions = sum(black_head),
-    renters = first(co_totrent),
-    county_geoid = first(paste(state_code, county_code, sep = "")) # use first() to get the first value in the group
-  ) %>%
-  mutate(
-    eviction_rate = evictions / renters
-  ) %>%
-  left_join(co_census, by = c("county_geoid" = "GEOID")) %>% 
-  mutate(
-    eviction_rate = evictions / renters,
-    black_eviction_rate = black_evictions / black_renters,
-    p_black_renters = black_renters / total_renters
+alameda_messy <- alameda_raw %>%
+  pivot_wider(
+    names_from  = variable,
+    values_from = estimate
   )
 
-glimpse(in_rates)
-# Notice that renters is higher than total_renters. This is because renters
-# is summed from tract estimates while total_renters is the number of
-# renters in the county. This shows differences in how census data is estimated.
+alameda_messy
+nrow(alameda_messy)
 
-# Let's now clean up the data a little.
-in_rates_clean_2019 <- in_rates %>%
-  select(
-    county,
-    year,
-    eviction_rate,
-    black_eviction_rate,
-    p_black_renters
+# Something is wrong. We expected 379 rows -- one per tract -- and got
+# 1,793, riddled with NA (R's symbol for "missing"). This is the single
+# most common reshaping accident in Census work, so let's understand it
+# instead of fearing it.
+#
+# The culprit is the moe column we ignored. Each of a tract's five rows
+# has a DIFFERENT margin of error, so R sees five rows that do NOT match,
+# refuses to merge them, and gives each its own half-empty row. R did
+# exactly what we asked; we just asked badly. No error message, either --
+# which is why you always LOOK at your data after every step.
+#
+# The fix: drop moe (with select's minus sign, from lab 2) BEFORE
+# pivoting, so the rows collapse cleanly:
+
+alameda_wide <- alameda_raw %>%
+  select(-moe) %>%          # set the margin-of-error column aside
+  pivot_wider(
+    names_from  = variable,
+    values_from = estimate
+  )
+
+alameda_wide
+nrow(alameda_wide)
+
+# 379 rows, one per tract, five tidy columns of counts. (We will come
+# back to what dropping moe costs us at the end of the lab -- it is not
+# free, just deferred.)
+
+# YOUR TURN (2): in the Console, run  alameda_wide %>% View()  and scroll.
+# Every column after NAME should be a whole-number count of households.
+# Which tract number is the FIRST row, and how many total renter
+# households does it have (the B25070_001 column)?
+# [PUT YOUR ANSWER BELOW AS A COMMENT]
+#
+
+# ==========================================================================
+# 5. Building the measure with mutate()
+# ==========================================================================
+# Now the payoff, and it is two lines of arithmetic. mutate() (from lab 2)
+# adds new columns computed from existing ones:
+
+alameda_rb <- alameda_wide %>%
+  mutate(
+    rb_count = B25070_007 + B25070_008 + B25070_009 + B25070_010,
+    p_rb     = rb_count / B25070_001    # divide by the UNIVERSE (rule!)
+  )
+
+# Look at what we made (select keeps the printout readable):
+
+alameda_rb %>%
+  select(NAME, B25070_001, rb_count, p_rb)
+
+# p_rb is a PROPORTION: 0.45 means 45% of that tract's renter households
+# are rent-burdened. Let's inspect it the way a researcher would:
+
+summary(alameda_rb$p_rb)
+
+# Read that summary line slowly -- three things worth noticing:
+#
+#   1. The MEDIAN is about 0.46: in the typical Alameda County tract,
+#      nearly HALF of renter households are rent-burdened. Sit with that.
+#   2. Min is 0 and Max is 1 -- a proportion must live between 0 and 1.
+#      If you ever see 1.4 or -0.2, you broke the universe rule (wrong
+#      denominator) -- go back and check your _001.
+#   3. There are 2 NA's. Two tracts have no value at all. Why?
+
+alameda_rb %>%
+  filter(is.na(p_rb)) %>%
+  select(NAME, B25070_001, rb_count, p_rb)
+
+# Both tracts have ZERO renter households -- so p_rb was 0 divided by 0,
+# which is not a number. (One of these "tracts" is mostly open water on
+# the Bay; the Census keeps a tract for it anyway.) Dividing by zero
+# happens constantly in real data. The fix is if_else(): a function that
+# picks between two values based on a yes/no question --
+#   if_else(test, value_if_yes, value_if_no)
+
+alameda_rb_clean <- alameda_rb %>%
+  mutate(
+    p_rb = if_else(is.na(p_rb), 0, p_rb)
+    #      if p_rb is missing -> use 0; otherwise -> keep p_rb as is
+  )
+
+summary(alameda_rb_clean$p_rb)
+
+# No more NA's. Note we saved the fixed table under a NEW name instead of
+# overwriting alameda_rb. Habit worth copying: when a step CHANGES your
+# data, give the result a new name. If something looks wrong later, you
+# can walk back through the chain of objects and find where it broke.
+
+# ==========================================================================
+# 6. Two new verbs: summarize() and group_by()
+# ==========================================================================
+# --------------------------------------------------------------------------
+# 6.1 summarize(): boil many rows down to one
+# --------------------------------------------------------------------------
+# filter() and mutate() keep one row per tract. summarize() COLLAPSES the
+# whole table into a single summary row. You name the new columns and say
+# how to compute each one:
+
+alameda_rb_clean %>%
+  summarize(
+    tracts    = n(),              # n() counts rows -- no inputs needed
+    avg_p_rb  = mean(p_rb),
+    median_rb = median(p_rb)
+  )
+
+# 379 tracts, average tract burden share around 45%.
+
+# --------------------------------------------------------------------------
+# 6.2 group_by(): summarize within groups
+# --------------------------------------------------------------------------
+# summarize() gets truly powerful when you group first. group_by() by
+# itself changes nothing you can see -- it just tags the table with "when
+# you summarize, do it PER GROUP."
+#
+# Let's ask: how many tracts are MAJORITY-burdened -- where more than
+# half of renter households pass the 30% line? First mutate a category,
+# then group by it, then count:
+
+alameda_rb_clean %>%
+  mutate(
+    burden_level = if_else(p_rb > 0.5, "majority burdened", "less than half")
   ) %>%
-  filter(year == 2019)
+  group_by(burden_level) %>%
+  summarize(tracts = n())
 
-in_rates_clean_2019
+# 152 of Alameda County's 379 tracts -- two of every five neighborhoods --
+# have a MAJORITY of renter households rent-burdened. That single table
+# is a finding you could put in front of a county supervisor.
 
-# How can we compare the eviction rate to the Black eviction rate?
-# We can make a scatter plot of the two variables.
-ggplot(
-  in_rates_clean_2019, 
-  aes(x = eviction_rate, y = black_eviction_rate)
+# YOUR TURN (3): copy the chunk above and change the 0.5 threshold to
+# __ (try 0.3). How many tracts have more than 30% of renters burdened?
+# What happens to the story you would tell?
+# [PUT YOUR ANSWER BELOW]
+
+
+# ==========================================================================
+# 7. Seeing the whole distribution: your first histogram
+# ==========================================================================
+# A summary table is one number; a HISTOGRAM shows the whole spread. It
+# chops p_rb's range into bins and draws one bar per bin, as tall as the
+# number of tracts that land in it. Build it in layers, lab-1 style.
+#
+# Base + bars (a histogram needs only an x -- the heights are computed):
+
+ggplot(alameda_rb_clean, aes(x = p_rb)) +
+  geom_histogram()
+
+# It works, and R prints a message: it guessed 30 bins and is telling you
+# to pick a better value. (Remember: a message is not an error.) Take
+# control of the bins -- one new input:
+
+ggplot(alameda_rb_clean, aes(x = p_rb)) +
+  geom_histogram(bins = 25)
+
+# Bar colors: fill for the inside, color for the outline (the outline
+# makes adjacent bars readable):
+
+ggplot(alameda_rb_clean, aes(x = p_rb)) +
+  geom_histogram(bins = 25, fill = "steelblue", color = "white")
+
+# Labels and the clean theme, exactly like lab 1:
+
+ggplot(alameda_rb_clean, aes(x = p_rb)) +
+  geom_histogram(bins = 25, fill = "steelblue", color = "white") +
+  labs(
+    title    = "Rent burden across Alameda County neighborhoods",
+    subtitle = "Share of renter households paying 30%+ of income, by tract (2019-2023 ACS)",
+    x        = "Share of renter households rent-burdened",
+    y        = "Number of tracts",
+    caption  = "Source: ACS 5-year, table B25070."
   ) +
-  geom_point() +
-  theme_minimal() +
-  geom_smooth(method = "loess") +
-  # geom_smooth(method = "lm", se = FALSE) +
-  # geom_smooth(method = "gam", se = FALSE) +
-  # geom_smooth(method = "glm", se = FALSE) +
+  theme_minimal()
+
+# Last layer: mark the median so readers can anchor themselves. In lab 1
+# the line was vertical at a value we chose (30); here we COMPUTE where
+# the line goes:
+
+rb_hist <- ggplot(alameda_rb_clean, aes(x = p_rb)) +
+  geom_histogram(bins = 25, fill = "steelblue", color = "white") +
+  geom_vline(xintercept = median(alameda_rb_clean$p_rb), linetype = "dashed") +
   labs(
-    title = "Eviction Rate vs Black Eviction Rate in Indiana",
-    x = "Eviction Rate",
-    y = "Black Eviction Rate"
-  )
+    title    = "Rent burden across Alameda County neighborhoods",
+    subtitle = "Share of renter households paying 30%+ of income, by tract (2019-2023 ACS)",
+    x        = "Share of renter households rent-burdened",
+    y        = "Number of tracts",
+    caption  = "Source: ACS 5-year, table B25070. Dashed line = median tract."
+  ) +
+  theme_minimal()
 
-in_rates %>% summary()
-in_rates %>% glimpse()
-in_rates %>% filter(is.infinite(black_eviction_rate)) %>% data.frame() %>% head()
-in_rates %>% filter(is.infinite(black_eviction_rate)) %>% summary()
+rb_hist
 
-# Let's make an adjustment to there being zero black renters in some counties by making the black eviction count zero as well. I'll first copy the code from above and manipulate it here. 
+ggsave("lab3_alameda_rent_burden.png", rb_hist, width = 8, height = 5)
 
-in_rates_adj <- 
-  indiana_evictions %>%
-  group_by(county, year) %>%
-  summarize(
-    evictions = sum(filings),
-    black_evictions = sum(black_head),
-    renters = first(co_totrent),
-    county_geoid = first(paste(state_code, county_code, sep = "")) # use first() to get the first value in the group
-  ) %>%
-  mutate(
-    eviction_rate = evictions / renters
-  ) %>%
-  left_join(co_census, by = c("county_geoid" = "GEOID")) %>%
-  mutate(
-    black_evictions = if_else(black_renters == 0, 0, black_evictions),
-    eviction_rate = evictions / renters,
-    black_eviction_rate = black_evictions / black_renters,
-    p_black_renters = black_renters / total_renters
-  )
+# How to read it: the mass of tracts sits between roughly 0.35 and 0.55,
+# the dashed median line lands just under 0.46, and a tail of
+# neighborhoods stretches toward 0.8 and beyond. Rent burden in Alameda
+# County is not a few bad blocks -- it is the ordinary condition of
+# renting, with some neighborhoods in outright crisis.
+#
+# A DATA HUMILITY note before you trust any single tract: we dropped moe
+# to make the pivot work, but tract-level counts have LARGE margins of
+# error -- far larger, relatively, than the county numbers from lab 1
+# (fewer surveyed households per tract). The overall SHAPE of this
+# histogram is trustworthy; the exact value of any one tract is not.
+# Rule of thumb for this course: use tracts to see patterns, not to
+# rank individual neighborhoods against each other.
 
-in_rates_adj %>% filter(is.infinite(black_eviction_rate)) %>% data.frame() %>% head()
-in_rates_adj %>% filter(is.infinite(black_eviction_rate)) %>%summary()
+# ==========================================================================
+# 8. YOUR TURN (4): build it for a county you care about
+# ==========================================================================
+# Rebuild the whole measure, start to finish, for another county --
+# ideally the place you are eyeing for Assignment 1 and beyond. Fill the
+# two blanks, then run each step:
 
-clean_in_rates_adj_2019 <- 
-  in_rates_adj %>% 
-  select(
-    county,
-    year,
-    eviction_rate,
-    black_eviction_rate,
-    p_black_renters
-  ) %>%
-  filter(year == 2019)
+my_county_raw <- get_acs(
+  geography = "tract",
+  variables = rb_vars,     # the same commented vector -- reuse is the point
+  state     = "__",
+  county    = "__",
+  year      = 2023
+)
 
-ggplot(
-  clean_in_rates_adj_2019, 
-  aes(x = eviction_rate, y = black_eviction_rate)
-) +
-  geom_point() +
-  theme_minimal() +
-  geom_smooth(method = "loess") +
-  # geom_smooth(method = "lm", se = FALSE) +
-  # geom_smooth(method = "gam", se = FALSE) +
-  # geom_smooth(method = "glm", se = FALSE) +
-  labs(
-    title = "Eviction Rate vs Black Eviction Rate in Indiana",
-    x = "Eviction Rate",
-    y = "Black Eviction Rate"
-  )
-
-# We could also look at black evictions relative to the black population.
-
-# How can we compare the eviction rate to the Black eviction rate?
-# We can make a scatter plot of the two variables.
-ggplot(clean_in_rates_adj_2019, aes(x = p_black_renters, y = black_eviction_rate)) +
-  geom_point() +
-  geom_smooth(method = "loess", se = FALSE) +
-  # geom_smooth(method = "lm", se = FALSE) +
-  # geom_smooth(method = "gam", se = FALSE) +
-  # geom_smooth(method = "glm", se = FALSE) +
-  theme_minimal() +
-  labs(
-    title = "Neighborhood Percent Black vs Black Eviction Rate in Indiana",
-    x = "Percent Black Renters",
-    y = "Black Eviction Rate"
-  )
+# (a) Reshape it: drop moe, pivot wider (copy from Section 4).
 
 
+# (b) Build rb_count and p_rb with mutate, and fix any NA's with if_else
+#     (copy from Section 5). Check summary(): are you inside 0 and 1?
 
 
-# summarize() vs reframe()
-# -----------------------------------------------------------------------------
-# summarize() and reframe() are both used to aggregate data, but they have key differences:
-
-# summarize():
-# - Returns exactly one row per group
-# - Best for calculating single summary statistics per group
-# - Automatically drops grouping levels after summarizing
-# Example: Getting average evictions per county
-avg_evictions_county <-
-  indiana_evictions %>%
-  group_by(county) %>%
-  summarize(
-    avg_evictions = mean(filings, na.rm = TRUE),
-    total_evictions = sum(filings)
-  ) # Returns one row per county
-
-avg_evictions_county
-
-# Plot average evictions per county
-ggplot(avg_evictions_county, aes(x = reorder(county, avg_evictions), y = avg_evictions)) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  theme_minimal() +
-  labs(
-    title = "Average Evictions per County in Indiana",
-    x = "County",
-    y = "Average Evictions"
-  )
-
-# reframe():
-# - Can return any number of rows per group
-# - Better for calculations that may produce multiple rows
-# - Preserves grouping structure
-# Example: Getting quarterly eviction counts
+# (c) How many of your tracts are majority-burdened? (Section 6.2.)
 
 
-# Add quarter and year columns based on plot_date
-indiana_evictions %>%
-  group_by(county, year) %>%
-  reframe(
-    quarter = 1:4,
-    evictions = rep(sum(filings)/4, 4) # Simplified example dividing yearly total into quarters
-  )
+# (d) Make the histogram with a median line and ggsave it (Section 7).
 
 
-# Key takeaway:
-# - Use summarize() when you want one summary row per group
-# - Use reframe() when your calculation might return multiple rows per group
+# (e) In one or two sentences: how does your county's distribution
+#     compare to Alameda's? Higher? Wider? Any surprises?
+# [PUT YOUR ANSWER BELOW]
+#
 
-######################################################################
-######################################################################
-######################################################################
-# END CODE
-######################################################################
-######################################################################
-######################################################################
+# ==========================================================================
+# 9. Assignment 1: exactly what to do (due Monday July 27, 5pm)
+# ==========================================================================
+# A1 is deliberately SIMPLER than what you just did. From the syllabus:
+#
+#   Pick a county, set of counties, or region you care about -- you will
+#   keep working with this same area all term.
+#     1. Use get_acs() to pull ONE ACS variable that says something about
+#        housing precarity (rent burden, median rent, share who rent...).
+#     2. Make ONE chart of it (a bar chart across your counties works).
+#     3. Write 2-3 sentences describing what the chart shows and anything
+#        that surprised you.
+#   Submit: your R script, the chart image, your sentences, and the
+#   public share link(s) for any AI conversations you used. Keep it
+#   simple -- no bibliography needed yet.
+#
+# Everything A1 needs, you learned in labs 1 and 2. Tonight's
+# measure-building is where Assignment 2 goes next (A2 asks you to
+# COMBINE variables into a measure for your area -- what we just did).
+#
+# Now open the model answer:  code/a1_example.R  -- a complete A1
+# submission for five Washington counties, with the interpretation
+# sentences and the AI-citation format shown inline. Read it top to
+# bottom, run it, then swap in your own place and variable.
+#
+# Grader's checklist (this is literally what gets checked):
+#   [ ] Script runs top to bottom on the DataHub with no edits
+#   [ ] The chart has a title, labeled axes, and a source caption
+#   [ ] The chart file is saved with ggsave() and attached
+#   [ ] 2-3 honest sentences -- describe, then interpret
+#   [ ] AI share links pasted as comments next to the code they helped
+#
+# ==========================================================================
+# 10. What you can do now (and what's next)
+# ==========================================================================
+# Tonight you learned to:
+#   - read a Census table code: table + line, dollars vs. counts
+#   - respect the universe rule (divide by the table's own _001, always)
+#   - pull many variables for many places at tract level
+#   - reshape long data to wide with select(-moe) + pivot_wider()
+#   - build a real measure with mutate() and guard it with if_else()
+#   - collapse rows with summarize(), by group with group_by(), count
+#     with n()
+#   - draw and read a histogram, and mark its median
+#   - distrust any single tract estimate (and say why)
+#
+# NEXT LAB (Tue Jul 28): we leave the Census for the first time. You will
+# load eviction filings data collected by the Eviction Research Network
+# -- court records, not surveys -- join it TO census data, and compute
+# eviction rates. Hard displacement meets soft displacement, in one table.
+#
+# Between labs: start Assignment 1 tonight if you can. Twenty minutes
+# while lab 3 is fresh beats two hours on Sunday. Errors? Same drill as
+# always -- read it out loud, paste the full message to your AI, ask for
+# the explanation before the fix, keep the share link.
+# ==========================================================================

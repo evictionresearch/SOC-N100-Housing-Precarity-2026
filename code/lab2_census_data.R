@@ -1,444 +1,424 @@
-# =============================================================================
-# Week 2 R In Class Exercise: How do we measure soft displacement drivers?
-# In this week's exercise, we will be working with the American Community Survey
-# (ACS) data to measure soft displacement drivers. We will be using the tidycensus
-# package to retrieve data from the US Census Bureau.
-# =============================================================================
-
+# ==========================================================================
+# Lab 2: Finding the data you need -- income, race, and place
+# SOC-N100: Housing Precarity and Displacement | Summer 2026
+# Instructor: Tim Thomas
+# ==========================================================================
 #
-# Install packages and options
-# -----------------------------------------------------------------------------
-# Before we start, we need to install and load the necessary packages for this
-# exercise. See code/README.md for the two-layer package pattern.
-source("code/course_paths.R")
-source("code/course_packages.R")
-load_pkgs("tidyverse", "tidycensus")
-
-# Census API key: set up once in lab 1 (saved to ~/.Renviron on DataHub).
-
-# The first thing we want to do is load some variables in R that we will use to
-# look at some neighborhood conditions related to displacement.
-
+# Last week you learned the full loop: pull data with get_acs(), question
+# it with verbs, chart it with ggplot(). But we handed you the variable
+# ("B25071_001"). Tonight you learn to find ANY variable yourself, pull
+# several at once, and use them to see one of the engines of soft
+# displacement: the gap between what people earn and what their area costs.
 #
-# Load household income and race data
-# -----------------------------------------------------------------------------
-# First, let's find the variable for median household income in the
-# American Community Survey (ACS) data.
-vars_2022 <- load_variables(2022, "acs5")
-View(vars_2022)
-# In the table, look for the key word "Median Household" and notice how
-# there are different tables and combinations of tables.
+# By the end of tonight you will have:
+#   1. Searched the Census's giant variable catalog on your own.
+#   2. Turned median income into HUD's income tiers with a new verb, mutate().
+#   3. Compared incomes across race in one county -- and seen why
+#      "low income" only makes sense relative to a PLACE.
+#
+# Quick recap of the moves you already own (lab 1):
+#   name <- value        save an object          filter()   keep rows
+#   c(...)               combine values          arrange()  sort rows
+#   get_acs(...)         pull Census data        select()   keep columns
+#   %>%                  "and then"              ggplot()   chart in layers
+#
+# As always: read the # comments (the lecture), run the code lines (the
+# practice), one at a time.
 
-# Get county-level area median household income (AMI) data from ACS
-sf_median_income <- get_acs(
+# ==========================================================================
+# 1. Setup (30 seconds now that lab 1 is done)
+# ==========================================================================
+# You installed tidycensus and saved your Census key in lab 1, so R
+# remembers both. From now on, every lab starts with just these two lines:
+
+library(tidyverse)
+library(tidycensus)
+
+# (If R says "there is no package called 'tidycensus'", you are probably on
+# a fresh account -- run install.packages("tidycensus") once, then the
+# library() line again. If get_acs() later complains about a missing key,
+# redo the census_api_key() step from lab 1, section 6.)
+
+# ==========================================================================
+# 2. The catalog: every variable the ACS knows
+# ==========================================================================
+# The American Community Survey publishes THOUSANDS of variables. Nobody
+# memorizes the codes -- researchers look them up in a catalog table, and
+# tidycensus will hand you that catalog with load_variables().
+#
+# Its two basic inputs: which year, and which dataset. "acs5" means the
+# 5-year ACS -- the same pooled version we used in lab 1:
+
+vars_2023 <- load_variables(2023, "acs5")
+
+# How big is this catalog?
+
+nrow(vars_2023)
+
+# About 28,000 rows -- one per variable. Open it like any table:
+
+View(vars_2023)
+
+# Three columns matter:
+#   name    = the code you give get_acs()  (e.g., "B19013_001")
+#   label   = what the number measures, in Census-speak
+#   concept = the topic of the whole table it belongs to
+#
+# HOW TO SEARCH: in the View() tab, use the search box (top right of the
+# tab) and type:   median household income
+# Scroll until you find the plain version -- concept "Median Household
+# Income in the Past 12 Months" -- with name B19013_001. That code has an
+# anatomy you will see everywhere:
+#
+#     B19013     _    001
+#     the TABLE       the LINE (row) within that table
+#
+# You will also spot near-twins (B19019, B25119, ...). This is the #1 way
+# Census work goes wrong: grabbing a lookalike table. Slow down and read
+# the label AND concept before you copy a code. We will practice.
+
+# YOUR TURN (1): use the search box to find the code for
+# "Median Gross Rent" (the typical rent, in dollars). Write the code you
+# found in a comment below. Hint: its concept is exactly Median Gross Rent
+# (Dollars), and gross rent lives in the B25xxx housing tables.
+# [PUT YOUR ANSWER BELOW]
+#
+
+# ==========================================================================
+# 3. Area Median Income (AMI) -- one county
+# ==========================================================================
+# In lab 1 we pulled every county in a state. Tonight's new get_acs()
+# input: county = "..." narrows the pull to counties you name. One new
+# thing at a time -- same call as lab 1, plus the county line:
+
+sf_income <- get_acs(
   geography = "county",
-  variables = "B19013_001",  # Median household income
-  year = 2022,
-  state = "CA",
-  county = "San Francisco"
+  variables = "B19013_001",       # median household income (you just found it)
+  state     = "CA",
+  county    = "San Francisco",
+  year      = 2023
 )
 
-# Lets look at the different columns in the data.
-sf_median_income
+sf_income
 
-# GEOID is the unique identifier for the county.
-# NAME is the name of the county.
-# B19013_001 is the median household income.
-# estimate is the value of the median household income.
-# moe is the margin of error for the estimate.
+# One row: San Francisco County, estimate 141446. The median -- half of SF
+# households earn more, half earn less. Researchers call this the AREA
+# MEDIAN INCOME (AMI) when they use it as a local yardstick.
+#
+# (If you compared notes with lab 1's income exercise you might notice
+# slightly different numbers there. Those were the 2022 estimates; these
+# are 2023. The ACS re-estimates every year -- one more reason we always
+# say the year out loud.)
+#
+# Remember HUD's income tiers from lab 1, which you computed by hand?
+#   80% of AMI = low income
+#   50% of AMI = very low income
+#   30% of AMI = extremely low income
+#
+# --------------------------------------------------------------------------
+# 3.1 mutate(): a new verb -- add a column
+# --------------------------------------------------------------------------
+# mutate() creates a NEW column, computed from existing ones. In its basic
+# form: mutate(new_column_name = a formula). Let's add the low-income line:
 
-# One way to look at low-income households is to break median income
-# into meaningful brackets.
-# - Low-income (<80% AMI)
-# - Middle-income (80-120% AMI)
-# - High-income (>120% AMI)
+sf_income %>%
+  mutate(low_income = estimate * 0.8)
 
-# We can do this by using the "mutate" function in tidyverse.
-sf_ami <- sf_median_income %>%
+# Look at the printout: same row, one new column on the end. (Scroll the
+# Console printout right, or pipe into View().) The original sf_income is
+# unchanged -- we printed a view, we did not save.
+#
+# mutate() happily makes several columns in one call -- one per line, each
+# with its own formula, separated by commas:
+
+sf_ami <- sf_income %>%
   mutate(
-  # Calculate low income threshold as 80% of median income estimate
-  low_income = estimate * .8,
-  # Calculate high income threshold as 120% of median income estimate
-  high_income = estimate * 1.2
+    low_income     = estimate * 0.8,   # HUD: low income
+    very_low       = estimate * 0.5,   # HUD: very low income
+    extremely_low  = estimate * 0.3    # HUD: extremely low income
   )
 
-sf_ami
-######################################################################
-# Why do we use this AMI bracket? Well, the federal government defines "poverty"
-# for a single person as $12,880. This is 100% of the federal poverty level.
-# $12,880 is considered incredibly "low-income" by all means, however, the cost
-# of living in a particular area varies widely. For example, $13k in Mississippi
-# might go further than it would in San Francisco. To understand the local
-# conditions, we use the federal governments definition of "low income" as 80%
-# of the median income. Using the local AMI as a reference point, we can then
-# define "low income" relative to the conditions in which a household lives.
-# So, we can see that "Low-income" is $109,351. Let's see what it is in
-# Jackson, Mississippi.
-######################################################################
+# We saved it this time (the arrow), so print it, keeping just the columns
+# that tell the story:
 
-# Get median household income for Jackson, Mississippi
-jackson_median_income <-
-  get_acs(
-    geography = "county",
-    variables = "B19013_001",  # Median household income
-    year = 2022,
-    state = "Mississippi",
-    county = "Hinds"
-  ) %>%
+sf_ami %>%
+  select(NAME, estimate, low_income, very_low, extremely_low)
+
+# Read it out loud: in San Francisco, a household earning $113,157 a year
+# is LOW INCOME by HUD's standard. $70,723 is VERY low. Sit with that.
+
+# YOUR TURN (2): copy the pattern -- pull B19013_001 for one of the other
+# Bay Area counties from lab 1's exercise (San Mateo, Santa Clara, Alameda,
+# Contra Costa, or Marin) and mutate all three HUD tiers. Does R's answer
+# roughly match what you computed by hand in lab 1? (Vintages differ --
+# lab 1's figures were 2022 -- so "close" is the right expectation.)
+# [PUT YOUR CODE BELOW]
+
+
+# ==========================================================================
+# 4. Why "low income" must be LOCAL
+# ==========================================================================
+# The federal poverty line is one national number -- the same whether you
+# live in San Francisco or Jackson, Mississippi. But the cost of living is
+# not the same, which is exactly why HUD pegs its tiers to the LOCAL
+# median instead. Watch what happens when we put a Deep South county next
+# to San Francisco. Hinds County, Mississippi holds Jackson, the state
+# capital:
+
+hinds_ami <- get_acs(
+  geography = "county",
+  variables = "B19013_001",
+  state     = "MS",
+  county    = "Hinds",
+  year      = 2023
+) %>%
   mutate(
-    low_income = estimate * .8,
-    high_income = estimate * 1.2
+    low_income     = estimate * 0.8,
+    very_low       = estimate * 0.5,
+    extremely_low  = estimate * 0.3
   )
 
-# Let's now compare the two by combining the rows
-combined_ami <-
-  bind_rows(sf_ami, jackson_median_income) %>%
-  rename(ami = estimate) # Rename the estimate column to AMI
+# (New trick, no new ideas: we piped get_acs() STRAIGHT into mutate() --
+# pull, and then compute. You will see this pull-then-clean pattern
+# everywhere from now on.)
+#
+# --------------------------------------------------------------------------
+# 4.1 bind_rows(): stack tables
+# --------------------------------------------------------------------------
+# Two tables with the same columns can be stacked into one -- that is all
+# bind_rows() does:
 
-combined_ami
+two_counties <- bind_rows(sf_ami, hinds_ami)
 
-######################################################################
-# Note: You will develop your own style of coding, which includes
-# variable naming conventions. It is important to be consistent in your naming.
-# I recommend keeping variable names short and descriptive, and lowercase.
-# Never use a space in your variable name, use an underscore instead. This can
-# cause issues in some programming languages.
-######################################################################
+two_counties %>%
+  select(NAME, estimate, low_income, very_low, extremely_low)
 
-# Let's turn back to San Francisco and compare low-income AMI by Race
-# First we need to take a look at our table again and find the
-# right variables.
-View(vars_2022)
-# Search again for "Median Household Income" and look for race.
-# We will use the following variables:
-# - B19013_001: Total median household income
-# - B19013A_001: White alone
-# - B19013B_001: Black alone
-# - B19013D_001: Asian alone
-# - B19013I_001: Hispanic/Latino
+# Read across the rows. Hinds County's overall median income (49966) is
+# BELOW San Francisco's "very low income" line (70723). The same dollar
+# income can mean a stable life in one county and housing precarity in
+# another. That is why every measure this course builds starts from local
+# context -- and why a national poverty line misses so much.
+
+# ==========================================================================
+# 5. Several variables at once: income by race
+# ==========================================================================
+# Median income for everyone hides who sits where. The Census publishes
+# B19013 again for each race/ethnicity group -- same table, with a letter:
+#
+#   B19013A = White alone            B19013D = Asian alone
+#   B19013B = Black alone            B19013I = Hispanic or Latino
+#
+# (You can see the full A-I list by searching B19013 in the catalog. Two
+# cautions we will come back to in this course: these groups are how the
+# Census asks about race and ethnicity, and "White alone" overlaps with
+# "Hispanic or Latino" -- a person can be counted in both. Keep that in
+# mind whenever you compare groups.)
+#
+# --------------------------------------------------------------------------
+# 5.1 A vector of variables
+# --------------------------------------------------------------------------
+# get_acs() accepts a c() vector of codes -- remember c() from lab 1.
+# Start with just two, total and White alone:
+
+get_acs(
+  geography = "county",
+  variables = c("B19013_001", "B19013A_001"),
+  state     = "CA",
+  county    = "San Francisco",
+  year      = 2023
+)
+
+# Two rows now -- one per variable -- and the "variable" column tells you
+# which is which. But codes make terrible labels; imagine a chart axis
+# reading "B19013A_001".
+#
+# --------------------------------------------------------------------------
+# 5.2 Naming as you pull
+# --------------------------------------------------------------------------
+# One new thing: put name = inside the c(). Whatever name you write on the
+# left replaces the code in the variable column:
+
+get_acs(
+  geography = "county",
+  variables = c(ami = "B19013_001", white = "B19013A_001"),
+  state     = "CA",
+  county    = "San Francisco",
+  year      = 2023
+)
+
+# Same data, readable labels. Now the full pull -- five variables, named:
 
 sf_race_income <- get_acs(
   geography = "county",
   variables = c(
-  "B19013_001",  # Total median household income
-  "B19013A_001", # White alone
-  "B19013B_001", # Black alone
-  "B19013D_001", # Asian alone
-  "B19013I_001"  # Hispanic/Latino
+    ami    = "B19013_001",    # everyone
+    white  = "B19013A_001",   # White alone
+    black  = "B19013B_001",   # Black alone
+    asian  = "B19013D_001",   # Asian alone
+    latinx = "B19013I_001"    # Hispanic or Latino
   ),
-  year = 2022,
-  state = "CA",
-  county = "San Francisco"
+  state     = "CA",
+  county    = "San Francisco",
+  year      = 2023
 )
 
 sf_race_income
 
-# Let's also clean up the data a little and name the
-# variable field
-sf_ami_race <-
-  sf_race_income %>%
-  mutate(
-  variable = case_when(
-    variable == "B19013_001" ~ "ami",
-    variable == "B19013A_001" ~ "white",
-    variable == "B19013B_001" ~ "black",
-    variable == "B19013D_001" ~ "asian",
-    variable == "B19013I_001" ~ "latinx"
-  )
-  )
-
-sf_ami_race
-
-# This is a "long" format table. We can convert it to a "wide" format table
-# using the "pivot_wider" function in tidyverse. We do this so we can
-# manipulate the data more easily.
-
-sf_ami_race_wide <- sf_ami_race %>%
-  pivot_wider(
-  names_from = variable,
-  values_from = estimate
-  )
-
-pivot_wider
-help(pivot_wider)
-
-sf_ami_race_wide
-# The table is now wide however, it is not very readable. This is because
-# the variable "moe" (margin of error) has a unique value down the rows and
-# makes "pivot_wider" account for all uniqueness in a row. To remedy this, we
-# can just remove "moe" before we pivot the table.
-
-sf_ami_race_wide <- sf_ami_race %>%
-  select(-moe) %>%  # Remove the margin of error column
-  pivot_wider(
-  names_from = variable,
-  values_from = estimate
-  )
-
-sf_ami_race_wide
-# Now it's a single line.
-# Just by looking at this, we can see that White households are well above
-# the AMI, giving us a hint at the distribution of income across racial and
-# ethnic groups.
-
-# Let's now create our AMI brackets and compare racial groups. We'll also
-# clean up the variable order in the process.
-sf_ami_race_wide <-
-  sf_ami_race_wide %>%
-  mutate(
-  low_income = ami * .8,
-  high_income = ami * 1.2
-  ) %>%
-  select(
-  county = NAME, low_income, ami, high_income, white, black, asian, latinx
-  )
-
-sf_ami_race_wide
-######################################################################
-# NOTE: we reused the same name for the object. This is bad practice! Why? If
-# you ever have to retrace your steps and rerun variables, if you have a lot of
-# code chunks reusing variable names then you run the risk of overwriting your
-# data possibly gettign lost as you debug code. This is a common mistake in
-# coding. Always use unique names for your objects.
-######################################################################
-
-# The table tells us a little more about the distribution of income across
-# each group. White household median income is 173722, which is higher than
-# "high_income" (164027). This means that more than half of White households
-# are considered high-income. All the other groups are below the AMI nad Black
-# and Latinx households are below the low-income threshold.
-
-# Now, let's make a plot of this to visualize the data.
-# We will use the "ggplot2" package to create the plot.
-# This package is part of the "tidyverse" collection of packages so it is
-# already loaded. However, you can load it by itself using "library(ggplot2)".
-# The "ggplot2" package is a powerful and flexible tool for creating data
-# visualizations in R.
-
-# First, we need to reshape the data for plotting because ggplot2 works best
-# with "long" format data.
-sf_ar_plot_df <- sf_ami_race_wide %>%
-  pivot_longer(
-  cols = c(white, black, asian, latinx),
-  names_to = "race",
-  values_to = "income"
-  )
-
-sf_ar_plot_df
-
-######################################################################
-# Note that the object name was getting a little long so we shortened
-# it by abbreviating "ami_race" to "ar".
-######################################################################
-
-# Create a bar plot showing income by race
-sf_race_ami_plot <-
-  # ggplot() creates a new plot object
-  # - sf_ar_plot_df: the data frame containing our data
-  # - aes(): defines aesthetic mappings - how variables map to visual properties
-  #   - x = Race: puts Race variable on x-axis
-  #   - y = Income: puts Income variable on y-axis
-  ggplot(sf_ar_plot_df, aes(x = race, y = income)) +
-  # geom_bar() adds the bars to the plot
-  # - stat="identity": tells ggplot to use actual values (not counts)
-  # - fill="steelblue": sets the color of the bars to steelblue
-  # Without stat="identity", geom_bar would count occurrences instead of using values
-  geom_bar(stat = "identity", fill = "steelblue")
-
-sf_race_ami_plot
-# this is a basic plot. Let's spice it up a little by cleaning and adding some
-# interesting details
-
-# Start with the base plot created earlier
-sf_race_ami_plot +
-  # Add a horizontal line for low income threshold
-  # - yintercept: specifies where to draw the line using the low_income value
-  # - linetype: makes the line dashed
-  # - color: sets the line color to red
-  geom_hline(yintercept = sf_ami_race_wide$low_income, linetype = "dashed", color = "red") +
-
-  # Add a horizontal line for high income threshold
-  # - Same parameters as above but using high_income value
-  geom_hline(yintercept = sf_ami_race_wide$high_income, linetype = "dashed", color = "blue") +
-
-  # Add labels to the plot
-  # - title: main plot title
-  # - y: y-axis label
-  # - x: x-axis label
-  labs(title = "Median Household Income by Race in San Francisco",
-     y = "Income ($)",
-     x = "Race/Ethnicity") +
-
-  # Apply a minimal theme to clean up the plot's appearance
-  theme_minimal() +
-
-  # Customize the x-axis text
-  # - angle: rotate text 45 degrees
-  # - hjust: adjust horizontal justification
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-
-  # Format y-axis labels as currency
-  # - scales::dollar_format() adds dollar signs and commas to numbers
-  scale_y_continuous(labels = scales::dollar_format())
-
-
-######################
-### PICK UP WEEK 3 ###
-######################
-# Plotting with reordered bars
-
-ggplot(sf_ar_plot_df, aes(x = reorder(race, income), y = income)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  geom_hline(yintercept = sf_ami_race_wide$low_income, linetype = "dashed", color = "red") +
-  geom_hline(yintercept = sf_ami_race_wide$high_income, linetype = "dashed", color = "blue") +
-  labs(title = "Median Household Income by Race in San Francisco",
-     y = "Income ($)",
-     x = "Race/Ethnicity") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_y_continuous(labels = scales::dollar_format())
-
-######################################################################
-# Note: Plots are effective ways to tell a story. However, keep your
-# story simple. Avoid using more than 2 or 3 items in a plot. If you
-# have more than 3 items, consider breaking them into multiple plots.
-# For example, the plot above is telling us race, income, and degrees
-# of difference. Anything more and you will start to lose your audience
-# in confusion. A plot should be well documented and just about self
-# explanatory by looking at the title and axis labels.
+# Five rows, one per group. Before charting, read the estimate column like
+# a sociologist. The median White household in San Francisco makes 177030;
+# the median Black household makes 51610. That is not a gap -- that is a
+# canyon: more than three times as much. Notice also where each group sits
+# against the HUD lines you built in section 3: the Black median (51610)
+# is below SF's VERY-low-income line (70723), and the Latinx median
+# (99984) is below the low-income line (113157). The White median is far
+# above the AMI itself.
 #
-# Check out the posit teams cheatsheet for ggplot for more ideas on
-# plot types you can use.
-# https://rstudio.github.io/cheatsheets/html/data-visualization.html
-# as well as their other cheatsheets.
-# https://posit.co/resources/cheatsheets/
-######################################################################
+# And the humility check you learned in lab 1 -- are these gaps real or
+# noise? Look at the moe column: the largest margin here is about 5800.
+# The White-Black gap is over 125000. The canyon is real.
 
+# ==========================================================================
+# 6. Charting the gap
+# ==========================================================================
+# You know the ggplot recipe from lab 1: data, aes(), then layers. We will
+# build the income-by-race chart the same way -- one new layer per chunk.
 #
-# Now, let's do this for the 9 county bay area
-# -----------------------------------------------------------------------------
-# We will repeat the same process for the 9 county bay area.
-bay_area_median_income <- get_acs(
-  geography = "county",
-  variables = c(
-  "ami" = "B19013_001",  # Total median household income
-  "white" = "B19013A_001", # White alone
-  "black" = "B19013B_001", # Black alone
-  "asian" = "B19013D_001", # Asian alone
-  "latinx" = "B19013I_001"  # Hispanic/Latino
-  # Here we renamed the "variable" column from the beginning.
-  ),
-  year = 2022,
-  state = "CA",
-  county = c("Alameda", "Contra Costa", "Marin", "Napa", "San Francisco",
-         "San Mateo", "Santa Clara", "Solano", "Sonoma")
-)
+# First, keep just the four race/ethnicity rows (the overall AMI becomes a
+# reference line instead of a bar -- a chart should make ONE comparison,
+# and mixing "everyone" bars with group bars muddies it):
 
-bay_area_median_income
-# The printout is cut off. If you want to see the entire dataframe, one way to
-# look at it is to convert the object from a tidyverse object (a tibble in
-# this case) to a base R object (a data frame for example).
-# You can do this by using the "as.data.frame" function.
-as.data.frame(bay_area_median_income)
+sf_race_plot_df <- sf_race_income %>%
+  filter(variable != "ami")
 
-# Another way to view your data is to use the "glimpse" function in tidyverse.
-glimpse(bay_area_median_income)
+# (!= means "not equal to" -- the opposite of ==. So: keep every row whose
+# variable is NOT "ami".)
 
-# You also use "summary" to get a summary of the data.
-summary(bay_area_median_income)
+# --------------------------------------------------------------------------
+# 6.1 Bars, sorted -- straight to the lab 1 pattern
+# --------------------------------------------------------------------------
+# This is exactly the chart skeleton you built in lab 1, sections 10.1 to
+# 10.4 -- groups on the x-axis this time, dollars on the y:
 
-# Now, let's process the data for the Bay Area.
-bay_area_ami <- bay_area_median_income %>%
-  select(-moe) %>%  # Remove the margin of error column
-  pivot_wider(
-  names_from = variable,
-  values_from = estimate
-  ) %>%
-  group_by(GEOID) %>%  # Group data by county using GEOID
-  mutate(
-  # Calculate low income threshold as 80% of ami
-  low_income = ami * .8,
-  # Calculate high income threshold as 120% of ami
-  high_income = ami * 1.2
-  ) %>%
-  select(
-  county = NAME, low_income, ami, high_income, white, black, asian, latinx
-  )
-  # add ungroup to remove GEOID from the above selection.
+ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
+  geom_col(fill = "steelblue")
 
-bay_area_ami
+# (One small new thing: the minus sign in reorder(variable, -estimate)
+# sorts HIGH to low, so the tallest bar comes first.)
+#
+# --------------------------------------------------------------------------
+# 6.2 The AMI reference line
+# --------------------------------------------------------------------------
+# In lab 1 the threshold was vertical (geom_vline). Bars point up now, so
+# the reference line lies flat: geom_hline(), with a y-intercept. Let's
+# draw HUD's low-income line -- 80% of AMI -- using the number straight
+# from our sf_ami table:
 
-# Create a plot for the Bay Area and race
-bay_area_ami %>%
-  pivot_longer(
-  cols = c(white, black, asian, latinx),
-  names_to = "race",
-  values_to = "income"
-  ) %>%
-  ggplot(aes(x = county, y = reorder(income, race), fill = race)) +
-  geom_col(position = "dodge") +
-  geom_hline(aes(yintercept = mean(bay_area_ami$ami)), linetype = "dashed", color = "red") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
+  geom_col(fill = "steelblue") +
+  geom_hline(yintercept = sf_ami$low_income, linetype = "dashed")
+
+# (sf_ami$low_income -- the $ column-grab from lab 1, feeding a chart.
+# Every group whose bar ends below that dashed line has a MEDIAN household
+# that HUD would call low income, in their own county.)
+#
+# --------------------------------------------------------------------------
+# 6.3 Labels that carry the story
+# --------------------------------------------------------------------------
+
+ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
+  geom_col(fill = "steelblue") +
+  geom_hline(yintercept = sf_ami$low_income, linetype = "dashed") +
   labs(
-  title = "Median Household Income by Race Across Bay Area Counties",
-  x = "County",
-  y = "Median Household Income ($)",
-  fill = "Race/Ethnicity"
-  )
+    title    = "Median household income by race in San Francisco",
+    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2019-2023 ACS",
+    x        = NULL,
+    y        = "Median household income ($)",
+    caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
+  ) +
+  theme_minimal()
 
-######################################################################
-# Week 2: Census Data Analysis - Primary Steps Summary
-######################################################################
+# --------------------------------------------------------------------------
+# 6.4 One polish move: dollar signs on the axis
+# --------------------------------------------------------------------------
+# Those raw numbers (150000) read like machine output. One added line
+# formats the y-axis as money -- dollar_format() comes from a helper
+# package called scales that rides along with ggplot:
 
-# ## Setup
-# 1. Install required packages: `tidyverse` and `tidycensus`
-# 2. Load libraries: `library(tidyverse)` and `library(tidycensus)`
-# 3. Set up Census API key in lab 1 (RStudio dialog, saved to ~/.Renviron)
+ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
+  geom_col(fill = "steelblue") +
+  geom_hline(yintercept = sf_ami$low_income, linetype = "dashed") +
+  labs(
+    title    = "Median household income by race in San Francisco",
+    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2019-2023 ACS",
+    x        = NULL,
+    y        = "Median household income ($)",
+    caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
+  ) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::dollar_format())
 
-# ## Basic Data Retrieval
-# 1. Load variable definitions: `load_variables(year, "acs5")`
-# 2. Get ACS data using `get_acs()` with parameters:
-#    - `geography`: type of area (county, tract, etc.)
-#    - `variables`: Census variable codes
-#    - `year`: data year
-#    - `state`: state code
-#    - `county`: county name (if applicable)
+# Save it for your records -- same move as lab 1:
 
-# ## Data Processing
-# 1. **Clean variable names**: Use `mutate()` with `case_when()` to rename variables
-# 2. **Remove margin of error**: Use `select(-moe)` to exclude MOE column
-# 3. **Reshape data**: Use `pivot_wider()` to convert from long to wide format
-# 4. **Calculate thresholds**: Use `mutate()` to create income brackets (e.g., 80% and 120% of median)
+ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 
-# ## Data Visualization
-# 1. **Prepare data for plotting**: Use `pivot_longer()` to convert back to long format
-# 2. **Create plots**: Use `ggplot()` with appropriate geoms:
-#    - `geom_bar()` for bar charts
-#    - `geom_hline()` for reference lines
-#    - `geom_col()` for grouped bars
-# 3. **Customize plots**: Add labels, themes, and formatting
+# A STORYTELLING RULE for this whole course: a plot should make one
+# comparison, and a reader should get it from the title and axes alone,
+# with you nowhere in the room. Two or three elements maximum -- here,
+# bars plus one reference line. If you feel a fourth element coming on,
+# that is usually a second plot trying to happen. Browse the ggplot
+# cheatsheet for plot types as you plan your assignments:
+#   https://opensource.posit.co/resources/cheatsheets/
+# (copies also live in the class repo under docs/cheatsheets)
 
-# ## Key Functions Used
-# - `get_acs()`: Retrieve Census data
-# - `pivot_wider()`: Convert long to wide format
-# - `pivot_longer()`: Convert wide to long format
-# - `mutate()`: Create new variables
-# - `select()`: Choose specific columns
-# - `ggplot()`: Create visualizations
-# - `bind_rows()`: Combine datasets
+# ==========================================================================
+# 7. YOUR TURN: your county's income canyon
+# ==========================================================================
+# Run the whole arc for a county YOU care about (an A1 candidate!):
+#
+# (a) Pull the five named income variables (copy section 5.2's full pull,
+#     change state/county):
+# [PUT YOUR CODE BELOW]
 
-# ## Common Census Variables
-# - `B19013_001`: Median household income
-# - `B19013A_001`: White alone median income
-# - `B19013B_001`: Black alone median income
-# - `B19013D_001`: Asian alone median income
-# - `B19013I_001`: Hispanic/Latino median income
 
-######################################################################
-######################################################################
-######################################################################
-# END CODE
-######################################################################
-######################################################################
-######################################################################
+# (b) Compute the county's HUD tiers from its ami row. Two lab-1 moves and
+#     one from tonight: filter(variable == "ami"), then mutate() the three
+#     tiers -- save it under a name like my_ami:
+# [PUT YOUR CODE BELOW]
+
+
+# (c) Make the chart (copy section 6.4, swap in your data and your county's
+#     low-income line from my_ami$low_income; fix the title):
+# [PUT YOUR CODE BELOW]
+
+
+# (d) In one or two sentences: which groups sit below your county's
+#     low-income line? Did anything surprise you?
+# [PUT YOUR ANSWER BELOW]
+#
+
+# ==========================================================================
+# 8. What you can do now (and what's next)
+# ==========================================================================
+# Tonight you added:
+#   - load_variables() + View() search: find any ACS variable yourself
+#   - the anatomy of a variable code (table + line, race letters A-I)
+#   - get_acs(county = ...): pull exactly the places you want
+#   - mutate(): new columns from formulas (HUD's 80/50/30 tiers)
+#   - bind_rows(): stack tables to compare places
+#   - named variable vectors: readable labels from the moment you pull
+#   - geom_hline() + dollar axes: reference lines and polished money charts
+#
+# ASSIGNMENT 1 (due Mon Jul 27) is now fully within reach: one ACS
+# variable that speaks to housing precarity, for a place you care about,
+# one chart, two or three sentences. Pick your place this week -- you will
+# keep it for Assignment 2 and the final project.
+#
+# NEXT LAB: we go from copying the Census's numbers to BUILDING our own
+# measure -- the share of renters who are rent-burdened -- from a table of
+# counts. That means learning what a table's "universe" is, reshaping data
+# with pivot_wider(), and two new verbs: group_by() and summarize().
+#
+# Stuck between labs? Same drill as lab 1: read the error out loud, paste
+# the full message plus your code into your AI assistant, ask it to explain
+# before it fixes, and keep the share link for your submission.
+# ==========================================================================

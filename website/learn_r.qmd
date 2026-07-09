@@ -1,129 +1,44 @@
 ---
 title: "Learn R"
 ---
-## Cheatsheets
-<https://posit.co/resources/cheatsheets/>  
-Select cheatsheets are also available in the `docs` folder of the [class github repo](https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026/tree/main/docs/cheatsheets). 
 
-## Software Carpentry
+Everything on this page is **free** and was link-checked in July 2026. You do not need all of it. Pick one track that fits how you like to learn, and treat the rest as reference. The labs themselves assume zero background — these resources are for practice *between* labs and for going deeper.
 
-[Software Carpentry](https://swcarpentry.github.io/r-novice-inflammation/) has a great walk through on how to use R. 
+## Start with the course materials
 
-## (Optional) Best Free Base R Training Modules Alternative to Software Carpentry
+- **[Analyzing US Census Data](https://walker-data.com/census-r/) (Kyle Walker)** — our course reference text, free to read online. The assigned chapters walk through exactly the tools we use in lab: tidycensus (Ch 1–2), wrangling Census data with the tidyverse (Ch 3–4), and Census geography and mapping (Ch 5–6).
+- **[Posit cheatsheets](https://opensource.posit.co/resources/cheatsheets/)** — one-page references for the tools we use constantly. Copies of the most useful ones (data visualization, data transformation, data import, R best practices, Quarto) live in the [class repo's `docs/cheatsheets` folder](https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026/tree/main/docs/cheatsheets), so they are already on your DataHub.
 
-If you are looking for free, high-quality guides for learning R, here are some of the top, well-reviewed alternatives:
-  
-### 1. **[Harvard University’s “Data Science: R Basics” (edX/Coursera)](https://pll.harvard.edu/subject/r)**
-  
-- **Overview:** A widely recommended, beginner-friendly course that covers the fundamentals of R programming, data analysis, and visualization.
-- **Key Features:**
-  - No prior programming experience required.
-  - Bite-sized video lectures and hands-on coding exercises.
-  - Real-world datasets for practice.
-  - Active discussion forums.
-  - Free to audit (pay only if you want a certificate).
-- **Topics Covered:** R installation, basic syntax, data types, vectors, functions, data import/export, base plotting, and simple statistics.
-- **Where to find:** edX, Coursera, or Harvard’s own platform[^1_1][^1_2].
+## If you have never coded before
 
+- **[Hands-On Programming with R](https://rstudio-education.github.io/hopr/) (Garrett Grolemund)** — a full book written explicitly for non-programmers, free online. The gentlest complete introduction to R itself: objects, functions, and how to think in code. Chapters 1–3 pair well with our Labs 1–2.
 
-### 2. **Swirl: Learn R in the R Console**
+## Practice inside R (interactive)
 
-- **Overview:** Swirl is an R package that turns your R console into an interactive learning environment.
-- **Key Features:**
-  - 100% free and self-paced.
-  - Teaches R basics through hands-on coding directly in R.
-  - Modules cover R programming, data cleaning, exploratory data analysis, and more.
-- **How to use:** Install the `swirl` package in R, then select from official or community modules.
-- **Where to find:** [swirlstats.com](https://swirlstats.com/) or install via R[^1_1].
+- **[swirl](https://swirlstats.com/students.html)** — a free package that teaches R *inside* the R console, at your own pace. Works on the DataHub. Three lines to start:
 
+  ```r
+  install.packages("swirl")   # once
+  library(swirl)              # each session
+  swirl()                     # follow the prompts
+  ```
 
-### 3. **[R for Data Science (Online Book by Hadley Wickham)](https://r4ds.hadley.nz/)**
+## Go deeper on the tidyverse
 
-- **Overview:** This free online book is a comprehensive, beginner-friendly introduction to R and RStudio, focusing on practical data analysis.
-- **Key Features:**
-  - Step-by-step tutorials with code examples.
-  - Companion website with exercises and solutions.
-  - Covers R basics, data import, manipulation, visualization, and reporting.
-- **Where to find:** [r4ds.hadley.nz][^1_1][^1_3].
+- **[R for Data Science, 2nd ed.](https://r4ds.hadley.nz/) (Wickham, Çetinkaya-Rundel & Grolemund)** — the standard free book on the tidyverse workflow we teach: transform, visualize, model, communicate. One heads-up: this book writes the pipe as `|>` (R's newer built-in pipe). It works the same way as the `%>%` we use in lab — read them as the same word, "and then."
 
+## A guided lesson series
 
-### 4. **Posit Cloud (formerly RStudio Cloud) Primers**
+- **[Software Carpentry: Programming with R](https://swcarpentry.github.io/r-novice-inflammation/)** — a classic free lesson sequence built around a patient-data example. The datasets it uses are already in the class repo under `data/software_carpentry/`, so you can follow along on the DataHub without downloading anything.
 
-- **Overview:** Interactive, browser-based tutorials for R beginners—no installation needed.
-- **Key Features:**
-  - Free for personal use.
-  - Covers R basics, data frames, plotting, and more.
-  - Hands-on exercises within a cloud RStudio environment.
-- **Where to find:** [education.rstudio.com][^1_4][^1_5].
+## Prefer a structured course with videos?
 
+- **[Data Science: R Basics](https://pll.harvard.edu/course/data-science-r-basics) (HarvardX / edX, Rafael Irizarry)** — self-paced, introductory, about 1–2 hours a week, and free to audit (ignore the optional paid certificate).
 
-### 5. **YouTube Full-Course Tutorials**
+## On campus
 
-- **Simplilearn’s R Programming Full Course:** A 7-hour comprehensive beginner video covering R installation, variables, data types, lists, flow control, functions, data manipulation, and visualization. Free and accessible to all[^1_6].
+- **[UC Berkeley D-Lab](https://dlab.berkeley.edu/training)** — free workshops and consulting for enrolled Berkeley students; their catalog regularly includes introductory R sessions, and their front desk (dlab-frontdesk@berkeley.edu) can point you to the next one.
 
+## How to actually get better
 
-### 6. **Other Notable Free Resources**
-
-- **Coursera: R Programming by Johns Hopkins University** (free to audit; covers R basics, data structures, and programming concepts)[^1_7].
-- **Udemy Free R Courses:** Several beginner modules, including R basics and data analysis[^1_8].
-- **GitHub Repositories:** User-curated lists of free R courses and workshops[^1_9][^1_10].
-
-
-## Comparison Table
-
-| Resource | Format | Hands-on Coding | Free Certificate | Focus on Base R | Link to RStudio |
-  | :-- | :-- | :-- | :-- | :-- | :-- |
-  | Harvard “R Basics” (edX/Coursera) | Video + Quizzes | Yes | No | Yes | Optional |
-  | Swirl | Interactive R | Yes | No | Yes | No |
-  | R for Data Science (Wickham) | Online Book | Yes (exercises) | No | Yes | Yes |
-  | Posit Cloud Primers | Interactive Web | Yes | No | Yes | Yes |
-  | Simplilearn YouTube Course | Video | Yes | No | Yes | No |
-  
-## Recommendations
-  
-- **Best for absolute beginners:** Harvard “Data Science: R Basics” or Swirl.
-- **Best for hands-on learners:** Swirl or Posit Cloud Primers.
-- **Best for reading learners:** R for Data Science by Hadley Wickham.
-- **Best for video learners:** Simplilearn’s YouTube course.
-
-All options above are genuinely free and cover base R programming essentials, allowing you to choose the format and style that best fits your learning preferences[^1_1][^1_4][^1_6][^1_3].
-
-<div style="text-align: center">⁂</div>
-  
-[^1_1]: https://www.classcentral.com/report/best-r-programming-courses/
-  
-[^1_2]: https://pll.harvard.edu/subject/r
-
-[^1_3]: https://www.reddit.com/r/bioinformatics/comments/175foe7/any_completely_free_r_for_beginners_courses/
-  
-[^1_4]: https://dev.to/evergrowingdev/8-top-resources-to-learn-r-programming-for-free-2599
-
-[^1_5]: https://education.rstudio.com/learn/beginner/
-  
-[^1_6]: https://www.youtube.com/watch?v=Q5g6lYUn6Q4
-
-[^1_7]: https://www.coursera.org/learn/r-programming
-
-[^1_8]: https://www.udemy.com/topic/r-programming-language/free/
-  
-[^1_9]: https://github.com/nuitrcs/r-online-2020
-
-[^1_10]: https://github.com/rstudio-education/rstats-ed
-
-[^1_11]: https://www.mltut.com/best-free-r-programming-courses/
-  
-[^1_12]: https://www.reddit.com/r/RStudio/comments/vpkyyl/what_are_the_best_sources_to_learn_and_practice_r/
-  
-[^1_13]: https://www.codecademy.com/learn/learn-r
-
-[^1_14]: https://gitconnected.com/learn/r
-
-[^1_15]: https://www.datacamp.com/courses/free-introduction-to-r
-
-[^1_16]: https://www.neonscience.org/resources/learning-hub/tutorials/resources-learn-r
-
-[^1_17]: https://online.stanford.edu/courses/xfds112-r-programming-fundamentals
-
-[^1_18]: https://eeob-biodata.github.io/BCB546X-R/
-  
-[^1_19]: https://researchguides.uoregon.edu/library_workshops/R_Library_Carpentry
+Twenty minutes of practice a few times a week beats a three-hour binge. The single highest-value habit: re-open a lab script, change one small thing, and predict what will happen before you run it. And when you hit an error, use it — read it out loud, then ask your AI assistant to *explain* it before fixing it (keep the share link if it touches assignment work; see the [AI policy](syllabus.html#ai-policy)).

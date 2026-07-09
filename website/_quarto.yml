@@ -13,6 +13,8 @@ website:
         href: syllabus.qmd
       - text: Resources
         href: resources.qmd
+      - text: Learn R
+        href: learn_r.qmd
       - text: RStudio
         href: https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
         target: _blank

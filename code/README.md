@@ -1,84 +1,50 @@
-# R lab scripts — package practices
+# R lab scripts — how packages and data work
 
-## Two layers (best of both worlds)
+## Student labs use plain base patterns (deliberate pedagogy)
 
-| Layer | When | What |
-|-------|------|------|
-| **Bulk install** | Once per DataHub account (start of term) | `source("code/install_course_packages.R")` |
-| **Per-lab guards** | Top of each `lab*.R` | `source("code/course_packages.R")` then `load_pkg()` / `load_pkgs()` |
+The `lab*.R` scripts teach and use only the standard, universal R idioms —
+no course-specific helper functions. Decided 2026-07-09: many students are
+new to (and nervous about) coding, so labs must read like every R book and
+tutorial they will ever see.
 
-**Why both?**
+- **Install once:** `install.packages("tidycensus")` — lab 1 teaches this
+  (tidyverse is pre-installed on the DataHub image). Labs that need a new
+  package (e.g., tmap) carry their own clearly marked RUN-ONCE install line.
+- **Load each session:** `library(tidyverse)`, `library(tidycensus)`, etc.
+  at the top of every lab.
+- **Census API key:** set up once in lab 1 §6 with tidycensus's built-in
+  `census_api_key("KEY", install = TRUE)` (saved to `~/.Renviron`; labs 2+
+  rely on it). Students are told to put the placeholder text back after the
+  line runs so keys don't linger in scripts. **Never commit a key to git.**
+  If one is committed accidentally: revoke it at Census and request a new one.
+- **Eviction data (lab 4):** loaded with base
+  `readRDS("data/evictions/d5_case_aggregated.rds")`. The `.qs2` file next
+  to it is the same table in a faster format (maintainer/ERN default);
+  regenerate both with `Rscript code/convert_eviction_data.R`.
 
-- Bulk install gets students through lab 1 faster and avoids repeating large downloads.
-- Per-lab `load_pkg()` calls keep each script **self-contained** and **idempotent**: re-running a lab does not reinstall packages that are already present (`requireNamespace()` check first).
-- Pedagogically, labs still show *which* packages each lesson uses.
+DataHub caveat (unchanged): hub administrators can access user home
+directories. A free, rate-limited, revocable Census key is safe enough for
+this course; don't use `~/.Renviron` on shared infrastructure for
+high-value secrets.
 
-## Standard header for lab scripts
+Key signup: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
 
-```r
-source("code/course_paths.R")
-source("code/course_packages.R")
+## Maintainer-only helpers (not used by student labs)
 
-load_pkgs("tidyverse", "tidycensus")   # example
+These support maintenance scripts and batch testing — students never
+`source()` them:
 
-# Lab 1 only — one-time Census API key (inline):
-if (!nzchar(Sys.getenv("CENSUS_API_KEY", unset = ""))) {
-  key <- rstudioapi::askForPassword("Census API key (free: https://api.census.gov/data/key_signup.html)")
-  tidycensus::census_api_key(key, overwrite = TRUE, install = TRUE)
-}
-```
+| File | Used by |
+|------|---------|
+| `course_paths.R` (`repo_root`) | `convert_eviction_data.R`, batch runner |
+| `course_packages.R` (`ensure_pkg`, `load_pkg`, `ensure_github`) | bulk installer, batch runner |
+| `course_data.R` (eviction path constants) | conversion + batch scripts |
+| `install_course_packages.R` | optional one-shot bulk install on a fresh DataHub account (a speed-up, not a prerequisite) |
 
-Labs 3–4 also `source("code/course_data.R")` for eviction file paths, then `qs2::qs_read()`.
+Batch smoke-testing of all labs: [`website/maintainer/run_all_labs.R`](../website/maintainer/run_all_labs.R)
+(applies patches from `website/maintainer/patches/` to fill in-class `__`
+blanks, then reverses them). **Note:** patches must be regenerated after the
+2026-07 lab rewrites — see the maintainer notes.
 
-Always run from repo root (`SOC-N100.Rproj` open) so `source("code/...")` resolves.
-
-## Census API key (security)
-
-We teach **tidycensus's built-in method** — not a custom `.env` file. tidycensus documents this workflow; it keeps keys out of git.
-
-**One-time setup (lab 1, in RStudio):** run the inline block at the top of lab 1. On first use, RStudio shows a dialog to paste your key; tidycensus saves it to `~/.Renviron`. Labs 2–5 rely on that file — no prompt.
-
-Manual alternative in the Console: `census_api_key("YOUR_KEY", install = TRUE)`
-
-**DataHub caveat:** hub administrators can access user home directories for operations and support. That is a different threat than scraping a public repo, but it is not zero trust. A free, rate-limited, revocable Census key is **safe enough** for this course. Do not use `~/.Renviron` on shared infrastructure for high-value secrets.
-
-**If a key is accidentally committed to git:** revoke it at Census and request a new one.
-
-Sign up: [api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html)
-
-## Helper functions
-
-### `course_packages.R`
-
-| Function | Purpose |
-|----------|---------|
-| `ensure_pkg("pkg")` | Install from CRAN if missing; optional `min_version` |
-| `load_pkg("pkg")` | `ensure_pkg` + `library()` |
-| `load_pkgs(...)` | Multiple packages |
-| `ensure_github("org/repo")` | GitHub install if namespace missing |
-| `install_all_course_packages()` | Used by `install_course_packages.R` |
-
-### `course_data.R`
-
-Path constants: `eviction_data_qs2`, `eviction_data_rds` (labs 3–4).
-
-Installs use the session default repos (Posit PM on DataHub). If a package is missing from that mirror, helpers retry [cloud.r-project.org](https://cloud.r-project.org).
-
-## Course eviction data: `qs2` + `.rds` backup
-
-| File | Use |
-|------|-----|
-| `data/evictions/d5_case_aggregated.qs2` | **Default in labs 3–4** — `qs2::qs_read()` |
-| `data/evictions/d5_case_aggregated.rds` | **Backup** — `readRDS()` if qs2 fails (comment swap in lab) |
-
-Legacy `.qs` is provenance only. Regenerate course files: `Rscript code/convert_eviction_data.R`.
-
-**Maintainers:** [`website/maintainer/notes.qmd`](../website/maintainer/notes.qmd).
-
-## `librarian` in lab 4
-
-Lab 4 teaches `librarian::shelf()` as a convenience wrapper. Under the hood it is similar to our pattern (install if missing, then load). We still call `load_pkg("librarian")` first so the demo does not unconditionally run `install.packages("librarian")`.
-
-## RStudio "restart R before install?"
-
-If RStudio prompts to restart before updating loaded packages, click **Yes** once, then re-run `source("code/install_course_packages.R")`. Bulk install is easiest on a **fresh R session** before opening lab scripts.
+Run everything from the repo root (`SOC-N100.Rproj` open) so relative paths
+like `data/evictions/...` resolve.
