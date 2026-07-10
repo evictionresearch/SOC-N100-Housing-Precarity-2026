@@ -38,10 +38,9 @@
 #       signs you in with your CalNet ID and opens RStudio in your browser.
 #       Nothing to install.
 #     - In the Files pane (bottom-right), click the folder
-#       "SOC-N100-Housing-Precarity-2026", then click "SOC-N100.Rproj"
-#       and choose "Yes" when it asks to open the project.
-#     - In the Files pane, open the "code" folder, then click this file:
-#       lab1_intro_to_.R. You are now looking at it in the editor.
+#       "SOC-N100-Housing-Precarity-2026", then the "code" folder inside
+#       it, then click this file: lab1_intro_to_.R. You are now looking
+#       at it in the editor. That is the whole setup.
 #
 # (b) A quick tour of the four panes
 #     - TOP-LEFT: the editor. This script. Where you read and write code.
@@ -683,8 +682,9 @@ my_first_chart
 
 ggsave("lab1_rent_burden.png")
 
-# Look at the Files pane (bottom-right): lab1_rent_burden.png now exists in
-# your project folder. Click it to admire your work. To download it from
+# Where did it go? Your HOME folder. Click the little house icon in the
+# Files pane (bottom-right) and there it is: lab1_rent_burden.png. Click
+# it to admire your work. To download it from
 # the DataHub to your own computer: check the box next to the file, then
 # More (gear icon) > Export. You will attach charts like this to your
 # assignments.

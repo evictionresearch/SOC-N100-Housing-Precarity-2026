@@ -46,5 +46,11 @@ Batch smoke-testing of all labs: [`website/maintainer/run_all_labs.R`](../websit
 blanks, then reverses them). **Note:** patches must be regenerated after the
 2026-07 lab rewrites — see the maintainer notes.
 
-Run everything from the repo root (`SOC-N100.Rproj` open) so relative paths
-like `data/evictions/...` resolve.
+**Students never need to open the `.Rproj`** (dropped from the lab flow
+2026-07-09 to remove setup friction): labs 1–3 and 5 are
+working-directory-independent, and lab 4 reads the eviction file via the
+full home path `~/SOC-N100-Housing-Precarity-2026/...` (every DataHub
+clone lands there). Lab outputs (`ggsave`, `write_csv`) land in the
+session's working directory — the home folder on a fresh hub session.
+Maintainer scripts and the batch runner still assume the repo root (open
+`SOC-N100.Rproj`).

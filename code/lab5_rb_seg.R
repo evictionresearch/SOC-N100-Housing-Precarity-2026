@@ -403,7 +403,8 @@ dir.create("output")
 write_csv(rb_seg, "output/alameda_rb_by_tract.csv")
 write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "output/bay_rb_by_county.csv")
 
-# Check the Files pane: an output folder with two CSVs. Click one to peek.
+# Check the Files pane (click the house icon -- the folder was created in
+# your home directory): an output folder with two CSVs. Click one to peek.
 # The county file is deliberately three columns -- an ID, a name, a value.
 # That is the shape web mapping tools want.
 
@@ -421,7 +422,9 @@ write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "output/bay_rb_by_county.csv
 #   2. It asks what map you want: search for "USA counties", select the
 #      United States counties basemap, and click Proceed.
 #   3. Step "Add your data": on the Upload tab, click "Upload file" and
-#      give it output/bay_rb_by_county.csv (or copy-paste the table).
+#      give it bay_rb_by_county.csv -- first download it from the DataHub
+#      to your computer (Files pane > house icon > output folder > check
+#      the box > More > Export), or just copy-paste the table.
 #   4. The "Match" tab asks which column identifies each county. Pick
 #      GEOID -- Datawrapper knows U.S. county FIPS codes, and their docs
 #      say it plainly: an ID code is safer than matching on names.

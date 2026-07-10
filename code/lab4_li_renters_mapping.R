@@ -41,11 +41,16 @@ library(tidycensus)
 # R has a native file format for saved data objects, called RDS. Reading
 # one takes a single base-R function -- no packages at all:
 
-indiana_evictions <- readRDS("data/evictions/d5_case_aggregated.rds")
+indiana_evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.rds")
 
-# That path is RELATIVE: it starts from your project folder (that is why
-# we always open SOC-N100.Rproj first -- it plants R in the right spot).
-# data/ then evictions/ then the file. Forward slashes, even on Windows.
+# Read that path like a street address, left to right:
+#   ~                                  = your HOME folder (on the DataHub,
+#                                        everything you own lives in here)
+#   /SOC-N100-Housing-Precarity-2026   = the course folder inside it
+#   /data/evictions/                   = a folder inside a folder
+#   /d5_case_aggregated.rds            = the file itself
+# Forward slashes, even on Windows. (Working on your own laptop instead of
+# the DataHub? Change the address to wherever your course folder lives.)
 #
 # (Next to the .rds you will see the same data as a .qs2 file -- a faster
 # format we use in my lab for big files. Same table, fancier container.)
@@ -453,7 +458,7 @@ county_rates %>%
 library(tidyverse)
 library(tidycensus)
 
-indiana_evictions <- readRDS("data/evictions/d5_case_aggregated.rds")
+indiana_evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.rds")
 
 # ==========================================================================
 # B1. Spatial data: tables where each row has a SHAPE

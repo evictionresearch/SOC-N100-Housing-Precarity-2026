@@ -69,7 +69,7 @@ The DataHub link automatically git-pulls the repo and opens RStudio:
 https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F
 ```
 
-Students should then open **`SOC-N100.Rproj`** at the repo root (not the maintainer project under `website/`).
+Students open lab files directly from the Files pane — they do **not** open the `.Rproj` (dropped from the student flow 2026-07-09; labs are working-directory-independent, and lab 4 reads data via full `~/SOC-N100-Housing-Precarity-2026/...` paths). The repo-root `SOC-N100.Rproj` is for maintainers/staff (never the project under `website/`, which is for site editing only).
 
 See `DATAHUB.md` for hub links, private-repo `gh` auth, package requests, and testing checklists.
 
