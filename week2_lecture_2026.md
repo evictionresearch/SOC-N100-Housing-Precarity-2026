@@ -125,8 +125,9 @@ scale move Chapple made last week — from the block to the region."
 ### S10 — Ecology of the City **[W2-25 p.19]**
 - **Invasion/Succession** — concentric-zone theory: competition, conflict, accommodation
   *(the classic Chicago School diagram on the slide — Little Sicily, the Black Belt, the Loop)*
-  **[CONFIRM]** *if you want a citation on-slide: Park & Burgess, "The City" (1925) — from
-  memory, not re-verified this session*
+- ADD cite ✅: Burgess (1925), "The Growth of the City: An Introduction to a Research
+  Project," in Park, Burgess & McKenzie, *The City* (U. Chicago Press) — the diagram is from
+  this chapter
 - **Political Economy** — the Growth Machine: *"…the city's growth is guided by a coalition of
   monied land interests."* Monied win, poor & minority lose *(printed on slide)*
 - ADD cite ✅: Molotch (1976), "The City as a Growth Machine," *AJS* 82(2):309–332
@@ -506,6 +507,10 @@ they're short and they're the tool we use all term."
   [Justia](https://supreme.justia.com/cases/federal/us/334/1/), [Cornell LII](https://www.law.cornell.edu/wex/shelley_v_kraemer_(1948))
 - Molotch, H. (**1976**), "The City as a Growth Machine: Toward a Political Economy of Place,"
   *AJS* 82(2):309–332 — [U. Chicago Journals](https://www.journals.uchicago.edu/doi/abs/10.1086/226311)
+- Burgess, E. W. (**1925**), "The Growth of the City: An Introduction to a Research Project,"
+  in Park, R. E., Burgess, E. W., & McKenzie, R. D., *The City*, University of Chicago Press —
+  [U. Chicago Press](https://press.uchicago.edu/ucp/books/book/chicago/C/bo38823801.html),
+  [chapter listing](https://www.taylorfrancis.com/chapters/edit/10.4324/9780429261732-24/growth-city-introduction-research-project-ernest-burgess)
 
 **From the 2026 lab scripts (verified vs live pulls 2026-07-09):**
 - Lab 2 / S27 tie-ins: SF AMI 2023 = $141,446; low-income line $113,157; very-low $70,723;
@@ -579,9 +584,9 @@ delete the footer) across the whole deck.
 - **Internment [p.31]:** ADD — Executive Order 9066, signed Feb 19, 1942; ~120,000
   incarcerated, about two-thirds U.S. citizens ✅ (National Archives). Optional retitle
   "Internment" → "**Incarceration**" (Archives' current usage) **[CONFIRM]** your preference.
-- **Ecology of the City [p.19]:** ADD citation — Molotch (1976), *AJS* 82(2):309–332 for the
-  growth machine ✅. (Park & Burgess 1925 for the concentric-zone diagram is **[CONFIRM]** —
-  from memory, not verified this session.)
+- **Ecology of the City [p.19]:** ADD two citations ✅ — Molotch (1976), *AJS* 82(2):309–332
+  for the growth machine, and Burgess (1925), "The Growth of the City," in Park, Burgess &
+  McKenzie, *The City* (U. Chicago Press) for the concentric-zone diagram.
 
 ### Vintage call-outs (keep the slide, say the date out loud — refresh only if you have time)
 - **Homeownership gaps [pp.37–38]:** both charts end **2016**.
