@@ -16,9 +16,11 @@ against live pulls 2026-07-09). Items needing *your* confirmation are tagged **[
 Chart-shape descriptions with no printed number are tagged *(chart read)* — safe to say out
 loud, don't put a precise figure on the slide.
 
-**Deliberately NOT tonight** (2025 taught these in Week 3; they now fit Jul 21 / Aug 4):
+**Deliberately NOT tonight** (2025 taught these in Week 3; they now fit a later session / Aug 4):
 Bates study (its reading is assigned for **Aug 4** on the 2026 site), Baltimore case study,
-the UDP typology deep-dive (pairs with the optional Zuk reading — tease it tonight, teach it Jul 21).
+the UDP typology deep-dive (pairs with the optional Zuk reading — tease it tonight, teach it at
+the next lecture, **whenever that lands: the Jul 21 slot is TBD**, so don't promise students a
+date from the podium).
 
 **Timing (5–7pm, ~111 min of material + buffer):**
 
@@ -32,8 +34,9 @@ the UDP typology deep-dive (pairs with the optional Zuk reading — tease it ton
 | 5 | **Movable closer:** measuring both crises (HPRM) | 14 |
 | 6 | Close: Thursday's lab, readings, A1 | 5 |
 
-**Flex seam:** If running long, Section 5 lifts out cleanly and moves to Jul 21 — tonight then
-ends on the Oregon slide (S39) + close.
+**Flex seam:** If running long, Section 5 lifts out cleanly and moves to the next lecture
+(date TBD — the Jul 21 slot may not be a lecture) — tonight then ends on the Oregon slide
+(S39) + close.
 
 Legend: 🎤 = what to say. ✅ = verified. 📎 = real, cite to its source. 🚫 = do not claim.
 *(chart read)* = visual description only.
@@ -318,7 +321,8 @@ thirty percent of area median. The *median* Black or Latinx household in King Co
 most of two decades at or under the low-income line — the median household, not the poor tail.
 **Thursday night you will build exactly this comparison** for San Francisco, 2023 data: you'll
 find every variable yourself, compute the HUD tiers with one new verb, and put five racial
-groups against the lines. Preview of what you'll find: SF's area median income is $141,446 —
+groups against the lines — and since we didn't reach charts in Lab 1, it'll be the **first
+chart you build in this course**, one layer at a time. Preview of what you'll find: SF's area median income is $141,446 —
 which makes $113,157 the *low-income* line. The median white household: $177,030. The median
 Black household: $51,610 — below the *very-low* line. You'll check whether that's noise (it
 isn't: the biggest margin of error is about $5,800 against a $125,000 gap)."
@@ -400,8 +404,9 @@ Labs 3 and 4 teach."
 ---
 
 ## SECTION 5 — MOVABLE CLOSER: MEASURING BOTH CRISES (~14 min)
-*(Cut seam: this whole section lifts to Jul 21 intact if tonight runs long. All numbers ✅
-from the Week-1 bank, verified 2026-07-07 — these were built for last week and cut.)*
+*(Cut seam: this whole section lifts to the next lecture intact if tonight runs long —
+date TBD. All numbers ✅ from the Week-1 bank, verified 2026-07-07 — these were built for
+last week and cut.)*
 
 ### S36 — The scale ladder **NEW (build from Week-1 md S10)**
 - **Individual** → Desmond (2012): eviction reproduces poverty
@@ -452,10 +457,12 @@ never sees. Measurement isn't bookkeeping; it decides who becomes visible."
 
 ### S41 — This week **NEW**
 - **Thursday (Lab 2):** find any Census variable yourself; HUD's 80/50/30 tiers with
-  `mutate()`; income by race in SF — you build S27 for your own county
+  `mutate()`; income by race in SF — you build S27 for your own county, **and it's your first
+  ggplot chart** (we didn't get to charts in Lab 1; Lab 2 now teaches them from zero — reassure
+  anyone who felt behind)
 - **Reading due Thu:** Walker, *Analyzing US Census Data*, Preface + Ch 1–2
   *(optional deeper dive on Chapple: Zuk et al. 2015 — the literature review behind Week 1's
-  arc; we'll use it Jul 21)*
+  arc; we'll use it at the next lecture)*
 - **Assignment 1** (due Mon Jul 27, 5pm): pick your place *this week* — a county or region you
   care about; you'll keep it through A2 and the final project. Tonight's maps are the reason
   the choice matters: every place carries this history.
@@ -506,8 +513,9 @@ they're short and they're the tool we use all term."
 vintage), Bay 91%/73%, Zapata AOR 2.50 (2.29–2.73), Chapple/Freeman/Hwang-Sampson quotes.
 
 **2026 course logistics (site read 2026-07-14):** Tue/Thu 5–7pm; Lab 2 = Thu Jul 16; Walker
-Preface+Ch1–2 due Thu; Zuk et al. 2015 optional; A1 due Mon Jul 27 5pm; next lecture Jul 21;
-Bates reading assigned for Aug 4.
+Preface+Ch1–2 due Thu; Zuk et al. 2015 optional; A1 due Mon Jul 27 5pm; the site lists a
+Jul 21 lecture but Tim says that slot is TBD (may become a lab) — update `index.qmd` once
+decided; Bates reading assigned for Aug 4.
 
 ---
 

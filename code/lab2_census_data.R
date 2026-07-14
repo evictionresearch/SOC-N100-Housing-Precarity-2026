@@ -4,23 +4,30 @@
 # Instructor: Tim Thomas
 # ==========================================================================
 #
-# Last week you learned the full loop: pull data with get_acs(), question
-# it with verbs, chart it with ggplot(). But we handed you the variable
-# ("B25071_001"). Tonight you learn to find ANY variable yourself, pull
-# several at once, and use them to see one of the engines of soft
-# displacement: the gap between what people earn and what their area costs.
+# Last week you learned to pull data with get_acs() and question it with
+# verbs (filter, arrange, select). But we handed you the variable
+# ("B25071_001") -- and we ran out of time before charts. Tonight you learn
+# to find ANY variable yourself, pull several at once, and use them to see
+# one of the engines of soft displacement: the gap between what people earn
+# and what their area costs. Then the payoff: your FIRST ggplot chart,
+# built one layer at a time.
 #
 # By the end of tonight you will have:
 #   1. Searched the Census's giant variable catalog on your own.
 #   2. Turned median income into HUD's income tiers with a new verb, mutate().
 #   3. Compared incomes across race in one county -- and seen why
 #      "low income" only makes sense relative to a PLACE.
+#   4. Built, polished, and saved your first chart.
 #
 # Quick recap of the moves you already own (lab 1):
 #   name <- value        save an object          filter()   keep rows
 #   c(...)               combine values          arrange()  sort rows
 #   get_acs(...)         pull Census data        select()   keep columns
-#   %>%                  "and then"              ggplot()   chart in layers
+#   %>%                  "and then"              table$col  grab one column
+#
+# (Charts are NOT on that list -- lab 1's chart section, 10, is the part we
+# skipped in class. Section 6 tonight teaches charts from zero; lab 1
+# section 10 then makes good extra practice on your own.)
 #
 # As always: read the # comments (the lecture), run the code lines (the
 # practice), one at a time.
@@ -273,19 +280,25 @@ sf_race_income
 # (99984) is below the low-income line (113157). The White median is far
 # above the AMI itself.
 #
-# And the humility check you learned in lab 1 -- are these gaps real or
-# noise? Look at the moe column: the largest margin here is about 5800.
-# The White-Black gap is over 125000. The canyon is real.
+# One habit to build before we chart this: the ACS is a SURVEY -- a sample
+# of households, not a count of everyone -- so every value it reports is an
+# ESTIMATE, and the moe column is its margin of error: the Bureau's honest
+# "give or take" number. Always ask whether a gap is real or inside the
+# noise. The largest margin here is about 5800. The White-Black gap is
+# over 125000. The canyon is real.
 
 # ==========================================================================
-# 6. Charting the gap
+# 6. Your first chart, one layer at a time
 # ==========================================================================
-# You know the ggplot recipe from lab 1: data, aes(), then layers. We will
-# build the income-by-race chart the same way -- one new layer per chunk.
+# We skipped lab 1's chart section in class, so tonight is your first
+# chart -- the payoff of everything so far. ggplot2 (it rode in with the
+# tidyverse) builds charts the way you build a sandwich: start with a
+# base, add ONE layer at a time with +. One new idea per chunk, as always.
 #
-# First, keep just the four race/ethnicity rows (the overall AMI becomes a
-# reference line instead of a bar -- a chart should make ONE comparison,
-# and mixing "everyone" bars with group bars muddies it):
+# First, the table we want to draw. Keep just the four race/ethnicity rows
+# (the overall AMI becomes a reference line instead of a bar -- a chart
+# should make ONE comparison, and mixing "everyone" bars with group bars
+# muddies it):
 
 sf_race_plot_df <- sf_race_income %>%
   filter(variable != "ami")
@@ -294,36 +307,87 @@ sf_race_plot_df <- sf_race_income %>%
 # variable is NOT "ami".)
 
 # --------------------------------------------------------------------------
-# 6.1 Bars, sorted -- straight to the lab 1 pattern
+# 6.1 The base: ggplot() alone
 # --------------------------------------------------------------------------
-# This is exactly the chart skeleton you built in lab 1, sections 10.1 to
-# 10.4 -- groups on the x-axis this time, dollars on the y:
+
+ggplot(sf_race_plot_df)
+
+# A blank gray canvas appears in the Plots pane (bottom-right). ggplot()
+# has the data but no instructions yet. That is all this layer is: a canvas.
+
+# --------------------------------------------------------------------------
+# 6.2 aes(): which columns go where
+# --------------------------------------------------------------------------
+# aes() is short for "aesthetics" -- the mapping from your table's columns
+# to the chart's visual slots. Groups along the x-axis, dollars up the y:
+
+ggplot(sf_race_plot_df, aes(x = variable, y = estimate))
+
+# Now the canvas has labeled axes -- group names along the bottom, numbers
+# up the side -- but still no shapes. We have said WHERE, not WHAT.
+
+# --------------------------------------------------------------------------
+# 6.3 geom_col(): the bars
+# --------------------------------------------------------------------------
+# Layers are added with +. geom_col() draws a column for each row, as tall
+# as its y value:
+
+ggplot(sf_race_plot_df, aes(x = variable, y = estimate)) +
+  geom_col()
+
+# Bars! But look at the order: R put the groups alphabetically (asian,
+# black, latinx, white), which scrambles the story. A bar chart should
+# usually be sorted by its VALUES.
+
+# --------------------------------------------------------------------------
+# 6.4 reorder(): sort the bars by their values
+# --------------------------------------------------------------------------
+# reorder(variable, -estimate) means "put the groups in order of their
+# estimate." The minus sign flips the sort so the tallest bar comes first.
+# It replaces the plain variable inside aes():
+
+ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
+  geom_col()
+
+# Now the chart reads high to low, left to right -- the gap is the first
+# thing a reader sees.
+
+# --------------------------------------------------------------------------
+# 6.5 fill: color the bars
+# --------------------------------------------------------------------------
+# fill is a bar's inside color (a separate input, color, does outlines):
 
 ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_col(fill = "steelblue")
 
-# (One small new thing: the minus sign in reorder(variable, -estimate)
-# sorts HIGH to low, so the tallest bar comes first.)
-#
+# R knows hundreds of color names ("steelblue", "tomato", "forestgreen")
+# and any hex code (try fill = "#7ECDBB"). Palettes to browse as you plan
+# assignments: https://colorbrewer2.org -- my favorite.
+
 # --------------------------------------------------------------------------
-# 6.2 The AMI reference line
+# 6.6 geom_hline(): the AMI reference line
 # --------------------------------------------------------------------------
-# In lab 1 the threshold was vertical (geom_vline). Bars point up now, so
-# the reference line lies flat: geom_hline(), with a y-intercept. Let's
-# draw HUD's low-income line -- 80% of AMI -- using the number straight
-# from our sf_ami table:
+# Our threshold deserves to be ON the chart. geom_hline() draws a
+# horizontal line at a y value you choose -- and we already computed the
+# perfect one: HUD's low-income line (80% of AMI), sitting in the sf_ami
+# table. Grab it with $ (the one-column grab from lab 1, section 4).
+# linetype = "dashed" keeps it reading as a reference, not as data:
 
 ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_col(fill = "steelblue") +
   geom_hline(yintercept = sf_ami$low_income, linetype = "dashed")
 
-# (sf_ami$low_income -- the $ column-grab from lab 1, feeding a chart.
-# Every group whose bar ends below that dashed line has a MEDIAN household
-# that HUD would call low income, in their own county.)
-#
+# Read it: every group whose bar ends below that dashed line has a MEDIAN
+# household that HUD would call low income, in their own county.
+
 # --------------------------------------------------------------------------
-# 6.3 Labels that carry the story
+# 6.7 labs(): say what the chart shows
 # --------------------------------------------------------------------------
+# A chart that needs you standing next to it explaining is not finished.
+# labs() adds the words: a title, a subtitle with the years (so readers
+# know exactly what data this is), an axis label, and a source caption.
+# x = NULL removes the x-axis title -- the group names under the bars
+# already explain themselves:
 
 ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_col(fill = "steelblue") +
@@ -334,15 +398,15 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
     x        = NULL,
     y        = "Median household income ($)",
     caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
-  ) +
-  theme_minimal()
+  )
 
 # --------------------------------------------------------------------------
-# 6.4 One polish move: dollar signs on the axis
+# 6.8 Finishing touches: theme and a dollar axis
 # --------------------------------------------------------------------------
-# Those raw numbers (150000) read like machine output. One added line
-# formats the y-axis as money -- dollar_format() comes from a helper
-# package called scales that rides along with ggplot:
+# Two polish layers to finish. theme_minimal() swaps the gray default for
+# a cleaner look. And those raw axis numbers (150000) read like machine
+# output -- one more layer formats them as money. dollar_format() comes
+# from a helper package called scales that rides along with ggplot:
 
 ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_col(fill = "steelblue") +
@@ -357,9 +421,22 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   theme_minimal() +
   scale_y_continuous(labels = scales::dollar_format())
 
-# Save it for your records -- same move as lab 1:
+# That is a finished chart: bars, one reference line, and labels that
+# carry the story on their own.
+
+# --------------------------------------------------------------------------
+# 6.9 ggsave(): save it to a file
+# --------------------------------------------------------------------------
+# ggsave() writes the most recent chart to an image file. The size inputs
+# are in inches:
 
 ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
+
+# Where did it go? Your HOME folder. Click the little house icon in the
+# Files pane (bottom-right) and there it is -- click the file to admire
+# your work. To download it from the DataHub to your own computer: check
+# the box next to the file, then More (gear icon) > Export. You will
+# attach charts like this to your assignments.
 
 # A STORYTELLING RULE for this whole course: a plot should make one
 # comparison, and a reader should get it from the title and axes alone,
@@ -369,6 +446,12 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 # cheatsheet for plot types as you plan your assignments:
 #   https://opensource.posit.co/resources/cheatsheets/
 # (copies also live in the class repo under docs/cheatsheets)
+#
+# (Extra practice, any time after tonight: lab 1 section 10 builds a
+# horizontal twin of this chart -- California's most rent-burdened
+# counties, with geom_vline instead of geom_hline -- and lab 1 section 11
+# is the margin-of-error habit in full. Both are worth twenty quiet
+# minutes before Assignment 1.)
 
 # ==========================================================================
 # 7. YOUR TURN: your county's income canyon
@@ -386,8 +469,9 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 # [PUT YOUR CODE BELOW]
 
 
-# (c) Make the chart (copy section 6.4, swap in your data and your county's
-#     low-income line from my_ami$low_income; fix the title):
+# (c) Make the chart (copy the finished chart from section 6.8, swap in
+#     your data and your county's low-income line from my_ami$low_income;
+#     fix the title):
 # [PUT YOUR CODE BELOW]
 
 
@@ -406,7 +490,10 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 #   - mutate(): new columns from formulas (HUD's 80/50/30 tiers)
 #   - bind_rows(): stack tables to compare places
 #   - named variable vectors: readable labels from the moment you pull
-#   - geom_hline() + dollar axes: reference lines and polished money charts
+#   - your first chart: a ggplot() canvas, aes() mappings, then layers
+#     added one + at a time (geom_col, reorder, fill)
+#   - geom_hline(), labs(), theme_minimal(), dollar axes, ggsave():
+#     a reference line and a polished, saved money chart
 #
 # ASSIGNMENT 1 (due Mon Jul 27) is now fully within reach: one ACS
 # variable that speaks to housing precarity, for a place you care about,
