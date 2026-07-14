@@ -7,7 +7,8 @@ crises). Tonight answers the two questions that arc leaves hanging:
 **WHY does the map have a race?** (history) — ending with who it lands on now.
 
 **Most slides already exist.** Copy tags like **[W2-25 p.44]** = page 44 of
-`2025.07.15 SOC N100 Week 2.pdf` (same order as that Google deck). Slides marked **NEW** need building.
+`2025.07.15 SOC N100 Week 2.pdf` (same order as that Google deck). Slides marked **NEW** need
+building. **Appendix C is the copy-edit checklist** — every change the old slides need, per slide.
 
 **Accuracy note:** Every number below is either (a) printed on a slide read this session,
 (b) verified against a source fetched this session (URL in Appendix A), (c) carried from the
@@ -537,7 +538,61 @@ decided; Bates reading assigned for Aug 4.
 
 ---
 
-## APPENDIX C — Housekeeping flags (not for lecture)
+## APPENDIX C — Slide-edit map: what to change when copying the 2025 deck
+
+*(Everything below was checked against the decks read 2026-07-14. Work through the global
+fixes first, then the per-slide edits as you copy.)*
+
+### Global fixes (whole copied deck)
+1. **Footers:** hardcoded "timthomas@berkeley.edu - 2025.01.22" on most 2025 slides →
+   find/replace to 2026 (or delete the footer).
+2. **Title slide [W2-25 p.1]:** "Week 2 … July 15, 2025" → **July 14, 2026**. Logo row differs
+   from your 2026 Week-1 title (2025 has BIDS + **UDP** + ERN + UCB; 2026 W1 dropped UDP) —
+   match your 2026 branding **[CONFIRM]** if UDP should stay.
+3. **Do NOT copy the 2025 recap slides [W2-25 pp.3–9].** Their definitions are superseded:
+   p.3 still lists "rapid rent increases" under **hard** displacement, which you moved to the
+   soft side in the 2026 Week-1 deck, and it lacks the Housing Precarity definition. If you
+   want recap slides at all, pull them from your **2026 Week-1 deck (pp.8–14)** — otherwise
+   speak S3 over the p.2 "Recap!" divider as written.
+4. **Delete the tail leftovers** if they come along in the copy: old Agenda / "Census Data" /
+   duplicate UDP slides (W2-25 pp.62–64; same leftovers sit at pp.22–25 of your 2026 W1 deck).
+   The Census Data slide belongs to Thursday's lab intro, not tonight.
+
+### Content fixes (wrong or incomplete on the old slide)
+- **Redlining [p.25]:** "Home Owners Loan **Cooperation**" → "**Home Owners' Loan
+  Corporation**" ✅ (verified vs Mapping Inequality).
+- **Covenants [p.29]:** ADD a line — *Shelley v. Kraemer*, 334 U.S. 1 (1948): courts can't
+  enforce racial covenants; sales discrimination stays legal until 1968 ✅.
+- **Internment [p.31]:** ADD — Executive Order 9066, signed Feb 19, 1942; ~120,000
+  incarcerated, about two-thirds U.S. citizens ✅ (National Archives). Optional retitle
+  "Internment" → "**Incarceration**" (Archives' current usage) **[CONFIRM]** your preference.
+- **Ecology of the City [p.19]:** ADD citation — Molotch (1976), *AJS* 82(2):309–332 for the
+  growth machine ✅. (Park & Burgess 1925 for the concentric-zone diagram is **[CONFIRM]** —
+  from memory, not verified this session.)
+
+### Vintage call-outs (keep the slide, say the date out loud — refresh only if you have time)
+- **Homeownership gaps [pp.37–38]:** both charts end **2016**.
+- **Wealth gap [p.39] / Seattle net worth [pp.40–41]:** end **2016** / **2019**.
+- **FMR & rent burden [p.44]:** ends **2019**.
+- **Income by race vs AMI [p.45]:** WA/King, **2000–2017 in 2017 dollars** — keep as-is
+  (it's the Lab-2 bridge; Thursday's SF numbers are 2023, which makes the contrast a feature).
+- **U.S. filing counts [p.56]:** ends **May 2023** — the most dated "current" slide tonight.
+  Present as the pandemic experiment and bridge with last week's WA-2024 slide ("…and it kept
+  climbing"), or refresh from ERN/LSC before class.
+- **MN vs IN [p.57]:** bar charts end **Apr 2022** — fine as pandemic history; say so.
+- **Oregon by race [p.60]:** runs through **2024** — current, no change ✅.
+
+### Skip tonight (already shown Jul 7 in the 2026 Week-1 deck)
+- WA eviction crisis [p.58], WA rent increases [p.59], Marin County [p.61], Moving
+  forward/RTC [p.62] — callbacks only, per S33–S34 notes.
+
+### Build new (no 2025 source slide)
+- **S2** agenda (4 bullets) · **S36** scale ladder · **S37–S40** HPRM/Bay/gender (bullet specs
+  in §5 here; fuller versions in `week1_lecture_rebuild_2026.md` S10–S15) · **S41** close.
+
+---
+
+## APPENDIX D — Housekeeping flags (not for lecture)
 
 1. **Slide typo (S15):** "Home Owners Loan **Cooperation**" → **Corporation** (verified).
 2. **File mislabel:** `2025.07.22 SOC N100 Week 3.pdf` opens with a title slide reading
