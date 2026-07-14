@@ -538,25 +538,38 @@ decided; Bates reading assigned for Aug 4.
 
 ---
 
-## APPENDIX C — Slide-edit map: what to change when copying the 2025 deck
+## APPENDIX C — Slide-edit map: editing your copy of last year's Week-2 deck
 
-*(Everything below was checked against the decks read 2026-07-14. Work through the global
-fixes first, then the per-slide edits as you copy.)*
+*(You're editing a full copy of the 2025 Week-2 deck, so this is a page-by-page verdict list —
+slide numbers = pages of `2025.07.15 SOC N100 Week 2.pdf`, same order as the copy. Checked
+against the decks read 2026-07-14. Net result: 64 slides → ~57.)*
 
-### Global fixes (whole copied deck)
-1. **Footers:** hardcoded "timthomas@berkeley.edu - 2025.01.22" on most 2025 slides →
-   find/replace to 2026 (or delete the footer).
-2. **Title slide [W2-25 p.1]:** "Week 2 … July 15, 2025" → **July 14, 2026**. Logo row differs
-   from your 2026 Week-1 title (2025 has BIDS + **UDP** + ERN + UCB; 2026 W1 dropped UDP) —
-   match your 2026 branding **[CONFIRM]** if UDP should stay.
-3. **Do NOT copy the 2025 recap slides [W2-25 pp.3–9].** Their definitions are superseded:
-   p.3 still lists "rapid rent increases" under **hard** displacement, which you moved to the
-   soft side in the 2026 Week-1 deck, and it lacks the Housing Precarity definition. If you
-   want recap slides at all, pull them from your **2026 Week-1 deck (pp.8–14)** — otherwise
-   speak S3 over the p.2 "Recap!" divider as written.
-4. **Delete the tail leftovers** if they come along in the copy: old Agenda / "Census Data" /
-   duplicate UDP slides (W2-25 pp.62–64; same leftovers sit at pp.22–25 of your 2026 W1 deck).
-   The Census Data slide belongs to Thursday's lab intro, not tonight.
+| Slides | Verdict | Notes |
+|---|---|---|
+| 1 | **EDIT** | "Week 2 … July 15, 2025" → **July 14, 2026**. Logo row: 2025 has BIDS + **UDP** + ERN + UCB; your 2026 W1 title dropped UDP — match 2026 **[CONFIRM]** |
+| — | **INSERT after 1** | NEW agenda slide (S2, 4 bullets) |
+| 2 | keep | "Recap!" divider — speak S3 over it |
+| **3–9** | **DELETE** | Superseded recap: p.3 still lists "rapid rent increases" under **hard** displacement (you moved pricing-out to soft in the 2026 W1 deck) and lacks the precarity definition. If you want visual recap, pull pp.8–14 from the **2026 W1 deck** instead |
+| 10 | keep | Reflection (S4) |
+| 11–18 | keep | Divider, mobility curve ×4, triangle, Milwaukee, metro arch (S5–S9) |
+| 19 | **EDIT** | Ecology of the City: add Molotch (1976) cite — see content fixes |
+| 20–24 | keep | POC mobility, "Why?", Four Periods + Birth build, Great Migration (S11–S14) |
+| 25 | **EDIT** | Redlining: HOLC typo — see content fixes |
+| 26–28 | keep | 2010-vs-1940, Four Periods build, Collective Action (S16–S17) |
+| 29 | **EDIT** | Covenants: add *Shelley v. Kraemer* — see content fixes |
+| 30 | keep | Black population 1920→1960 (S19) |
+| 31 | **EDIT** | Internment: add EO 9066 line; optional "Incarceration" retitle — see content fixes |
+| 32–33 | keep | Manzanar + Hunt, Idaho photos (trim to one if time-pressed) |
+| 34–53 | keep | Japanese pop → Decentralized → gaps → Urban Revitalization → tier theory (S21–S31); vintage call-outs below for 37–41, 44–45 |
+| 54 | optional **DELETE** | Duplicate of p.42 (Four Periods, UR highlighted); works as a transition into post-pandemic if kept |
+| 55–57 | keep | Post-pandemic divider, U.S. filings (say "ends May 2023"), MN/IN (S32–S34) |
+| **58–59** | **DELETE** | WA crisis + WA rents — shown Jul 7; callback lines are in S34 |
+| 60 | keep | Oregon by race (S35) — tonight's data ending |
+| — | **INSERT after 60** | NEW: S36–S40 (scale ladder + HPRM block) and S41 (close) — the movable §5 + §6 |
+| **61–64** | **DELETE** | Marin (shown Jul 7), Moving forward/RTC (shown Jul 7), UDP (deferred to the solutions lecture), Census Data (belongs to Thursday's lab) |
+
+**Global:** find/replace the hardcoded footer "timthomas@berkeley.edu - 2025.01.22" → 2026 (or
+delete the footer) across the whole deck.
 
 ### Content fixes (wrong or incomplete on the old slide)
 - **Redlining [p.25]:** "Home Owners Loan **Cooperation**" → "**Home Owners' Loan
@@ -582,13 +595,10 @@ fixes first, then the per-slide edits as you copy.)*
 - **MN vs IN [p.57]:** bar charts end **Apr 2022** — fine as pandemic history; say so.
 - **Oregon by race [p.60]:** runs through **2024** — current, no change ✅.
 
-### Skip tonight (already shown Jul 7 in the 2026 Week-1 deck)
-- WA eviction crisis [p.58], WA rent increases [p.59], Marin County [p.61], Moving
-  forward/RTC [p.62] — callbacks only, per S33–S34 notes.
-
-### Build new (no 2025 source slide)
-- **S2** agenda (4 bullets) · **S36** scale ladder · **S37–S40** HPRM/Bay/gender (bullet specs
-  in §5 here; fuller versions in `week1_lecture_rebuild_2026.md` S10–S15) · **S41** close.
+### New-slide specs (for the two INSERT rows)
+- **S2** agenda (4 bullets, spec in §0) · **S36** scale ladder · **S37–S40** HPRM/Bay/gender
+  (bullet specs in §5 here; fuller versions in `week1_lecture_rebuild_2026.md` S10–S15) ·
+  **S41** close (spec in §6).
 
 ---
 
