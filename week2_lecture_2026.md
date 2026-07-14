@@ -20,7 +20,9 @@ loud, don't put a precise figure on the slide.
 Bates study (its reading is assigned for **Aug 4** on the 2026 site), Baltimore case study,
 the UDP typology deep-dive (pairs with the optional Zuk reading — tease it tonight, teach it at
 the next lecture, **whenever that lands: the Jul 21 slot is TBD**, so don't promise students a
-date from the podium).
+date from the podium). The next lecture's theme is set: **resolving displacement & precarity**
+(4 P's, policy recommendations, WA testimony) — seed notes in `lecture3_solutions_2026.md`;
+the deferred items above are its spine.
 
 **Timing (5–7pm, ~111 min of material + buffer):**
 
