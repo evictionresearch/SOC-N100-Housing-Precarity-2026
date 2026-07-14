@@ -160,8 +160,18 @@ This is the deep context for every map you will make in this course."
 - **Collective Action Racism** 1940–1970 = Consolidation & Expansion
 - **Decentralized Racism** 1970–1990 = Maintaining Segregation
 - **Urban Revitalization** 1990–2019 = Out-Migration & Displacement
-🎤 "This is my periodization — four regimes of how American cities sorted people by race. The
-*mechanism* changes each period; the *outcome* — who holds place, who loses it — is durable."
+- ADD cite ✅ (first three periods & both racism terms): **Cutler, Glaeser & Vigdor (1999),
+  "The Rise and Decline of the American Ghetto," *JPE* 107(3):455–506** — their eras are
+  1890–1940 (rise), 1940–1970 (expansion), post-1970 (decline); "collective action racism"
+  (covenants, zoning, violence) and "decentralized racism" (whites paying to live in white
+  areas) are their terms. The **fourth period is your own extension.**
+- *(Nuance if pushed: CGV use the two racism terms as MECHANISMS — collective action dominant
+  before ~1960, decentralized after — your slide uses them as period names.)*
+🎤 "The first three periods come from the economics of segregation — Cutler, Glaeser and
+Vigdor traced the rise and decline of the American ghetto from 1890 to 1990. The fourth
+period is mine: what happened after 1990, when the story inverted and the ghetto's
+grandchildren got moved *out*. The mechanism changes each period; the outcome — who holds
+place, who loses it — is durable."
 
 #### Period 1 — Birth of the Ghetto (1890–1940)
 
@@ -511,6 +521,11 @@ they're short and they're the tool we use all term."
   in Park, R. E., Burgess, E. W., & McKenzie, R. D., *The City*, University of Chicago Press —
   [U. Chicago Press](https://press.uchicago.edu/ucp/books/book/chicago/C/bo38823801.html),
   [chapter listing](https://www.taylorfrancis.com/chapters/edit/10.4324/9780429261732-24/growth-city-introduction-research-project-ernest-burgess)
+- Cutler, D. M., Glaeser, E. L., & Vigdor, J. L. (**1999**), "The Rise and Decline of the
+  American Ghetto," *Journal of Political Economy* 107(3):455–506 — source of the first three
+  periods and the "collective action" / "decentralized" racism terms; period 4 is Tim's —
+  [JPE](https://www.journals.uchicago.edu/doi/10.1086/250069),
+  [PDF](https://dash.harvard.edu/bitstream/handle/1/2770033/Cutler_RiseandFall.pdf)
 
 **From the 2026 lab scripts (verified vs live pulls 2026-07-09):**
 - Lab 2 / S27 tie-ins: SF AMI 2023 = $141,446; low-income line $113,157; very-low $70,723;
@@ -558,7 +573,9 @@ against the decks read 2026-07-14. Net result: 64 slides → ~57.)*
 | 10 | keep | Reflection (S4) |
 | 11–18 | keep | Divider, mobility curve ×4, triangle, Milwaukee, metro arch (S5–S9) |
 | 19 | **EDIT** | Ecology of the City: add Molotch (1976) cite — see content fixes |
-| 20–24 | keep | POC mobility, "Why?", Four Periods + Birth build, Great Migration (S11–S14) |
+| 20–21 | keep | POC mobility, "Why?" divider (S11–S12) |
+| 22 | **EDIT** | Four Periods: add Cutler/Glaeser/Vigdor cite, own period 4 — see content fixes |
+| 23–24 | keep | Birth-of-the-Ghetto build, Great Migration (S13 build, S14) |
 | 25 | **EDIT** | Redlining: HOLC typo — see content fixes |
 | 26–28 | keep | 2010-vs-1940, Four Periods build, Collective Action (S16–S17) |
 | 29 | **EDIT** | Covenants: add *Shelley v. Kraemer* — see content fixes |
@@ -587,6 +604,10 @@ delete the footer) across the whole deck.
 - **Ecology of the City [p.19]:** ADD two citations ✅ — Molotch (1976), *AJS* 82(2):309–332
   for the growth machine, and Burgess (1925), "The Growth of the City," in Park, Burgess &
   McKenzie, *The City* (U. Chicago Press) for the concentric-zone diagram.
+- **Four Periods [p.22]:** ADD ✅ — Cutler, Glaeser & Vigdor (1999), "The Rise and Decline of
+  the American Ghetto," *JPE* 107(3):455–506: source of the first three periods and the
+  "collective action" / "decentralized" racism terms. Say plainly that **period 4 is yours**
+  (their data end in 1990).
 
 ### Vintage call-outs (keep the slide, say the date out loud — refresh only if you have time)
 - **Homeownership gaps [pp.37–38]:** both charts end **2016**.
