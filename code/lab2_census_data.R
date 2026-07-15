@@ -291,9 +291,12 @@ sf_race_income
 # 6. Your first chart, one layer at a time
 # ==========================================================================
 # We skipped lab 1's chart section in class, so tonight is your first
-# chart -- the payoff of everything so far. ggplot2 (it rode in with the
-# tidyverse) builds charts the way you build a sandwich: start with a
-# base, add ONE layer at a time with +. One new idea per chunk, as always.
+# chart -- the payoff of everything so far. And you have already SEEN this
+# chart: Tuesday's lecture showed the Washington / King County version,
+# with the grey AMI bands. You are rebuilding that lecture graphic for San
+# Francisco, from raw data. ggplot2 (it rode in with the tidyverse) builds
+# charts the way you build a sandwich: start with a base, add ONE layer at
+# a time with +. One new idea per chunk, as always.
 #
 # First, the table we want to draw. Keep just the four race/ethnicity rows
 # (the overall AMI becomes a reference line instead of a bar -- a chart
@@ -481,7 +484,110 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 #
 
 # ==========================================================================
-# 8. What you can do now (and what's next)
+# 8. Recreating Tuesday's homeownership-gap chart
+# ==========================================================================
+# Tuesday's lecture showed a homeownership gap that has barely moved in
+# forty years (the Urban Institute chart: White 68%, Black 42% nationally
+# in 2016). Let's rebuild that chart for San Francisco, today, from raw
+# Census counts. (If class runs long, this section is yours to finish at
+# home -- everything in it is two known moves plus ONE new input.)
+#
+# The Census's tenure table, B25003, counts occupied homes two ways:
+#   B25003_001 = all households        B25003_002 = households that OWN
+# and it comes in the same race letters you met in section 5 (A, B, D, I).
+# A group's homeownership rate is owners divided by households.
+
+# --------------------------------------------------------------------------
+# 8.1 One new input: output = "wide"
+# --------------------------------------------------------------------------
+# Our usual pull returns one ROW per variable ("long"). Tonight we need
+# arithmetic BETWEEN variables (owners / households), which is easier with
+# one COLUMN per variable. One new get_acs() input does that:
+
+sf_tenure <- get_acs(
+  geography = "county",
+  variables = c(
+    white_total  = "B25003A_001", white_owner  = "B25003A_002",
+    black_total  = "B25003B_001", black_owner  = "B25003B_002",
+    asian_total  = "B25003D_001", asian_owner  = "B25003D_002",
+    latinx_total = "B25003I_001", latinx_owner = "B25003I_002"
+  ),
+  state     = "CA",
+  county    = "San Francisco",
+  year      = 2023,
+  output    = "wide"
+)
+
+names(sf_tenure)
+
+# One row now, and every variable became TWO columns: your name plus E
+# (the Estimate) and your name plus M (its Margin of error). So
+# white_ownerE is the count of White householders who own their home.
+
+# --------------------------------------------------------------------------
+# 8.2 mutate() the rates -- known moves only
+# --------------------------------------------------------------------------
+# Owners divided by households, times 100 to read as a percent:
+
+sf_own_rates <- sf_tenure %>%
+  mutate(
+    white  = 100 * white_ownerE  / white_totalE,
+    black  = 100 * black_ownerE  / black_totalE,
+    asian  = 100 * asian_ownerE  / asian_totalE,
+    latinx = 100 * latinx_ownerE / latinx_totalE
+  )
+
+sf_own_rates %>% select(white, black, asian, latinx)
+
+# Read it: about 49% of Asian households in San Francisco own their home,
+# 37% of White households, 26% of Latinx households, 22% of Black
+# households. Two things to notice. First, the locality lesson AGAIN:
+# nationally, Tuesday's chart had White homeownership on top -- in San
+# Francisco it is Asian households. Never assume the national pattern
+# holds in your county. Second, the gap the lecture traced from covenants
+# to lending is right here in 2023: the Black rate is under half the
+# Asian rate. And remember why ownership matters -- it is where American
+# families store wealth (Tuesday's Seattle figures: median owner net
+# worth $898,000 vs renter $36,000).
+
+# --------------------------------------------------------------------------
+# 8.3 Chart it -- with a table you build by hand
+# --------------------------------------------------------------------------
+# ggplot wants one ROW per bar, and our four rates sit side by side in
+# one row. Remember building a tiny table by hand in lab 1, section 4
+# (three_cities)? Same move, using the $ grab for each rate:
+
+sf_own_plot_df <- data.frame(
+  group = c("white", "black", "asian", "latinx"),
+  share = c(sf_own_rates$white, sf_own_rates$black,
+            sf_own_rates$asian, sf_own_rates$latinx)
+)
+
+sf_own_plot_df
+
+# Four rows, two columns -- chart-ready. Now the exact recipe from
+# section 6: sorted bars, labels that carry the story, clean theme:
+
+ggplot(sf_own_plot_df, aes(x = reorder(group, -share), y = share)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title    = "Who owns their home in San Francisco?",
+    subtitle = "Share of households that are owner-occupied, 2019-2023 ACS",
+    x        = NULL,
+    y        = "Share of households that own (%)",
+    caption  = "Source: ACS 5-year estimates, table B25003 and race iterations."
+  ) +
+  theme_minimal()
+
+ggsave("lab2_sf_homeownership_by_race.png", width = 8, height = 5)
+
+# YOUR TURN (3): rebuild this chart for YOUR county -- three edits: state,
+# county, and the title. Does the national ordering hold where you live?
+# [PUT YOUR CODE BELOW]
+
+
+# ==========================================================================
+# 9. What you can do now (and what's next)
 # ==========================================================================
 # Tonight you added:
 #   - load_variables() + View() search: find any ACS variable yourself
@@ -494,6 +600,9 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 #     added one + at a time (geom_col, reorder, fill)
 #   - geom_hline(), labs(), theme_minimal(), dollar axes, ggsave():
 #     a reference line and a polished, saved money chart
+#   - output = "wide": one column per variable, for arithmetic between them
+#   - two of Tuesday's lecture charts, rebuilt from raw Census data
+#     (income by race vs the HUD line; the homeownership gap)
 #
 # ASSIGNMENT 1 (due Mon Jul 27) is now fully within reach: one ACS
 # variable that speaks to housing precarity, for a place you care about,

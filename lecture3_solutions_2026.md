@@ -7,6 +7,22 @@ ingredients: the 4 P's, policy recommendations, the WA Senate testimony.
 **Scheduling:** the Jul 21 slot is TBD (may be a lab). Whenever this runs, update
 `website/index.qmd` (it currently lists "Tuesday July 21 - Lecture" with no bullets).
 
+## 0. Student demand (logged after the Jul 14 lecture)
+
+Two explicit asks from students tonight — build both in:
+
+1. **"How was the HPRM actually done?"** — add a plain-language methods beat right after
+   HPRM-1 in §6: what goes IN (the drivers measured for every tract), what comes OUT (the
+   0–8 score across 64,028 tracts, split into the soft/EDR and hard/EER channels), and why
+   2019 is the headline vintage. Keep it "Pie Chart with a Bayesian Chaser" — one
+   inputs→outputs slide, no math wall — and consider closing the beat with a live
+   "score a student's county" moment on the map they saw Jul 14.
+   **[CONFIRM]** point me at the HPRM methods writeup (the hprm repo's methods section?) and
+   I'll verify a slide-ready description — the only method facts verified so far are the
+   score range, tract count, the two channels, and the vintage rule.
+2. **"What are some ways we can make change?"** — confirms this lecture's theme; the room is
+   primed for §§2–4 (the P's, the policy bank, the WA testimony).
+
 ---
 
 ## 1. The queued material is already the path
@@ -148,4 +164,6 @@ fixed."
 - [x] Week 2 did **not** deliver the HPRM slides (Jul 14 ended: Oregon → Moving forward →
       live HPRM/Census demo) — beat 1 = §6 below, slides still to build
 - [ ] Fetch + verify the Chapple sequencing quote and the testimony hearing date
+- [ ] HPRM methods beat (student demand, Jul 14): Tim points to the methods writeup; verify a
+      plain-language "how it's built" description before it goes on a slide
 - [ ] Refresh any WA/homelessness stats that go on slides
