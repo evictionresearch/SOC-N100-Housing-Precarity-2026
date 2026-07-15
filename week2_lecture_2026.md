@@ -34,12 +34,11 @@ the deferred items above are its spine.
 | 2 | Scale it up (ecology, growth machine, Seattle maps) | 10 |
 | 3 | Why these patterns exist: Four Periods | 40 |
 | 4 | The post-pandemic era, 2020–now | 12 |
-| 5 | **Movable closer:** measuring both crises (HPRM) | 14 |
-| 6 | Close: Thursday's lab, readings, A1 | 5 |
+| 5 | Close: Moving forward + live demo (HPRM & Census) | 15 |
 
-**Flex seam:** If running long, Section 5 lifts out cleanly and moves to the next lecture
-(date TBD — the Jul 21 slot may not be a lecture) — tonight then ends on the Oregon slide
-(S39) + close.
+**Change (Jul 14 pm):** no time to build the HPRM slides — **Section 5's S36–S40 specs moved
+to `lecture3_solutions_2026.md`**, which now opens with them. Tonight ends: Oregon (S35) →
+Moving forward (S36, your existing slide) → live demo (S37) → spoken close (S38).
 
 Legend: 🎤 = what to say. ✅ = verified. 📎 = real, cite to its source. 🚫 = do not claim.
 *(chart read)* = visual description only.
@@ -231,7 +230,7 @@ association, the mob."
 hundred–plus of these in King County alone. In 1948 the Supreme Court said courts couldn't
 enforce them — it did *not* make them disappear; they sat in deeds as instructions people kept
 following for another twenty years. Some of you will find covenant language in your own county's
-records."
+records. This one wasn't rewritten until 2008."
 
 ### S19 — Black Population, Seattle: 1920 → 1960 **[W2-25 p.30]**
 - Dot maps: small scattered population 1920 → dense concentration in the Central District by
@@ -352,7 +351,7 @@ Kent, Auburn fill in. Same families, pushed down the corridor."
 - 12 metros, percent-point change in Black share 1980–2010: red (decline) in the cores,
   blue (growth) in the peripheries — Seattle, Chicago, DC, Boston, SF, Vegas, St. Louis,
   Atlanta, LA, DFW, Houston *(chart read)*
-🎤 "Not a Seattle quirk. Twelve metros, same signature: red core, blue ring. Urban
+🎤 "Not a Seattle quirk. All metros, same signature: red core, blue ring. Urban
 revitalization means Black *decline* in the center of nearly every major American city. San
 Francisco is on this map — your backyard, and your Thursday dataset."
 
@@ -417,59 +416,39 @@ Labs 3 and 4 teach."
 
 ---
 
-## SECTION 5 — MOVABLE CLOSER: MEASURING BOTH CRISES (~14 min)
-*(Cut seam: this whole section lifts to the next lecture intact if tonight runs long —
-date TBD. All numbers ✅ from the Week-1 bank, verified 2026-07-07 — these were built for
-last week and cut.)*
+## SECTION 5 — CLOSE: MOVING FORWARD + LIVE DEMO (~15 min)
+*(Changed Jul 14 pm: no time to build the HPRM slides — the old S36–S40 specs now live in
+`lecture3_solutions_2026.md` §6, and that lecture opens with them. Nothing below needs a new
+slide.)*
 
-### S36 — The scale ladder **NEW (build from Week-1 md S10)**
-- **Individual** → Desmond (2012): eviction reproduces poverty
-- **Metro** → Chapple (2017): an income crisis, region-wide
-- **National** → **HPRM** (your work): measure *both* channels, every tract
-🎤 "Tonight you've seen the whole ladder. Desmond gave us the household. Chapple gave us the
-metro. What was missing was the country, measured directly — both kinds of displacement, every
-neighborhood. So I built it. Zero to eight, 64,028 tracts."
+### S36 — Moving forward… **[W2-25 p.62 — KEEP it (Appendix C previously said delete)]**
+- Filings expected to increase — CoStar bullets (building costs, undersupply, property taxes &
+  interest, delayed Millennial buying, rents rising faster than wages); many states have not
+  seen declines; high cost of basic needs; pandemic relief ended; "sweeping new executive
+  orders"; possible recession *(printed on slide)*
+- **Review the bullets for mid-2026 currency** — this is the early-2025 wording (executive
+  orders, "impending" recession) **[CONFIRM]**
+- Overlap note: the CoStar column repeats the RTC slide you showed Jul 7 — lean on it: "as I
+  said last week…"
+🎤 "So where does this leave us? Every projection says filings keep rising — costs up, supply
+short, rents outrunning wages, the pandemic relief gone. The map you saw tonight is still
+being drawn. Which leaves the question this course exists to answer: what would it take to
+stop it? That's the whole next lecture. Tonight, I'll just show you the instruments."
 
-### S37 — Two crises, not one ✅
-- Only **2.1%** of tracts high on both; **7.0%** displacement-dominant; **6.7%**
-  eviction-dominant *(HPRM §6.3, 2019 vintage)*
-🎤 "When you finally measure both nationally, they *split apart*. Two percent of neighborhoods
-have both crises at once. Seven percent are pure market displacement, about seven pure
-eviction. Build only housing and you miss one crisis entirely."
+### S37 — LIVE DEMO: the HPRM + the Census *(no slide — two browser tabs, pre-loaded)*
+- **Tab 1 — the HPRM map** *(your usual link — not verified this session)*: zoom to the Bay;
+  toggle the soft-displacement vs eviction layers; take one student county request live
+- 🎤 "Two crises, two geographies — you can watch them split apart on the map. Next lecture we
+  put numbers on this and ask what fixes each one."
+- **Tab 2 — the Census**: data.census.gov (or the Social Explorer link that's on old slide
+  p.64 — keep that slide as a demo anchor if you want one): look up median household income
+  by race for San Francisco
+- 🎤 "Everything on that map is built from data like this. Thursday night you pull this exact
+  table yourselves in R — and turn it into your first chart."
+- Backup: drop screenshots of both tabs at the end of the deck in case Zoom screen-share or
+  the sites misbehave.
 
-### S38 — The two crises have two geographies (and races) ✅
-- Soft-dominant tracts: median income **$61,029** (≈ national median $61,016), **10% Black**,
-  highest rents ($1,132)
-- Eviction-dominant: **$45,795**, **35.6% Black**
-- Both at once: **$39,181**, **43.5% Black**
-🎤 "The *soft* crisis lives in middle-income, high-rent, whiter neighborhoods — exactly where
-Chapple predicted. The *eviction* crisis concentrates in poorer, Blacker ones — exactly where
-tonight's four periods put it. History drew this map; the model just reads it."
-
-### S39 — The map has a race / your backyard ✅
-- Highest-risk tracts (≥6): **42% Black on average vs 14% nationally**; 37.9% majority-Black
-- Richmond, VA: **13** tracts score the maximum 8, averaging **76% Black**
-  **[CONFIRM]** *(your book draft says "15 neighborhoods"; the verified model count is 13)*
-- Bay Area: **~91% of Black renters** live in precarious neighborhoods; **~73% of all renters**
-  face some risk **[CONFIRM map vintage before it goes on a slide]**
-🎤 "Ninety-one percent of Black renters in this region live in a neighborhood the model flags.
-You are sitting inside the case study — and every lab from Thursday on hands you a piece of
-this machine."
-
-### S40 — The gender the title promises ✅ 📎
-- Zapata et al. (2025), *IJERPH* 22(8):1212 — 1,085 Texas renters: a non-payment violation
-  associated with **~2.5× the odds of IPV** (AOR 2.50, CI 2.29–2.73; cross-sectional;
-  you're a co-author). The HPRM was the sampling frame.
-🎤 "One more promise in the course title: *gender*. Renters facing a nonpayment violation had
-two and a half times the odds of intimate-partner violence — an association, not a cause, but
-stark. And notice the method: we used the precarity model itself to find renters the courthouse
-never sees. Measurement isn't bookkeeping; it decides who becomes visible."
-
----
-
-## SECTION 6 — CLOSE (~5 min)
-
-### S41 — This week **NEW**
+### S38 — Spoken close *(no slide — say it over the demo tab or the Moving-forward slide)*
 - **Thursday (Lab 2):** find any Census variable yourself; HUD's 80/50/30 tiers with
   `mutate()`; income by race in SF — you build S27 for your own county, **and it's your first
   ggplot chart** (we didn't get to charts in Lab 1; Lab 2 now teaches them from zero — reassure
@@ -562,7 +541,8 @@ decided; Bates reading assigned for Aug 4.
 
 *(You're editing a full copy of the 2025 Week-2 deck, so this is a page-by-page verdict list —
 slide numbers = pages of `2025.07.15 SOC N100 Week 2.pdf`, same order as the copy. Checked
-against the decks read 2026-07-14. Net result: 64 slides → ~57.)*
+against the decks read 2026-07-14. Net result: 64 slides → ~52, plus 1 new (agenda); a couple
+more if you keep the optional p.54 transition and p.64 demo anchor.)*
 
 | Slides | Verdict | Notes |
 |---|---|---|
@@ -587,8 +567,10 @@ against the decks read 2026-07-14. Net result: 64 slides → ~57.)*
 | 55–57 | keep | Post-pandemic divider, U.S. filings (say "ends May 2023"), MN/IN (S32–S34) |
 | **58–59** | **DELETE** | WA crisis + WA rents — shown Jul 7; callback lines are in S34 |
 | 60 | keep | Oregon by race (S35) — tonight's data ending |
-| — | **INSERT after 60** | NEW: S36–S40 (scale ladder + HPRM block) and S41 (close) — the movable §5 + §6 |
-| **61–64** | **DELETE** | Marin (shown Jul 7), Moving forward/RTC (shown Jul 7), UDP (deferred to the solutions lecture), Census Data (belongs to Thursday's lab) |
+| 61 | **DELETE** | Marin — shown Jul 7 |
+| 62 | **keep** | Moving forward — tonight's closer (S36); review bullets for mid-2026 currency **[CONFIRM]** |
+| 63 | **DELETE** | UDP — deferred to the solutions lecture |
+| 64 | optional keep | Census Data — anchor for the live demo (S37) / Thursday bridge; delete if demoing straight from the browser |
 
 **Global:** find/replace the hardcoded footer "timthomas@berkeley.edu - 2025.01.22" → 2026 (or
 delete the footer) across the whole deck.
@@ -621,10 +603,10 @@ delete the footer) across the whole deck.
 - **MN vs IN [p.57]:** bar charts end **Apr 2022** — fine as pandemic history; say so.
 - **Oregon by race [p.60]:** runs through **2024** — current, no change ✅.
 
-### New-slide specs (for the two INSERT rows)
-- **S2** agenda (4 bullets, spec in §0) · **S36** scale ladder · **S37–S40** HPRM/Bay/gender
-  (bullet specs in §5 here; fuller versions in `week1_lecture_rebuild_2026.md` S10–S15) ·
-  **S41** close (spec in §6).
+### New-slide specs
+- Only **S2** (agenda, spec in §0) still needs building. The HPRM block and the close slide
+  were dropped from tonight (Jul 14 pm) — HPRM specs now live in `lecture3_solutions_2026.md`
+  §6; the close is spoken (S38).
 
 ---
 

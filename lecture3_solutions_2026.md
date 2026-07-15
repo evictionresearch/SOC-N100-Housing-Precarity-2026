@@ -15,7 +15,7 @@ Everything deferred from Weeks 1–2 is solutions-shaped — this lecture mostly
 
 | Deferred item | Where it lives | Role here |
 |---|---|---|
-| **HPRM closer (S36–S40)** — if cut from tonight | `week2_lecture_2026.md` §5, numbers ✅ | The bridge IN: diagnosis before treatment — "two crises, not one" |
+| **HPRM closer** — confirmed cut from Week 2 (Jul 14 pm) | **§6 below** (full slide specs, moved from the week-2 notes), numbers ✅ | The opener: diagnosis before treatment — "two crises, not one." Students saw the live HPRM map demo Jul 14; these slides put the numbers on it |
 | **Bates (2013) Portland study** | 2025 W3 deck pp.45–48 (slides exist); reading assigned **Aug 4** on the site | The worked policy toolkit: community impact reports, inclusionary zoning, community benefits agreements, education/technical assistance, racial equity lens *(all printed on slide)* ✅ |
 | **UDP typology + "displacement precedes & is a consequence of gentrification"** | 2025 W3 p.49 (updated title) + UDP video link | Timing argument: intervene *before* visible gentrification |
 | **Zuk et al. (2015)** lit review (optional Week-2 reading) | linked on site ✅ | The evidence base: gentrification, displacement, and **the role of public investment** |
@@ -79,19 +79,73 @@ Verified framework (searched 2026-07-14): the standard formulation is **3 P's** 
 
 ## 5. Rough arc sketch *(for the eventual build — 3–4 beats)*
 
-1. **Diagnosis recap** (or the full HPRM closer, if tonight cut §5): two crises, racialized,
-   measurable — so what would it take?
+1. **Open with the full HPRM block (§6 below)** — Week 2 ended with the live map demo instead
+   of these slides, so the opener is "you saw the map; here are the numbers": two crises,
+   racialized, measurable — so what would it take?
 2. **The P's** — the framework + Chapple's sequencing + the divergence mapping (§2 above).
 3. **The evidence** — moratoria/MN-vs-IN (protections work), RTC numbers, Bates toolkit at
    survey depth, Zuk on public investment.
 4. **Research → power** — WA testimony walkthrough; "your final project is a small version of
    this." Ties to A2 (due Aug 3) and the Aug 4 group-project session with the Bates reading.
 
+## 6. Ready-made slide specs — the HPRM block (moved from Week-2 notes, Jul 14)
+
+*(These five slides still need building — Tim ran out of time before the Jul 14 lecture, which
+ended with a live HPRM/Census demo instead. All numbers ✅ verified 2026-07-07 (Week-1 bank);
+re-voice the 🎤 transitions for this lecture's opening. Fuller versions of some slides in
+`week1_lecture_rebuild_2026.md` S10–S15.)*
+
+### HPRM-1 — The scale ladder
+- **Individual** → Desmond (2012): eviction reproduces poverty
+- **Metro** → Chapple (2017): an income crisis, region-wide
+- **National** → **HPRM** (your work): measure *both* channels, every tract
+🎤 "Over the last two lectures you've seen the whole ladder. Desmond gave us the household.
+Chapple gave us the metro. What was missing was the country, measured directly — both kinds of
+displacement, every neighborhood. So I built it. Zero to eight, 64,028 tracts. You saw the map
+last time — tonight, the numbers."
+
+### HPRM-2 — Two crises, not one ✅
+- Only **2.1%** of tracts high on both; **7.0%** displacement-dominant; **6.7%**
+  eviction-dominant *(HPRM §6.3, 2019 vintage)*
+🎤 "When you finally measure both nationally, they *split apart*. Two percent of neighborhoods
+have both crises at once. Seven percent are pure market displacement, about seven pure
+eviction. Build only housing and you miss one crisis entirely — which is exactly why the P's
+come as a set."
+
+### HPRM-3 — The two crises have two geographies (and races) ✅
+- Soft-dominant tracts: median income **$61,029** (≈ national median $61,016), **10% Black**,
+  highest rents ($1,132)
+- Eviction-dominant: **$45,795**, **35.6% Black**
+- Both at once: **$39,181**, **43.5% Black**
+🎤 "The *soft* crisis lives in middle-income, high-rent, whiter neighborhoods — exactly where
+Chapple predicted. The *eviction* crisis concentrates in poorer, Blacker ones — exactly where
+the four periods put it. History drew this map; the model just reads it."
+
+### HPRM-4 — The map has a race / your backyard ✅
+- Highest-risk tracts (≥6): **42% Black on average vs 14% nationally**; 37.9% majority-Black
+- Richmond, VA: **13** tracts score the maximum 8, averaging **76% Black**
+  **[CONFIRM]** *(book draft says "15 neighborhoods"; the verified model count is 13)*
+- Bay Area: **~91% of Black renters** live in precarious neighborhoods; **~73% of all renters**
+  face some risk **[CONFIRM map vintage before it goes on a slide]**
+🎤 "Ninety-one percent of Black renters in this region live in a neighborhood the model flags.
+You are sitting inside the case study."
+
+### HPRM-5 — The gender the title promises ✅ 📎
+- Zapata et al. (2025), *IJERPH* 22(8):1212 — 1,085 Texas renters: a non-payment violation
+  associated with **~2.5× the odds of IPV** (AOR 2.50, CI 2.29–2.73; cross-sectional;
+  Tim co-author). The HPRM was the sampling frame.
+🎤 "One more promise in the course title: *gender*. Renters facing a nonpayment violation had
+two and a half times the odds of intimate-partner violence — an association, not a cause, but
+stark. And notice the method: we used the precarity model itself to find renters the courthouse
+never sees. Measurement isn't bookkeeping; it decides who becomes visible — and what gets
+fixed."
+
 ## Build checklist (before this becomes a spec)
 
 - [ ] Tim: name the **4th P** + its source
 - [ ] Fix the lecture date; update `index.qmd` Week 3 (or wherever it lands)
 - [ ] Decide Bates depth here vs Aug 4
-- [ ] Confirm whether tonight delivered week-2 §5 (HPRM) — determines beat 1
+- [x] Week 2 did **not** deliver the HPRM slides (Jul 14 ended: Oregon → Moving forward →
+      live HPRM/Census demo) — beat 1 = §6 below, slides still to build
 - [ ] Fetch + verify the Chapple sequencing quote and the testimony hearing date
 - [ ] Refresh any WA/homelessness stats that go on slides
