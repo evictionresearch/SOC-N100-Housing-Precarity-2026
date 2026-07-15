@@ -185,6 +185,14 @@ course_github_packages <- c(
   "evictionresearch/neighborhood"
 )
 
+#' Bonus-lab packages (lab6_bonus_memory.R). Not part of the core install;
+#' the bonus lab installs them on demand via load_pkgs().
+bonus_cran_packages <- c(
+  "duckdb",
+  "duckdbfs",
+  "arrow"
+)
+
 #' Install all course packages (used by install_course_packages.R).
 install_all_course_packages <- function() {
   for (pkg in course_cran_packages) {

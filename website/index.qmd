@@ -120,6 +120,8 @@ These assignments will be graded on the [scale in the syllabus](syllabus.html#co
 
 #### Thursday August 6 - Lab
 
+* Bonus lab: working with data under memory constraints (`code/lab6_bonus_memory.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)) - the survival kit for your final project: watching your memory budget, dropping geometry, chunking big Census pulls, caching with qs2, and querying bigger-than-memory data with duckdb + arrow
+
 ## Week 6
 #### Tuesday August 11 - Group Lab
 

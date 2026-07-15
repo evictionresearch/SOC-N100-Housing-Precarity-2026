@@ -1,43 +1,47 @@
-# SOC-N100-Housing-Precarity-2026
+# Housing Precarity and Displacement
 
-Housing Precarity and Displacement: Racial and Gender Inequality in Gentrification and Eviction — UC Berkeley SOC-N100 course materials.
+**Racial and Gender Inequality in Gentrification and Eviction**
+UC Berkeley · Sociology N100 · Summer 2026 · Tim Thomas, Ph.D.
 
-## Start here
+Welcome! This repository holds everything you need for the hands-on side of the course: the R lab scripts we work through together, the datasets they use, and the RStudio project that ties them together.
 
-| Role | What to open |
-|------|----------------|
-| **Students (labs on DataHub)** | [`SOC-N100.Rproj`](SOC-N100.Rproj) at repo root → scripts in [`code/`](code/) ([package practices](code/README.md)) |
-| **Course site (browser)** | GitHub Pages from [`docs/`](docs/) (syllabus, schedule, resources) |
-| **Maintainers (edit site)** | [`website/SOC-N100-website-for-maintainers.Rproj`](website/SOC-N100-website-for-maintainers.Rproj) → render to `docs/` |
-| **DataHub setup** | [`DATAHUB.md`](DATAHUB.md) |
+## Course website
 
-## Repository layout
+Start at the course site — it has the schedule, syllabus, readings, and assignment details:
 
-- **`code/`** — R lab scripts (`lab1` … `lab5`)
-- **`data/`** — datasets used in labs
-- **`docs/`** — built course website (published; do not hand-edit HTML)
-- **`website/`** — Quarto source for the site (maintainers only)
+**<https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/>**
 
-### `website/` vs `docs/` (and the old `gh-pages` branch)
+## Launch RStudio (one click)
 
-Historically, many repos published GitHub Pages from a separate **`gh-pages` branch**. This repo uses the current pattern: **Quarto source in `website/`**, **built HTML in `docs/`**, and GitHub Pages configured to serve **`/docs` on `main`**.
+You do not need to install anything on your computer. Click the badge below and Berkeley DataHub will open RStudio in your browser with this repository already cloned and kept up to date (sign in with your CalNet ID):
 
-Think of `website/` as the authoring tree and `docs/` as the deployable artifact — students read `docs/` in the browser; they do not need to open `website/` for labs.
+[![Launch on Berkeley DataHub](https://img.shields.io/badge/Launch-Berkeley%20DataHub-003262?logo=jupyter&logoColor=FDB515)](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)
 
-## AGENTS.md (for AI assistants)
+Once RStudio opens:
 
-This repo uses [`AGENTS.md`](AGENTS.md) instead of tool-specific files like `CLAUDE.md`. A single, tool-neutral agents file is an emerging convention so Cursor, Claude Code, Copilot, and other assistants share the same project context:
+1. In the **Files** pane, open the `SOC-N100-Housing-Precarity-2026` folder and click **`SOC-N100.Rproj`** (say yes when RStudio asks to open the project).
+2. Open the lab of the week from the **`code/`** folder (for example `code/lab1_intro_to_.R`).
+3. Run the script top to bottom, reading the comments as you go — the labs are written to be read, not just executed.
 
-- [AGENTS.md](https://agents.md/) — open format for agent instructions
-- [GitHub Copilot: AGENTS.md](https://docs.github.com/en/copilot/concepts/agents/about-agents) — Copilot coding agent context
-- [OpenAI Codex: AGENTS.md](https://developers.openai.com/codex/guides/agents-md/) — repository guidance for Codex
+If anything looks stuck or confusing, see [`DATAHUB.md`](DATAHUB.md) for setup help, or ask in class — getting unstuck quickly is part of the course.
 
-## Website build (maintainers)
+## What's in here for you
 
-The site is built with Quarto from `website/`:
+| Where | What |
+|-------|------|
+| [`SOC-N100.Rproj`](SOC-N100.Rproj) | The RStudio project — always open this first |
+| [`code/`](code/) | Weekly lab scripts (`lab1` … `lab5`, plus a bonus lab on working with big data under memory limits) |
+| [`data/`](data/) | Course datasets (eviction filings and more) |
+| [`DATAHUB.md`](DATAHUB.md) | DataHub how-to: first-time setup, package installs, troubleshooting |
+| [`code/README.md`](code/README.md) | How package installs work in the labs |
 
-1. Open `website/SOC-N100-website-for-maintainers.Rproj` in RStudio
-2. Render the Quarto website (output goes to `../docs` per `website/_quarto.yml`)
-3. Commit updated `docs/` when publishing
+A few tips for success:
 
-GitHub Pages: Repo → Settings → Pages → Source: **`/docs`** on branch **`main`**.
+- **Run labs on DataHub**, not a local install — everyone in class is then on the same setup, and help is easier to give.
+- **Labs build on each other.** Lab 1 sets up your (free) Census API key that every later lab uses.
+- **Save your own work under new file names** — the git-pull link updates course files, and edits to the originals can create conflicts.
+- The final project pulls together everything from the labs; the bonus lab (`code/lab6_bonus_memory.R`) shows how to keep bigger projects from running out of memory.
+
+## Course staff and maintainers
+
+Everything about editing the course website, batch-testing labs, and DataHub resource requests lives in [`website/readme.md`](website/readme.md) — students never need it.

@@ -7,8 +7,10 @@
 #   Rscript website/maintainer/run_all_labs.R --labs=1,3
 #   Rscript website/maintainer/run_all_labs.R --per-lab
 #
-# Requires: network for tidycensus/tigris labs (1–5). Census API key in
+# Requires: network for tidycensus/tigris labs (1–6). Census API key in
 #   ~/.Renviron (set once via census_api_key(..., install = TRUE) in lab 1).
+#   Lab 6 (bonus, memory constraints) self-installs duckdb/duckdbfs/arrow on
+#   first run — expect several extra minutes the first time.
 #
 # Plots: ggplot/tmap code executes; graphics go to a null PDF device (nothing
 # opens on screen). ggsave() in labs still writes files under output/.
@@ -92,7 +94,7 @@ restore_maintainer_lab_patches <- function(applied) {
 parse_labs_flag <- function(args) {
   flag <- grep("^--labs=", args, value = TRUE)
   if (length(flag) == 0) {
-    return(1:5)
+    return(1:6)
   }
   nums <- strsplit(sub("^--labs=", "", flag[[1]]), ",", fixed = TRUE)[[1]]
   as.integer(nums)
@@ -121,7 +123,8 @@ lab_scripts <- c(
   "2" = "code/lab2_census_data.R",
   "3" = "code/lab3_evictions.R",
   "4" = "code/lab4_li_renters_mapping.R",
-  "5" = "code/lab5_rb_seg.R"
+  "5" = "code/lab5_rb_seg.R",
+  "6" = "code/lab6_bonus_memory.R"  # bonus: memory constraints (duckdb/arrow)
 )
 
 repo_root <- find_repo_root()
@@ -134,7 +137,7 @@ if ("--per-lab" %in% args) {
   lab_ids <- parse_labs_flag(args)
   lab_ids <- lab_ids[as.character(lab_ids) %in% names(lab_scripts)]
   if (length(lab_ids) == 0) {
-    stop("No valid labs selected. Use --labs=1,2,3,4,5", call. = FALSE)
+    stop("No valid labs selected. Use --labs=1,2,3,4,5,6", call. = FALSE)
   }
 
   runner <- normalizePath(file.path(repo_root, "website/maintainer/run_all_labs.R"), mustWork = TRUE)
@@ -185,7 +188,7 @@ run_batch_labs <- function(repo_root, lab_ids, args) {
     source("course_infrastructure/install_course_packages.R", local = new.env(parent = globalenv()))
   }
 
-  needs_census <- any(as.character(lab_ids) %in% c("1", "2", "3", "4", "5"))
+  needs_census <- any(as.character(lab_ids) %in% c("1", "2", "3", "4", "5", "6"))
   if (needs_census) {
     renviron <- path.expand("~/.Renviron")
     if (file.exists(renviron)) readRenviron(renviron)
@@ -282,7 +285,7 @@ run_batch_labs <- function(repo_root, lab_ids, args) {
 lab_ids <- parse_labs_flag(args)
 lab_ids <- lab_ids[as.character(lab_ids) %in% names(lab_scripts)]
 if (length(lab_ids) == 0) {
-  stop("No valid labs selected. Use --labs=1,2,3,4,5", call. = FALSE)
+  stop("No valid labs selected. Use --labs=1,2,3,4,5,6", call. = FALSE)
 }
 
 exit_code <- tryCatch(
