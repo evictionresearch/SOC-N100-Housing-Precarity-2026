@@ -1,8 +1,8 @@
 # SOC-N100 shared package helpers
 #
 # Two-layer pattern (use both):
-#   1. Once per account: source("code/install_course_packages.R")
-#   2. Each lab script:  source("code/course_packages.R") then load_pkg() / load_pkgs()
+#   1. Once per account: source("course_infrastructure/install_course_packages.R")
+#   2. Each lab script:  source("course_infrastructure/course_packages.R") then load_pkg() / load_pkgs()
 #
 # Labs stay self-contained if a student opens one file without running the bulk
 # installer first. Installs are skipped when requireNamespace() already succeeds.
@@ -33,7 +33,7 @@ install_pkg_with_cran_fallback <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     stop(
       "Could not install package '", pkg, "'. ",
-      "Run source('code/install_course_packages.R') or ask course staff.",
+      "Run source('course_infrastructure/install_course_packages.R') or ask course staff.",
       call. = FALSE
     )
   }

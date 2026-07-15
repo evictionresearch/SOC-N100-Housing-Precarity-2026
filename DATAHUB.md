@@ -121,7 +121,7 @@ Students work at the **repo root**, not in `website/`:
 
 1. Clone the repo (see below)
 2. Open labs straight from the Files pane: `SOC-N100-Housing-Precarity-2026` → `code/` → `lab1_intro_to_.R`. **Students do not open the `.Rproj`** (dropped 2026-07-09; labs are working-directory-independent, and lab 4 uses full `~/...` paths). Lab 1 walks through the one `install.packages("tidycensus")` students need; later labs carry their own RUN-ONCE install lines
-3. Optional for staff/testing (not required for students): open `SOC-N100.Rproj` and `source("code/install_course_packages.R")` to bulk-install everything — see [Package installs](#package-installs)
+3. Optional for staff/testing (not required for students): open `SOC-N100.Rproj` and `source("course_infrastructure/install_course_packages.R")` to bulk-install everything — see [Package installs](#package-installs)
 
 The course **website** students read in a browser comes from `docs/` (GitHub Pages). The `website/` folder is Quarto **source** for maintainers only — like a `src/` tree whose built output is `docs/` (the modern equivalent of publishing static HTML from a `gh-pages` branch).
 
@@ -172,11 +172,11 @@ Add `export GITHUB_PAT="$(gh auth token)"` to `~/.bashrc` on DataHub if you want
 ```bash
 # Option A — fresh token from gh (after gh auth login)
 export GITHUB_PAT="$(gh auth token)"
-Rscript -e 'source("code/course_paths.R"); source("code/course_packages.R"); ensure_github("evictionresearch/neighborhood")'
+Rscript -e 'source("course_infrastructure/course_paths.R"); source("course_infrastructure/course_packages.R"); ensure_github("evictionresearch/neighborhood")'
 
 # Option B — public install with no token (clears bad credentials)
 unset GITHUB_PAT GITHUB_TOKEN
-Rscript -e 'source("code/course_paths.R"); source("code/course_packages.R"); ensure_github("evictionresearch/neighborhood")'
+Rscript -e 'source("course_infrastructure/course_paths.R"); source("course_infrastructure/course_packages.R"); ensure_github("evictionresearch/neighborhood")'
 ```
 
 `ensure_github()` in `course_packages.R` retries without a token after a 401 when the repo is public.
@@ -214,7 +214,7 @@ file.exists("data/evictions/d5_case_aggregated.rds")  # TRUE (fallback)
 3. Install lab packages (first session, or when something is missing):
 
 ```r
-source("code/install_course_packages.R")
+source("course_infrastructure/install_course_packages.R")
 ```
 
 4. Open `code/lab1_intro_to_.R` and run.
@@ -231,7 +231,7 @@ Students can use the [primary git-pull link](#course-datahubs) above; no `gh aut
 
 Documented in [`code/README.md`](code/README.md):
 
-1. **Bulk (once):** `source("code/install_course_packages.R")` after opening `SOC-N100.Rproj`
+1. **Bulk (once):** `source("course_infrastructure/install_course_packages.R")` after opening `SOC-N100.Rproj`
 2. **Per lab:** each `lab*.R` calls `load_pkg()` / `load_pkgs()` — installs only if missing, then loads
 
 Re-running a lab is idempotent: packages already installed are not reinstalled.
@@ -240,11 +240,11 @@ Re-running a lab is idempotent: packages already installed are not reinstalled.
 
 Labs **3** and **4** load eviction data with **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2`. A commented **`readRDS()`** line points to `.rds` if qs2 fails. Staff background: [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd).
 
-**Quick check after `source("code/install_course_packages.R")`:**
+**Quick check after `source("course_infrastructure/install_course_packages.R")`:**
 
 ```r
 requireNamespace("qs2")
-source("code/course_paths.R"); source("code/course_data.R")
+source("course_infrastructure/course_paths.R"); source("course_infrastructure/course_data.R")
 d <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
 nrow(d)   # 139072
 ```
@@ -270,7 +270,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 1. [ ] `gh auth status` shows logged in (private repo) OR git-pull link works (public repo)
 2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on expected branch
 3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
-4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
+4. [ ] `source("course_infrastructure/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
 5. [ ] Lab 1 runs through tidyverse section
 6. [ ] Lab 2: first run prompts for Census key (or key already in `~/.Renviron`); `get_acs()` returns data
 7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)

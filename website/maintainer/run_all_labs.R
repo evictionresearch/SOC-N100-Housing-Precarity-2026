@@ -182,7 +182,7 @@ run_batch_labs <- function(repo_root, lab_ids, args) {
 
   if ("--install" %in% args) {
     message("Installing course packages...")
-    source("code/install_course_packages.R", local = new.env(parent = globalenv()))
+    source("course_infrastructure/install_course_packages.R", local = new.env(parent = globalenv()))
   }
 
   needs_census <- any(as.character(lab_ids) %in% c("1", "2", "3", "4", "5"))

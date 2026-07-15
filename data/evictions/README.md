@@ -9,7 +9,7 @@
 ## Regenerate `.rds` and `.qs2` from legacy `.qs`
 
 ```bash
-Rscript code/convert_eviction_data.R
+Rscript course_infrastructure/convert_eviction_data.R
 ```
 
 Background: [`website/maintainer/notes.qmd`](../../website/maintainer/notes.qmd).
@@ -18,8 +18,8 @@ Background: [`website/maintainer/notes.qmd`](../../website/maintainer/notes.qmd)
 
 ```r
 requireNamespace("qs2")
-source("code/course_paths.R")
-source("code/course_data.R")
+source("course_infrastructure/course_paths.R")
+source("course_infrastructure/course_data.R")
 d <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
 nrow(d)   # 139072
 ```

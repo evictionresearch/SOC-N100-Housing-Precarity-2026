@@ -1,6 +1,6 @@
 # Shared path helper for SOC-N100 labs.
 # Source from repo root after opening SOC-N100.Rproj:
-#   source("code/course_paths.R")
+#   source("course_infrastructure/course_paths.R")
 
 if (file.exists("SOC-N100.Rproj")) {
   repo_root <- normalizePath(getwd())

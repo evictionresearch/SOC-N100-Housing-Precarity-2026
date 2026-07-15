@@ -1,3 +1,5 @@
+# [qs->parquet migration] read_data()/write_data() — see library/code/io_helpers.R
+if (!exists("read_data")) for (.p in c("~/git/evictionresearch/library/code/io_helpers.R","~/users/timthomas/git/evictionresearch/library/code/io_helpers.R","/accounts/projects/timthomas/git/evictionresearch/library/code/io_helpers.R")) if (file.exists(.p)) { source(.p); break }
 ---
 title: "Maintainer notes"
 subtitle: "Data formats, qs migration, and lesson impact (staff only)"
@@ -15,10 +17,10 @@ draft: true
 | Item | Before | After (2026 DataHub) |
 |------|--------|----------------------|
 | Eviction file | `data/evictions/d5_case_aggregated.qs` | **`.qs2`** (primary) + **`.rds`** (fallback) |
-| Lab 3–4 load | `qread(...)` | `qs2::qs_read()` (+ commented `readRDS()` backup) |
-| Lab 3 student save | `qsave(...)` | `saveRDS(...)` (+ qs2 noted in format comments) |
+| Lab 3–4 load | `read_data(...)` | `read_data()` (+ commented `readRDS()` backup) |
+| Lab 3 student save | `write_data(...)` | `saveRDS(...)` (+ qs2 noted in format comments) |
 | Course dependency | `qs` in install script | **`qs2`** (+ RDS fallback; no `qs`) |
-| Legacy `.qs` in repo | — | Provenance; regenerate via `code/convert_eviction_data.R` |
+| Legacy `.qs` in repo | — | Provenance; regenerate via `course_infrastructure/convert_eviction_data.R` |
 
 **Trigger:** [`qs` was archived from CRAN on 2026-01-17](https://cran.r-project.org/web/packages/qs/index.html) and **failed to compile** on Berkeley r.datahub even from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/). Students could not complete labs 3–4.
 
@@ -87,7 +89,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 
 | Layer | Format | Action |
 |-------|--------|--------|
-| **Student labs (canonical)** | `.qs2` + `qs2` | **Primary** — `qs2::qs_read()`; `.rds` via commented backup line |
+| **Student labs (canonical)** | `.qs2` + `qs2` | **Primary** — `read_data()`; `.rds` via commented backup line |
 | **Backup / resilience** | `.rds` | Student uncomments `readRDS()` if qs2 fails |
 | **Legacy provenance** | `.qs` | Keep in repo; maintainer conversion only. |
 | **Optional ERN / Python mirror** | `.csv.gz` or `.parquet` | **Optional** — add only if Tim wants a non-R distribution path; do not replace RDS in labs unless willing to add `arrow` to `install_course_packages.R`. |
@@ -164,7 +166,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 ## Why we chose RDS (not qs2 or Parquet) for SOC-N100
 
 1. **DataHub blocker:** `qs` would not install for students; labs stopped at package setup.
-2. **One-time conversion:** Staff converted `d5_case_aggregated.qs` → `.rds` once (`code/convert_qs_to_rds.R`); students inherit a zero-dependency path.
+2. **One-time conversion:** Staff converted `d5_case_aggregated.qs` → `.rds` once (`course_infrastructure/convert_qs_to_rds.R`); students inherit a zero-dependency path.
 3. **Pedagogy:** Labs already teach serialization concepts; RDS keeps focus on **eviction + census analysis**, not C++ compile chains on a shared hub.
 4. **qs2 mismatch:** Adopting `qs2` would still require a legacy `qs` read step for the old file — same maintainer burden, extra student package, no benefit at 7 MB.
 5. **Parquet optional:** Cross-language Parquet is worthwhile for ERN distribution, not for replacing RDS in R-only labs unless `arrow` is added to the course stack.
@@ -180,7 +182,7 @@ Confusing the two is a common reproducibility mistake — e.g. publishing only `
 | Section | Change |
 |---------|--------|
 | Package header | Removed `qs` from `load_pkgs()` |
-| Load Indiana evictions | `qs2::qs_read()` (+ commented `readRDS()` backup) |
+| Load Indiana evictions | `read_data()` (+ commented `readRDS()` backup) |
 | Save student artifact | `saveRDS(co_census, "data/in_co_renters.rds")` |
 | Teaching narrative | Still covers “save objects to disk”; now emphasizes **base R** and **documenting format choices** for reproducibility |
 
@@ -210,7 +212,7 @@ On a machine where `qs` 0.27.3 installs (maintainer laptop, not r.datahub):
 
 ```bash
 cd SOC-N100-Housing-Precarity-2026
-Rscript code/convert_qs_to_rds.R
+Rscript course_infrastructure/convert_qs_to_rds.R
 ```
 
 Commit `data/evictions/d5_case_aggregated.rds`. See also `data/evictions/README.md`.
@@ -229,8 +231,8 @@ We **removed `qs`** from the [DATAHUB.md](../DATAHUB.md) package request. No stu
 
 ### If Tim wants qs2 in a future advanced module
 
-- Convert source data: `qs::qread()` → `qs2::qs_save()` (maintainer-only step).
-- Teach `qs_read()` / `qs_save()` with `.qs2` extension.
+- Convert source data: `read_data()` → `write_data()` (maintainer-only step).
+- Teach `read_data()` / `write_data()` with `.qs2` extension.
 - Document incompatibility with legacy `.qs` in this file.
 
 ---

@@ -20,7 +20,7 @@ tutorial they will ever see.
 - **Eviction data (lab 4):** loaded with base
   `readRDS("data/evictions/d5_case_aggregated.rds")`. The `.qs2` file next
   to it is the same table in a faster format (maintainer/ERN default);
-  regenerate both with `Rscript code/convert_eviction_data.R`.
+  regenerate both with `Rscript course_infrastructure/convert_eviction_data.R`.
 
 DataHub caveat (unchanged): hub administrators can access user home
 directories. A free, rate-limited, revocable Census key is safe enough for
@@ -31,15 +31,9 @@ Key signup: [api.census.gov/data/key_signup.html](https://api.census.gov/data/ke
 
 ## Maintainer-only helpers (not used by student labs)
 
-These support maintenance scripts and batch testing — students never
-`source()` them:
-
-| File | Used by |
-|------|---------|
-| `course_paths.R` (`repo_root`) | `convert_eviction_data.R`, batch runner |
-| `course_packages.R` (`ensure_pkg`, `load_pkg`, `ensure_github`) | bulk installer, batch runner |
-| `course_data.R` (eviction path constants) | conversion + batch scripts |
-| `install_course_packages.R` | optional one-shot bulk install on a fresh DataHub account (a speed-up, not a prerequisite) |
+Moved to [`../course_infrastructure/`](../course_infrastructure/) on
+2026-07-14 so this folder holds only what students open — see its README
+for the file list. Students never `source()` any of them.
 
 Batch smoke-testing of all labs: [`website/maintainer/run_all_labs.R`](../website/maintainer/run_all_labs.R)
 (applies patches from `website/maintainer/patches/` to fill in-class `__`

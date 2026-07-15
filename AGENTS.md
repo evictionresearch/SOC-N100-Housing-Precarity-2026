@@ -50,15 +50,18 @@ Lab scripts live in `code/`:
 - `lab3_evictions.R` — eviction data analysis
 - `lab4_li_renters_mapping.R` — low-income renter mapping
 - `lab5_rb_seg.R` — rent burden and segregation
-- `course_paths.R` — shared `repo_root` helper (source from repo root)
-- `course_packages.R` — idempotent `load_pkg()` / `ensure_pkg()` helpers
-- `course_data.R` — eviction file path constants (`eviction_data_qs2`, `eviction_data_rds`)
-- `install_course_packages.R` — one-shot bulk install for DataHub
-- `README.md` — package practices (two-layer pattern)
+- `README.md` — package practices (plain base-R/`library()` pedagogy)
 
 See [`code/README.md`](code/README.md) for package install conventions.
 
-**Maintainers:** data formats (qs → qs2 + RDS fallback) — [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd) (draft; not published to students).
+**Maintainers:** staff-only helpers and data-conversion scripts live in
+[`course_infrastructure/`](course_infrastructure/) (`course_paths.R`,
+`course_packages.R`, `course_data.R`, `install_course_packages.R`,
+`convert_eviction_data.R`, `convert_qs_to_rds.R`) — moved out of `code/`
+2026-07-14 so students browsing the Files pane see only labs; the labs never
+`source()` them. Data formats (qs → qs2 + RDS fallback) —
+[`website/maintainer/notes.qmd`](website/maintainer/notes.qmd) (draft; not
+published to students).
 
 ## Student Environment
 
