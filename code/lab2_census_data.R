@@ -241,7 +241,8 @@ two_counties %>%
 #   B19013A = White alone            B19013D = Asian alone
 #   B19013B = Black alone            B19013I = Hispanic or Latino
 #
-# (You can see the full A-I list by searching B19013 in the catalog. Two
+# (There are nine letters in all, A through I -- search B19013 in the
+# catalog to see the full set. Two
 # cautions we will come back to in this course: these groups are how the
 # Census asks about race and ethnicity, and "White alone" overlaps with
 # "Hispanic or Latino" -- a person can be counted in both. Keep that in
