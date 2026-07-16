@@ -43,7 +43,15 @@ Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
 
 #### Tuesday July 14 - Lecture
 
+* How a move happens: the mobility curve — hard displacement, soft displacement, and being stuck
+* Why the map has a race: 130 years of segregation in four periods
+* Where precarity lands now: the post-pandemic era
+
 #### Thursday July 16 - Lab
+
+* Lab 2: finding the data you need — income, race, and place (`code/lab2_census_data.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F))
+* Search the ACS variable catalog yourself, build HUD's income tiers with `mutate()`, compare incomes across race, and build your first ggplot chart — rebuilding two of Tuesday's charts from live Census data
+* If you missed lab 1: get your free Census API key first (see the Week 1 setup steps above) — you'll need it tonight
 
 ## Week 3
 #### Readings

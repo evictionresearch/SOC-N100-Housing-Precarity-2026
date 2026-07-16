@@ -128,7 +128,16 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#maintainer-documentation" id="toc-maintainer-documentation" class="nav-link active" data-scroll-target="#maintainer-documentation">Maintainer documentation</a></li>
+  <li><a href="#maintainer-guide-course-staff-only" id="toc-maintainer-guide-course-staff-only" class="nav-link active" data-scroll-target="#maintainer-guide-course-staff-only">Maintainer guide (course staff only)</a>
+  <ul class="collapse">
+  <li><a href="#launch-on-datahub-per-branch" id="toc-launch-on-datahub-per-branch" class="nav-link" data-scroll-target="#launch-on-datahub-per-branch">Launch on DataHub (per branch)</a></li>
+  <li><a href="#editing-and-publishing-the-website" id="toc-editing-and-publishing-the-website" class="nav-link" data-scroll-target="#editing-and-publishing-the-website">Editing and publishing the website</a>
+  <ul class="collapse">
+  <li><a href="#website-vs-docs-and-the-old-gh-pages-branch" id="toc-website-vs-docs-and-the-old-gh-pages-branch" class="nav-link" data-scroll-target="#website-vs-docs-and-the-old-gh-pages-branch"><code>website/</code> vs <code>docs/</code> (and the old <code>gh-pages</code> branch)</a></li>
+  </ul></li>
+  <li><a href="#staff-tooling" id="toc-staff-tooling" class="nav-link" data-scroll-target="#staff-tooling">Staff tooling</a></li>
+  <li><a href="#agents.md-for-ai-assistants" id="toc-agents.md-for-ai-assistants" class="nav-link" data-scroll-target="#agents.md-for-ai-assistants">AGENTS.md (for AI assistants)</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -138,12 +147,63 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>Quarto <strong>source</strong> for the course website. Rendered output goes to <code>../docs</code> for GitHub Pages.</p>
-<p><strong>Maintainers only:</strong> open <code>SOC-N100-website-for-maintainers.Rproj</code> in this folder to edit <code>.qmd</code> files and render.</p>
-<p>Students use the published site in <code>docs/</code> and run labs from the repo root via <code>SOC-N100.Rproj</code> — not this folder.</p>
-<section id="maintainer-documentation" class="level2">
-<h2 class="anchored" data-anchor-id="maintainer-documentation">Maintainer documentation</h2>
-<p>Staff-only tooling lives in <strong><a href="maintainer/"><code>maintainer/</code></a></strong> (batch runner, patches, notes) — kept out of the student repo surface at the top level.</p>
+<section id="maintainer-guide-course-staff-only" class="level1">
+<h1>Maintainer guide (course staff only)</h1>
+<p>Quarto <strong>source</strong> for the course website plus all staff-facing tooling. Students work at the repo root (<code>SOC-N100.Rproj</code>, <code>code/</code>, <code>data/</code>) and read the published site — they never need this folder.</p>
+<p>Published site (GitHub Pages, <code>/docs</code> on <code>main</code>): <strong><a href="https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/" class="uri">https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/</a></strong></p>
+<section id="launch-on-datahub-per-branch" class="level2">
+<h2 class="anchored" data-anchor-id="launch-on-datahub-per-branch">Launch on DataHub (per branch)</h2>
+<p>Same one-click git-pull links students get, but for each active branch — useful for testing work in progress on the hub before merging. nbgitpuller checks out the given branch in the student-identical environment.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Branch</th>
+<th>Launch</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>main</code></td>
+<td><a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F&amp;branch=main"><img src="https://img.shields.io/badge/DataHub-main-003262?logo=jupyter&amp;logoColor=FDB515.png" class="img-fluid" alt="main on DataHub"></a></td>
+<td>What students run (default)</td>
+</tr>
+<tr class="even">
+<td><code>resource-request</code></td>
+<td><a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F&amp;branch=resource-request"><img src="https://img.shields.io/badge/DataHub-resource--request-5B7F95?logo=jupyter&amp;logoColor=FDB515.png" class="img-fluid" alt="resource-request on DataHub"></a></td>
+<td>DataHub RAM/package request drafts + bonus memory lab</td>
+</tr>
+<tr class="odd">
+<td><code>lab1-datahub-merge</code></td>
+<td><a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F&amp;branch=lab1-datahub-merge"><img src="https://img.shields.io/badge/DataHub-lab1--datahub--merge-5B7F95?logo=jupyter&amp;logoColor=FDB515.png" class="img-fluid" alt="lab1-datahub-merge on DataHub"></a></td>
+<td>Lab 1 merge work (merged to main)</td>
+</tr>
+<tr class="even">
+<td><code>datahub-rstudio-2026</code></td>
+<td><a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F&amp;branch=datahub-rstudio-2026"><img src="https://img.shields.io/badge/DataHub-datahub--rstudio--2026-5B7F95?logo=jupyter&amp;logoColor=FDB515.png" class="img-fluid" alt="datahub-rstudio-2026 on DataHub"></a></td>
+<td>Earlier DataHub batch-mode work (behind main)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Caution:</strong> nbgitpuller merges upstream into the student’s working copy — switching branches on the <em>same</em> hub account can leave a mixed state. Prefer testing branches on a spare account, or <code>git checkout</code> manually in the hub terminal. Regenerate links with the <a href="https://chromewebstore.google.com/detail/datahub-link-generator/ijbgangngghdanhcnaliiobbiffocahf">DataHub Link Generator extension</a> (see <code>../DATAHUB.md</code>).</p>
+</section>
+<section id="editing-and-publishing-the-website" class="level2">
+<h2 class="anchored" data-anchor-id="editing-and-publishing-the-website">Editing and publishing the website</h2>
+<ol type="1">
+<li>Open <a href="SOC-N100-website-for-maintainers.Rproj"><code>SOC-N100-website-for-maintainers.Rproj</code></a> (this folder) in RStudio</li>
+<li>Edit <code>.qmd</code> files (<code>index.qmd</code> home/schedule, <code>syllabus.qmd</code>, <code>resources.qmd</code>, <code>learn_r.qmd</code>)</li>
+<li>Render the Quarto website — output goes to <code>../docs</code> per <a href="_quarto.yml"><code>_quarto.yml</code></a></li>
+<li>Commit updated <code>docs/</code> on <code>main</code> to publish</li>
+</ol>
+<p><strong>GitHub Pages config:</strong> Repo → Settings → Pages → Source: <strong><code>/docs</code></strong> on branch <strong><code>main</code></strong>. Canonical URL above (custom domain <code>evictionresearch.net</code>). The repo’s About/homepage URL is set to the same address.</p>
+<section id="website-vs-docs-and-the-old-gh-pages-branch" class="level3">
+<h3 class="anchored" data-anchor-id="website-vs-docs-and-the-old-gh-pages-branch"><code>website/</code> vs <code>docs/</code> (and the old <code>gh-pages</code> branch)</h3>
+<p>Historically, many repos published GitHub Pages from a separate <strong><code>gh-pages</code> branch</strong>. This repo uses the current pattern: <strong>Quarto source in <code>website/</code></strong>, <strong>built HTML in <code>docs/</code></strong>, and Pages serving <code>/docs</code> on <code>main</code>. Think of <code>website/</code> as the authoring tree and <code>docs/</code> as the deployable artifact — do not hand-edit HTML in <code>docs/</code>.</p>
+</section>
+</section>
+<section id="staff-tooling" class="level2">
+<h2 class="anchored" data-anchor-id="staff-tooling">Staff tooling</h2>
+<p>Staff-only tooling lives in <strong><a href="maintainer/"><code>maintainer/</code></a></strong> (batch runner, patches, request drafts, notes) — kept out of the student repo surface at the top level.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -153,29 +213,43 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
+<td><a href="maintainer/README.md"><code>maintainer/README.md</code></a></td>
+<td>Index of all staff tooling and DataHub request drafts</td>
+</tr>
+<tr class="even">
 <td>&lt;code&gt;maintainer/notes.qmd&lt;/code&gt;</td>
 <td>Data formats, lesson impact, batch lab runner</td>
 </tr>
-<tr class="even">
-<td><a href="maintainer/run_all_labs.R"><code>maintainer/run_all_labs.R</code></a></td>
-<td><code>Rscript website/maintainer/run_all_labs.R</code></td>
-</tr>
 <tr class="odd">
+<td><a href="maintainer/run_all_labs.R"><code>maintainer/run_all_labs.R</code></a></td>
+<td><code>Rscript website/maintainer/run_all_labs.R</code> — smoke-test labs 1–6</td>
+</tr>
+<tr class="even">
 <td><a href="../DATAHUB.md"><code>../DATAHUB.md</code></a></td>
 <td>Berkeley DataHub setup, package installs, testing</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="../code/README.md"><code>../code/README.md</code></a></td>
 <td>R package two-layer pattern for labs</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><a href="../data/evictions/README.md"><code>../data/evictions/README.md</code></a></td>
 <td>Regenerating eviction course files</td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="agents.md-for-ai-assistants" class="level2">
+<h2 class="anchored" data-anchor-id="agents.md-for-ai-assistants">AGENTS.md (for AI assistants)</h2>
+<p>The repo uses <a href="../AGENTS.md"><code>AGENTS.md</code></a> instead of tool-specific files like <code>CLAUDE.md</code>. A single, tool-neutral agents file is an emerging convention so Cursor, Claude Code, Copilot, and other assistants share the same project context:</p>
+<ul>
+<li><a href="https://agents.md/">AGENTS.md</a> — open format for agent instructions</li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/about-agents">GitHub Copilot: AGENTS.md</a> — Copilot coding agent context</li>
+<li><a href="https://developers.openai.com/codex/guides/agents-md/">OpenAI Codex: AGENTS.md</a> — repository guidance for Codex</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

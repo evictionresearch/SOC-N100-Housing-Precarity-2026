@@ -45,6 +45,8 @@ vignettes/*.pdf
 # Local lab / batch run artifacts (not course materials)
 output/
 my_first_plot.png
+lab2_sf_income_by_race.png
+lab2_sf_homeownership_by_race.png
 data/in_co_renters.csv
 data/in_co_renters.rds
 data/cache/
@@ -64,9 +66,10 @@ rsconnect/
 
 /.quarto/
 
-# Patch reject files (batch runner) — keep out of code/
+# Patch reject files and backups (batch runner) — keep out of code/
 *.rej
 *.rej.orig
+*.orig
 website/maintainer/patches/*.rej
 
 # Staff-only maintainer output - never publish to the public site.
@@ -74,3 +77,7 @@ website/maintainer/patches/*.rej
 # lab1-merge-proposal.md and run_all_labs.R render/copy here too and are not drafts.
 docs/maintainer-notes.html
 docs/maintainer/
+
+# Quarto copies these website/ files into docs/ as "resources" - not site pages.
+docs/_quarto.yml
+docs/SOC-N100-website-for-maintainers.Rproj
