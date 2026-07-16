@@ -468,7 +468,11 @@ ggsave("~/lab2_sf_income_by_race.png", width = 8, height = 5)
 # spot every time. Click the house icon and there it is -- click the file
 # to admire your work. To download it from the DataHub to your own computer: check
 # the box next to the file, then More (gear icon) > Export. You will
-# attach charts like this to your assignments.
+# attach charts like this to your assignments: for Assignment 1, the
+# workflow is exactly this -- ggsave() your chart, Export it to your own
+# computer, then paste the image into your write-up document (Word,
+# Google Docs, whatever you write in) next to your two or three
+# sentences. That is how a chart becomes a report.
 
 # A STORYTELLING RULE for this whole course: a plot should make one
 # comparison, and a reader should get it from the title and axes alone,
@@ -570,7 +574,6 @@ sf_own_rates <- sf_tenure %>%
   )
 
 sf_own_rates %>% select(white, black, asian, latinx)
-sf_own_plot_df
 glimpse(sf_own_rates)
 
 # Read it: about 47% of Asian households in San Francisco own their home,
@@ -652,4 +655,278 @@ ggsave("~/lab2_sf_homeownership_by_race.png", width = 8, height = 5)
 # Stuck between labs? Same drill as lab 1: read the error out loud, paste
 # the full message plus your code into your AI assistant, ask it to explain
 # before it fixes, and keep the share link for your submission.
+# ==========================================================================
+
+# ==========================================================================
+# 10. EXTRA PRACTICE (optional): charts that move through TIME
+# ==========================================================================
+# Everything tonight was a snapshot: one year, groups side by side. But
+# Tuesday's most powerful charts MOVED -- the national homeownership gap
+# holding flat for forty years, and King County's income lines pulling
+# apart. This last section is optional, for after class: two charts over
+# time, built from moves you already own plus exactly two new ideas. It
+# is also great fuel for Assignment 1.
+#
+# The recipe for time: pull the SAME numbers for several years, stamp
+# each pull with its year (mutate), stack the pulls (bind_rows, section
+# 4.1), and let the x-axis be year.
+#
+# One honest note first. Each ACS 5-year estimate averages five years of
+# surveys, so movement is smoothed, and this 5-year series only reaches
+# back to about 2010. Tuesday's charts used other, longer archives (the
+# CPS for the national gap; inflation-adjusted ACS files for King
+# County). Your numbers will not match theirs exactly -- same story,
+# different ruler.
+
+# --------------------------------------------------------------------------
+# 10.1 Has the national homeownership gap moved since 2016?
+# --------------------------------------------------------------------------
+# Tuesday's Urban Institute chart ended in 2016: White 68%, Black 42%, a
+# gap that had barely moved in forty years. Let's extend it to today
+# with three snapshots: 2016, 2020, 2024.
+#
+# First, save section 8.1's variable codes under a name so we can reuse
+# them without retyping -- saving a c() is lab 1's oldest move:
+
+tenure_vars <- c(
+  white_total  = "B25003A_001", white_owner  = "B25003A_002",
+  black_total  = "B25003B_001", black_owner  = "B25003B_002",
+  asian_total  = "B25003D_001", asian_owner  = "B25003D_002",
+  latinx_total = "B25003I_001", latinx_owner = "B25003I_002"
+)
+
+# The 2016 pull is section 8.1 with two changes: geography = "us" asks
+# for ONE row -- the whole country, so no state and no county lines --
+# and year = 2016. Then section 8.2's mutate, unchanged:
+
+us_2016 <- get_acs(
+  geography = "us",
+  variables = tenure_vars,
+  year      = 2016,
+  output    = "wide"
+) %>%
+  mutate(
+    white  = 100 * white_ownerE  / white_totalE,
+    black  = 100 * black_ownerE  / black_totalE,
+    asian  = 100 * asian_ownerE  / asian_totalE,
+    latinx = 100 * latinx_ownerE / latinx_totalE
+  )
+
+# And section 8.3's hand-built chart table, with one new column: the
+# year stamp.
+
+gap_2016 <- data.frame(
+  year  = 2016,
+  group = c("white", "black", "asian", "latinx"),
+  share = c(us_2016$white, us_2016$black, us_2016$asian, us_2016$latinx)
+)
+
+gap_2016
+
+# Four rows: 2016's national ownership rates, one per group. Now copy
+# the whole pattern for 2020 and 2024 -- the year appears in THREE spots
+# each time (the two object names, the pull, the stamp):
+
+us_2020 <- get_acs(
+  geography = "us",
+  variables = tenure_vars,
+  year      = 2020,
+  output    = "wide"
+) %>%
+  mutate(
+    white  = 100 * white_ownerE  / white_totalE,
+    black  = 100 * black_ownerE  / black_totalE,
+    asian  = 100 * asian_ownerE  / asian_totalE,
+    latinx = 100 * latinx_ownerE / latinx_totalE
+  )
+
+gap_2020 <- data.frame(
+  year  = 2020,
+  group = c("white", "black", "asian", "latinx"),
+  share = c(us_2020$white, us_2020$black, us_2020$asian, us_2020$latinx)
+)
+
+us_2024 <- get_acs(
+  geography = "us",
+  variables = tenure_vars,
+  year      = 2024,
+  output    = "wide"
+) %>%
+  mutate(
+    white  = 100 * white_ownerE  / white_totalE,
+    black  = 100 * black_ownerE  / black_totalE,
+    asian  = 100 * asian_ownerE  / asian_totalE,
+    latinx = 100 * latinx_ownerE / latinx_totalE
+  )
+
+gap_2024 <- data.frame(
+  year  = 2024,
+  group = c("white", "black", "asian", "latinx"),
+  share = c(us_2024$white, us_2024$black, us_2024$asian, us_2024$latinx)
+)
+
+# Stack the three years into one table -- bind_rows(), from section 4.1:
+
+gap_over_time <- bind_rows(gap_2016, gap_2020, gap_2024)
+
+gap_over_time
+
+# Twelve rows: 4 groups x 3 years. Chart-ready.
+
+# --------------------------------------------------------------------------
+# 10.2 New layer #1: geom_line()
+# --------------------------------------------------------------------------
+# geom_col() drew one bar per row. geom_line() CONNECTS the rows with a
+# line instead -- the natural shape for time. Start with one group so
+# you can watch the layer work (filter, from lab 1):
+
+black_over_time <- gap_over_time %>%
+  filter(group == "black")
+
+ggplot(black_over_time, aes(x = year, y = share)) +
+  geom_line()
+
+# One line: the national Black homeownership rate, 2016 to 2024. Rising
+# -- but rising from where, compared to whom? One group alone has no
+# story. We need all four lines on one canvas.
+
+# --------------------------------------------------------------------------
+# 10.3 New idea #2: color INSIDE aes()
+# --------------------------------------------------------------------------
+# In section 6.5 you SET a color -- fill = "steelblue", outside aes():
+# one color for everything, chosen by you. Watch what happens when color
+# moves INSIDE aes() and points at a COLUMN instead of a color name:
+
+ggplot(gap_over_time, aes(x = year, y = share, color = group)) +
+  geom_line()
+
+# Four lines, four colors, a legend -- free. Inside aes(), color is a
+# MAPPING: "give every value of group its own color." Outside aes(), it
+# is a SETTING: "paint everything this one color." That distinction is
+# half of ggplot, and you now own both halves.
+#
+# Finish it like section 6.8 -- labels that carry the story (color = NULL
+# clears the legend's title, the same trick as x = NULL):
+
+ggplot(gap_over_time, aes(x = year, y = share, color = group)) +
+  geom_line() +
+  labs(
+    title    = "The homeownership gap has not closed since 2016",
+    subtitle = "National share of households that own, ACS 5-year snapshots",
+    x        = NULL,
+    y        = "Share of households that own (%)",
+    color    = NULL,
+    caption  = "Source: ACS 5-year estimates, table B25003 race iterations."
+  ) +
+  theme_minimal()
+
+ggsave("~/lab2_ownership_gap_over_time.png", width = 8, height = 5)
+
+# Read it against Tuesday's chart. Our 2016 endpoints land within about
+# a point of the Urban Institute's (ACS: White 69.0, Black 41.9, Latinx
+# 45.8; their CPS said 68, 42, 46 -- different survey, same picture).
+# Since 2016 every group's rate has RISEN -- White 72.3, Black 44.0 in
+# 2024 -- but the White-Black gap did not close: it widened a touch,
+# from 27.1 points to 28.3. A rising tide, and the same distance between
+# the boats. Tuesday's forty-year flat line is now a forty-eight-year
+# flat line.
+
+# --------------------------------------------------------------------------
+# 10.4 Incomes over time: California, then YOUR TURN with San Francisco
+# --------------------------------------------------------------------------
+# Tuesday's other moving chart: Washington and King County median
+# incomes by race, climbing apart over time (the one with the grey AMI
+# bands). Same recipe -- pull, stamp, stack, lines -- using section
+# 5.2's income variables. Two honest simplifications versus the lecture
+# chart: our dollars are each year's own dollars (the lecture converted
+# everything to 2017 dollars), and instead of grey AMI bands the overall
+# median rides along as its own line -- remember, 80% of any point on
+# that line is that year's low-income cutoff.
+
+income_vars <- c(
+  ami    = "B19013_001",    # everyone -- the yardstick line
+  white  = "B19013A_001",
+  black  = "B19013B_001",
+  asian  = "B19013D_001",
+  latinx = "B19013I_001"
+)
+
+# geography = "state" works exactly like the county pulls, one level up:
+# one row per variable, whole state. Pull, then stamp -- the
+# pull-then-clean pattern from section 4:
+
+ca_2010 <- get_acs(
+  geography = "state",
+  variables = income_vars,
+  state     = "CA",
+  year      = 2010
+) %>%
+  mutate(year = 2010)
+
+ca_2015 <- get_acs(
+  geography = "state",
+  variables = income_vars,
+  state     = "CA",
+  year      = 2015
+) %>%
+  mutate(year = 2015)
+
+ca_2020 <- get_acs(
+  geography = "state",
+  variables = income_vars,
+  state     = "CA",
+  year      = 2020
+) %>%
+  mutate(year = 2020)
+
+ca_2024 <- get_acs(
+  geography = "state",
+  variables = income_vars,
+  state     = "CA",
+  year      = 2024
+) %>%
+  mutate(year = 2024)
+
+ca_income_time <- bind_rows(ca_2010, ca_2015, ca_2020, ca_2024)
+
+# The chart is 10.3's, with the dollar axis from section 6.8:
+
+ggplot(ca_income_time, aes(x = year, y = estimate, color = variable)) +
+  geom_line() +
+  labs(
+    title    = "California household incomes by race, 2010-2024",
+    subtitle = "Median household income, ACS 5-year snapshots, current dollars",
+    x        = NULL,
+    y        = "Median household income ($)",
+    color    = NULL,
+    caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
+  ) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::dollar_format())
+
+ggsave("~/lab2_ca_income_over_time.png", width = 8, height = 5)
+
+# Read it: statewide, every line climbs and the ORDER barely changes --
+# Asian households highest the whole way, Black households lowest, even
+# as the dollar amounts climb by two-thirds or more. Now the question
+# the lecture asked of King County: does your city look like your state?
+#
+# YOUR TURN (4): rebuild this chart for San Francisco County.
+# (a) Copy the four pulls with new names (sf_2010, ...): geography =
+#     "county" now, keep state = "CA", and add county = "San Francisco"
+#     to each (section 3's move). Stack them and remake the chart with a
+#     San Francisco title.
+# [PUT YOUR CODE BELOW]
+
+
+# (b) Two sentences, as comments: compare the city to the state. Which
+#     lines pulled apart fastest after 2015? Where does each group sit
+#     against the ami line -- and what does 80% of that line (the
+#     low-income cutoff) say about who is low income in SF?
+# [PUT YOUR ANSWER BELOW]
+#
+
+# If you got this far: you just built the two hardest chart shapes in
+# this course's toolkit -- grouped bars and a multi-line time series.
+# Every figure in Tuesday's lecture is now within your reach.
 # ==========================================================================

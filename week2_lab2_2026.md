@@ -130,6 +130,18 @@ Lab 2 §3 now distinguishes our **county median household income** yardstick fro
 
 - If §8 got cut: remind students it's self-contained homework (two known moves + one new
   input), and lab 1 §§10–11 are the extra-practice path before A1.
+- **New: §10 "charts that move through TIME" (optional, post-class; added 5:45pm)** — extends
+  Tuesday's Urban Institute chart 2016→2024 (national ACS, verified live: every group's rate
+  rose — White 69.0→72.3, Black 41.9→44.0 — but the White–Black gap *widened*, 27.1→28.3 pts)
+  and rebuilds the King-County-style income-over-time chart for California, with SF County as
+  **YOUR TURN (4)**. Teaches exactly two new ideas: `geom_line()` and color *inside* `aes()`
+  (mapping vs setting). §6.9 also now tells students to paste ggsave'd charts into Word/Google
+  Docs for the A1 write-up.
+- **YT4 instructor answer** (SF County, live pulls 2026-07-16, 2010→2024): ami 71,304→140,970;
+  white 83,796→175,732; black 30,840→54,384; asian 60,648→124,172; latinx 55,985→102,392.
+  City-vs-state beats that check out: SF's white line pulls away much faster than statewide,
+  and SF's Black median sits below that year's very-low line (50% of ami) in **all four**
+  snapshot years.
 - A1 (due **Mon Jul 27, 5pm**): one variable, one chart, 2–3 sentences — tonight's §7 is
   the template. Tell them to pick their place this week; they keep it through A2 and the
   final project.
