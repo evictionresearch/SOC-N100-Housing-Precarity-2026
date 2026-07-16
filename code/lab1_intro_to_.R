@@ -91,8 +91,11 @@
 # [PUT YOUR ANSWER BELOW]
 
 # Let's do another exercise. By HUD's standards, 80% of the area median income
-# is considered "low income", 50% is considered "very low income", and 30% is 
-# "extremely low income". Below are 6 Bay county median household incomes
+# is considered "low income", 50% is considered "very low income", and 30% is
+# "extremely low income". (Officially HUD computes its "area" median for metro
+# regions or non-metro counties, from family income -- lab 2 has the honest
+# footnote. Tonight we practice the logic on county household medians.)
+# Below are 6 Bay county median household incomes
 # (2022 ACS 5-year estimates -- in lab 2 you will pull fresher ones yourself).
 # Calculate Low, very low, and extremely low income for one or more of these
 # counties. 

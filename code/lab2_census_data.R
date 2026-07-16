@@ -115,18 +115,34 @@ sf_income <- get_acs(
 sf_income
 
 # One row: San Francisco County, estimate 140970. The median -- half of SF
-# households earn more, half earn less. Researchers call this the AREA
-# MEDIAN INCOME (AMI) when they use it as a local yardstick.
+# households earn more, half earn less. Tonight this county median is our
+# local income yardstick, the way housing policy uses its yardstick, the
+# AREA MEDIAN INCOME (AMI).
 #
 # (If you compared notes with lab 1's income exercise you might notice
 # slightly different numbers there. Those were the 2022 estimates; these
 # are 2024. The ACS re-estimates every year -- one more reason we always
 # say the year out loud.)
 #
-# Remember HUD's income tiers from lab 1, which you computed by hand?
-#   80% of AMI = low income
-#   50% of AMI = very low income
-#   30% of AMI = extremely low income
+# AN HONEST FOOTNOTE, because the words matter: the OFFICIAL AMI is a HUD
+# number, not a Census number. Each year HUD starts from the ACS median
+# FAMILY income -- families (related people living together) skew higher-
+# income than households, which also count singles and roommates -- and
+# computes it for areas HUD defines: metro regions (for San Francisco,
+# that is SF + Marin + San Mateo counties together) or, outside metros,
+# the single county. Then come family-size and other adjustments. HUD's
+# official 2026 AMI for the San Francisco area: $200,800 for a family of
+# four. Our county median household income (140970) captures the same
+# IDEA with simpler machinery, and it is a standard quick yardstick in
+# local research. The rule: say WHICH yardstick you used, and never mix
+# the two in one analysis.
+#
+# With that said -- remember HUD's income tiers from lab 1, which you
+# computed by hand? The percentages are HUD's; we apply them to our
+# county yardstick:
+#   80% of the median = low income
+#   50% of the median = very low income
+#   30% of the median = extremely low income
 #
 # --------------------------------------------------------------------------
 # 3.1 mutate(): a new verb -- add a column
@@ -151,6 +167,8 @@ sf_ami <- sf_income %>%
     extremely_low  = estimate * 0.3    # HUD: extremely low income
   )
 
+sf_ami
+
 # We saved it this time (the arrow), so print it, keeping just the columns
 # that tell the story:
 
@@ -158,7 +176,9 @@ sf_ami %>%
   select(NAME, estimate, low_income, very_low, extremely_low)
 
 # Read it out loud: in San Francisco, a household earning $112,776 a year
-# is LOW INCOME by HUD's standard. $70,485 is VERY low. Sit with that.
+# is LOW INCOME by the 80% rule. $70,485 is VERY low. Every year I do this
+# exercise, it gets worse!! (And the official bar sits even higher: HUD's
+# 2026 low-income limit for a San Francisco family of four is $168,100.)
 
 # YOUR TURN (2): copy the pattern -- pull B19013_001 for one of the other
 # Bay Area counties from lab 1's exercise (San Mateo, Santa Clara, Alameda,
@@ -281,7 +301,7 @@ sf_race_income
 # a sociologist. The median White household in San Francisco makes 175732;
 # the median Black household makes 54384. That is not a gap -- that is a
 # canyon: more than three times as much. Notice also where each group sits
-# against the HUD lines you built in section 3: the Black median (54384)
+# against the 80/50/30 lines you built in section 3: the Black median (54384)
 # is below SF's VERY-low-income line (70485), and the Latinx median
 # (102392) is below the low-income line (112776). The White median is far
 # above the AMI itself.
@@ -378,8 +398,8 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
 # --------------------------------------------------------------------------
 # Our threshold deserves to be ON the chart. geom_hline() draws a
 # horizontal line at a y value you choose -- and we already computed the
-# perfect one: HUD's low-income line (80% of AMI), sitting in the sf_ami
-# table. Grab it with $ (the one-column grab from lab 1, section 4).
+# perfect one: the low-income line (80% of the county median), sitting in
+# the sf_ami table. Grab it with $ (the one-column grab from lab 1, section 4).
 # linetype = "dashed" keeps it reading as a reference, not as data:
 
 ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
@@ -387,7 +407,7 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_hline(yintercept = sf_ami$low_income, linetype = "dashed")
 
 # Read it: every group whose bar ends below that dashed line has a MEDIAN
-# household that HUD would call low income, in their own county.
+# household under the low-income line, in their own county.
 
 # --------------------------------------------------------------------------
 # 6.7 labs(): say what the chart shows
@@ -403,7 +423,7 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_hline(yintercept = sf_ami$low_income, linetype = "dashed") +
   labs(
     title    = "Median household income by race in San Francisco",
-    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2020-2024 ACS",
+    subtitle = "Dashed line = low-income line (80% of county median income), 2020-2024 ACS",
     x        = NULL,
     y        = "Median household income ($)",
     caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
@@ -422,7 +442,7 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_hline(yintercept = sf_ami$low_income, linetype = "dashed") +
   labs(
     title    = "Median household income by race in San Francisco",
-    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2020-2024 ACS",
+    subtitle = "Dashed line = low-income line (80% of county median income), 2020-2024 ACS",
     x        = NULL,
     y        = "Median household income ($)",
     caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
@@ -599,7 +619,8 @@ ggsave("lab2_sf_homeownership_by_race.png", width = 8, height = 5)
 #   - load_variables() + View() search: find any ACS variable yourself
 #   - the anatomy of a variable code (table + line, race letters A-I)
 #   - get_acs(county = ...): pull exactly the places you want
-#   - mutate(): new columns from formulas (HUD's 80/50/30 tiers)
+#   - mutate(): new columns from formulas (the 80/50/30 income tiers --
+#     and the honest footnote on official AMI vs a county yardstick)
 #   - bind_rows(): stack tables to compare places
 #   - named variable vectors: readable labels from the moment you pull
 #   - your first chart: a ggplot() canvas, aes() mappings, then layers

@@ -48,7 +48,7 @@ skills and push §7 (the A1 seed) or §8 off the table.
 |---|---|---|
 | — | Open: last Thursday ended before charts; tonight = catalog → income tiers → race → your first chart | 5 |
 | 1–2 | Setup is two `library()` lines now; the 28k-row catalog, `View()` search, code anatomy (table _ line); **YOUR TURN 1** | 15 |
-| 3 | `county =` input; SF AMI $140,970; `mutate()` the HUD tiers — "$112,776 is *low income* in SF. Sit with that." | 15 |
+| 3 | `county =` input; SF county median $140,970 as the yardstick; **the AMI honest footnote** (below); `mutate()` the tiers — "$112,776 is *low income* by the 80% rule" | 15 |
 | 4 | Locality lesson: Hinds Co. MS median ($49,402) is *below* SF's very-low line ($70,485); `bind_rows()` | 10 |
 | 5 | Named variable vectors; the canyon ($175,732 vs $54,384); the moe habit (largest moe ~$8.7k, gap $121k — real) | 10 |
 | 6 | **The payoff**: first chart, one layer per chunk (canvas → aes → geom_col → reorder → fill → hline → labs → theme/dollar → ggsave); file lands in the home folder, Export to download | 25 |
@@ -85,6 +85,33 @@ loud" habit, live.
    → low income **103,494** / very low **64,684** / extremely low **38,810** (live pull
    2026-07-16; tiers are 0.8/0.5/0.3 arithmetic).
 3. **Their homeownership chart** — same §8 code, three edits: `state`, `county`, title.
+
+## The AMI honest footnote (added ~4:30pm) — what's verified
+
+Lab 2 §3 now distinguishes our **county median household income** yardstick from the
+**official AMI**. The verified facts behind it, in case students push:
+
+- **Official AMI is HUD's number, not the Census's.** HUD publishes income limits for
+  *FMR areas*: metropolitan areas (OMB draws those), HUD-carved subareas ("HUD Metro
+  FMR Areas"), and **each non-metropolitan county** — so outside metros, the county
+  literally is the official area. Benchmark = ACS median **family** income, updated by
+  HUD, 4-person base, family-size + other adjustments (FY25/FY26 methodology PDFs at
+  huduser.gov/portal/datasets/il.html).
+- **San Francisco's official area** is the San Francisco HMFA = **SF + Marin + San
+  Mateo counties** (per HUD's FMR schedules; SF MOHCD and Marin Housing both operate
+  on it). One-click primary check if you want it airtight before saying it live: the
+  "San Francisco, CA HMFA" row of HUD's FY2026 FMR Schedule PDF.
+- **FY2026 SF HMFA published schedule** (effective 5/1/2026, via marinhousing.org
+  quoting HUD): 4-person median family income **$200,800**; tiers 30/50/80% =
+  **$63,050 / $105,050 / $168,100**. Note $168,100 ≠ 0.8 × 200,800 ($160,640) — HUD's
+  high-housing-cost adjustment, live proof the official tiers aren't literal
+  percentages of the median.
+- **Family vs household, verified live today** (2024 ACS, SF County): median household
+  income **$140,970** vs median *family* income **$171,141** (B19113). Families skew
+  higher even inside one county; the rest of the gap to $200,800 is the richer
+  three-county geography, the 4-person base, and HUD's update factor.
+- Teaching beat: our $112,776 "low income" line already shocks — then tell them the
+  *official* bar for a family of four in SF is **$168,100**.
 
 ## Likely stumbles (from lab 1 night)
 
