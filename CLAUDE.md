@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+If this repo has an `AGENTS.md`, read it before substantive work — it complements this file.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What This Repo Is
