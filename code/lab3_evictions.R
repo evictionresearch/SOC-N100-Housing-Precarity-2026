@@ -54,8 +54,8 @@ library(tidycensus)
 # Let's look at both in the catalog. (load_variables() is from lab 2; the
 # cache = TRUE input just makes it load faster next time.)
 
-vars_2023 <- load_variables(2023, "acs5", cache = TRUE)
-View(vars_2023)
+vars_2024 <- load_variables(2024, "acs5", cache = TRUE)
+View(vars_2024)
 
 # In the View search box, type  B19013  -- read the label column: "Median
 # household income..." That is a dollar amount.
@@ -147,7 +147,7 @@ alameda_raw <- get_acs(
   variables = rb_vars,       # our commented vector of codes
   state     = "CA",
   county    = "Alameda",
-  year      = 2023
+  year      = 2024
 )
 
 # Meet the data, lab-1 style:
@@ -186,7 +186,7 @@ alameda_messy
 nrow(alameda_messy)
 
 # Something is wrong. We expected 379 rows -- one per tract -- and got
-# 1,793, riddled with NA (R's symbol for "missing"). This is the single
+# 1,790, riddled with NA (R's symbol for "missing"). This is the single
 # most common reshaping accident in Census work, so let's understand it
 # instead of fearing it.
 #
@@ -244,7 +244,7 @@ summary(alameda_rb$p_rb)
 
 # Read that summary line slowly -- three things worth noticing:
 #
-#   1. The MEDIAN is about 0.46: in the typical Alameda County tract,
+#   1. The MEDIAN is about 0.47: in the typical Alameda County tract,
 #      nearly HALF of renter households are rent-burdened. Sit with that.
 #   2. Min is 0 and Max is 1 -- a proportion must live between 0 and 1.
 #      If you ever see 1.4 or -0.2, you broke the universe rule (wrong
@@ -292,7 +292,7 @@ alameda_rb_clean %>%
     median_rb = median(p_rb)
   )
 
-# 379 tracts, average tract burden share around 45%.
+# 379 tracts, average tract burden share around 46%.
 
 # --------------------------------------------------------------------------
 # 6.2 group_by(): summarize within groups
@@ -312,7 +312,7 @@ alameda_rb_clean %>%
   group_by(burden_level) %>%
   summarize(tracts = n())
 
-# 152 of Alameda County's 379 tracts -- two of every five neighborhoods --
+# 158 of Alameda County's 379 tracts -- two of every five neighborhoods --
 # have a MAJORITY of renter households rent-burdened. That single table
 # is a finding you could put in front of a county supervisor.
 
@@ -353,7 +353,7 @@ ggplot(alameda_rb_clean, aes(x = p_rb)) +
   geom_histogram(bins = 25, fill = "steelblue", color = "white") +
   labs(
     title    = "Rent burden across Alameda County neighborhoods",
-    subtitle = "Share of renter households paying 30%+ of income, by tract (2019-2023 ACS)",
+    subtitle = "Share of renter households paying 30%+ of income, by tract (2020-2024 ACS)",
     x        = "Share of renter households rent-burdened",
     y        = "Number of tracts",
     caption  = "Source: ACS 5-year, table B25070."
@@ -369,7 +369,7 @@ rb_hist <- ggplot(alameda_rb_clean, aes(x = p_rb)) +
   geom_vline(xintercept = median(alameda_rb_clean$p_rb), linetype = "dashed") +
   labs(
     title    = "Rent burden across Alameda County neighborhoods",
-    subtitle = "Share of renter households paying 30%+ of income, by tract (2019-2023 ACS)",
+    subtitle = "Share of renter households paying 30%+ of income, by tract (2020-2024 ACS)",
     x        = "Share of renter households rent-burdened",
     y        = "Number of tracts",
     caption  = "Source: ACS 5-year, table B25070. Dashed line = median tract."
@@ -380,8 +380,8 @@ rb_hist
 
 ggsave("lab3_alameda_rent_burden.png", rb_hist, width = 8, height = 5)
 
-# How to read it: the mass of tracts sits between roughly 0.35 and 0.55,
-# the dashed median line lands just under 0.46, and a tail of
+# How to read it: the mass of tracts sits between roughly 0.37 and 0.57,
+# the dashed median line lands just above 0.47, and a tail of
 # neighborhoods stretches toward 0.8 and beyond. Rent burden in Alameda
 # County is not a few bad blocks -- it is the ordinary condition of
 # renting, with some neighborhoods in outright crisis.
@@ -406,7 +406,7 @@ my_county_raw <- get_acs(
   variables = rb_vars,     # the same commented vector -- reuse is the point
   state     = "__",
   county    = "__",
-  year      = 2023
+  year      = 2024
 )
 
 # (a) Reshape it: drop moe, pivot wider (copy from Section 4).

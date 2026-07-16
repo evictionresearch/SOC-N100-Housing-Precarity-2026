@@ -1,0 +1,13 @@
+--- a/code/lab6_bonus_memory.R
++++ b/code/lab6_bonus_memory.R
+@@ -140,8 +140,8 @@
+ # These packages are NOT part of the core course install. Install them ONCE
+ # (a few minutes -- then put a # in front, like lab 1's install line):
+ 
+-install.packages(c("arrow", "duckdb", "duckdbfs"))
+-
++# install.packages(c("arrow", "duckdb", "duckdbfs"))
++# 
+ # And open them (every session):
+ 
+ library(arrow)

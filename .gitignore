@@ -45,8 +45,10 @@ vignettes/*.pdf
 # Local lab / batch run artifacts (not course materials)
 output/
 my_first_plot.png
+lab1_rent_burden.png
 lab2_sf_income_by_race.png
 lab2_sf_homeownership_by_race.png
+lab3_alameda_rent_burden.png
 data/in_co_renters.csv
 data/in_co_renters.rds
 data/cache/

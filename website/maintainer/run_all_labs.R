@@ -9,21 +9,27 @@
 #
 # Requires: network for tidycensus/tigris labs (1–6). Census API key in
 #   ~/.Renviron (set once via census_api_key(..., install = TRUE) in lab 1).
-#   Lab 6 (bonus, memory constraints) self-installs duckdb/duckdbfs/arrow on
-#   first run — expect several extra minutes the first time.
+#   One-time local installs (their in-lab install lines are patch-commented
+#   in batch runs): neighborhood (lab 5, via remotes::install_github),
+#   arrow/duckdb/duckdbfs (lab 6). Labs 4 and 6 read the eviction file via
+#   ~/SOC-N100-Housing-Precarity-2026/... — symlink that path to your clone
+#   when testing outside DataHub.
 #
 # Plots: ggplot/tmap code executes; graphics go to a null PDF device (nothing
 # opens on screen). ggsave() in labs still writes files under output/.
 # Interactive tmap ("view" mode) is forced to static "plot" mode here.
 #
 # Maintainer-only: website/maintainer/patches/*.patch comments in-class blanks
-# and intentional errors (lab 1, lab 3) via /usr/bin/patch, then reverses on exit.
+# and RUN-ONCE install/key lines (labs 1, 3, 5, 6) via /usr/bin/patch, then
+# reverses on exit.
 
 args <- commandArgs(trailingOnly = TRUE)
 
 lab_batch_patches <- list(
   "1" = "website/maintainer/patches/lab1-batch.patch",
-  "3" = "website/maintainer/patches/lab3-batch.patch"
+  "3" = "website/maintainer/patches/lab3-batch.patch",
+  "5" = "website/maintainer/patches/lab5-batch.patch",
+  "6" = "website/maintainer/patches/lab6-batch.patch"
 )
 
 run_system_patch <- function(patch_path, reverse = FALSE, strict = TRUE) {

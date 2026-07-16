@@ -1,43 +1,76 @@
 --- a/code/lab1_intro_to_.R
 +++ b/code/lab1_intro_to_.R
-@@ -149,8 +149,8 @@
-   filter(estimate > 35)
+@@ -242,9 +242,9 @@
+ # not be. So: run the install line below ONCE tonight. It takes a minute
+ # and prints a lot of text -- that is normal. You will not need to run it
+ # again this term (put a # in front of it afterward if you like).
+-
+-install.packages("tidycensus")
  
- # YOUR TURN: change 35 to the cost-burden line of 30. How many counties appear?
++# install.packages("tidycensus")
++# 
+ # Now open both toolboxes. These two lines will appear at the top of every
+ # lab this term -- library() calls are how a script announces its tools:
+ 
+@@ -282,8 +282,8 @@
+ # a confusing error about "invalid char in json text". No harm done if so --
+ # paste your real key and run the line again; it self-corrects.)
+ 
+-census_api_key("PASTE-YOUR-KEY-HERE", overwrite = TRUE, install = TRUE)
+-
++# census_api_key("PASTE-YOUR-KEY-HERE", overwrite = TRUE, install = TRUE)
++# 
+ # What the three inputs mean:
+ #   - the text in quotes: your personal key (a long string of letters/numbers)
+ #   - overwrite = TRUE : if some key is already saved, replace it -- this is
+@@ -301,8 +301,8 @@
+ # It should show your key. If it shows PASTE-YOUR-KEY-HERE, redo the
+ # paste-and-run above:
+ 
+-Sys.getenv("CENSUS_API_KEY")
+-
++# Sys.getenv("CENSUS_API_KEY")
++# 
+ # Housekeeping notes:
+ #   - Once the check above shows your real key, put a # in front of the
+ #     census_api_key(...) line -- same retire-it move as the install line
+@@ -437,9 +437,9 @@
+ # tells you: "A tibble: __ x 5" at the top. A tibble is just the
+ # tidyverse's slightly polished data frame.)
+ 
 -rent_burden %>%
 -  filter(estimate > __)
+-
 +# rent_burden %>%
 +#   filter(estimate > __)
++# 
+ # --------------------------------------------------------------------------
+ # 9.2 arrange(): SORT the rows
+ # --------------------------------------------------------------------------
+@@ -727,17 +727,17 @@
+ # (a) Pull county rent burdens for your state. Replace the blank with its
+ #     two-letter abbreviation in quotes ("WA", "TX", "NY", "GA", ...):
  
- # ---- 7.3 arrange(): sort the rows ----
- # Most rent-burdened counties at the top (desc = descending):
-@@ -158,8 +158,8 @@
-   arrange(desc(estimate))
- 
- # YOUR TURN: sort from LEAST to MOST rent-burdened (delete desc()):
--rent_burden %>%
--  arrange(________)
-+# rent_burden %>%
-+#   arrange(________)
- 
- # ---- 7.4 mutate(): add or change a column ----
- # Flag whether each county's typical renter is cost-burdened (over 30%):
-@@ -231,12 +231,12 @@
- # -----------------------------------------------------------------------------
- # (a) Pull rent burden for a state you care about. Change "__" to its two-letter
- #     abbreviation (e.g., "NY", "TX", "GA").
 -my_rent_burden <- get_acs(
 -  geography = "county",
 -  variables = "B25071_001",
 -  state     = "__",
--  year      = 2023
+-  year      = 2024
 -)
+-
 +# my_rent_burden <- get_acs(
 +#   geography = "county",
 +#   variables = "B25071_001",
 +#   state     = "__",
-+#   year      = 2023
++#   year      = 2024
 +# )
++# 
+ # (b) Meet your data: how many counties does your state have?
  
- # (b) Make a bar chart of its 10 most rent-burdened counties (copy from §8 and
- #     swap in `my_rent_burden`).
+-nrow(my_rent_burden)
+-
++# nrow(my_rent_burden)
++# 
+ # (c) Make the top-10 table (copy the pattern from Section 10, swapping in
+ #     my_rent_burden):
+ 

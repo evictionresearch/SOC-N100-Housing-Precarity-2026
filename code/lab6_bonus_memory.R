@@ -19,12 +19,14 @@
 #      (the approach used by ESPM-288, Berkeley's spatial data science course)
 # =============================================================================
 
-source("code/course_paths.R")
-source("code/course_packages.R")
-source("code/course_data.R")   # eviction_data_qs2 path constant
+# Open the toolboxes. Three old friends plus qs2, the fast save-to-disk
+# format from Part 4. (If any library() line says "there is no package",
+# run install.packages("that-name") once, then the library() line again.)
 
-# Core packages you already know:
-load_pkgs("tidyverse", "tidycensus", "sf", "qs2")
+library(tidyverse)
+library(tidycensus)
+library(sf)
+library(qs2)
 
 # =============================================================================
 # Part 1: Know your budget -- watching memory in RStudio
@@ -35,8 +37,9 @@ load_pkgs("tidyverse", "tidycensus", "sf", "qs2")
 # for a breakdown. On r.datahub your budget is the class limit -- when the
 # gauge nears it, it is time to clean up (Part 2) or restructure (Parts 3-5).
 
-# Ask R how big an object is:
-evictions <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+# Ask R how big an object is. (Same eviction file as lab 4, in its qs2
+# form -- the full path works no matter which folder you are sitting in:)
+evictions <- qs2::qs_read("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.qs2")
 object.size(evictions) %>% format(units = "MB")
 
 # The file is ~6 MB on disk but tens of MB in memory -- compression on disk
@@ -66,7 +69,7 @@ alameda_rent <- get_acs(
   geography = "tract",
   variables = "B25064_001",     # median gross rent
   state = "CA", county = "Alameda",
-  year = 2023,
+  year = 2024,
   geometry = TRUE
 )
 object.size(alameda_rent) %>% format(units = "MB")
@@ -95,7 +98,7 @@ rent_by_state <- map(states_of_interest, function(st) {
     geography = "county",
     variables = "B25064_001",
     state = st,
-    year = 2023
+    year = 2024
     # note: no geometry here -- add it later, only for the final map
   ) %>%
     mutate(state = st)
@@ -134,9 +137,16 @@ if (file.exists(cache_file)) {
 # leave the data ON DISK and send the *computation* to it with DuckDB --
 # an in-process SQL engine that streams through files without loading them.
 
-# These packages are NOT part of the core course install; this installs them
-# on demand (a few minutes the first time):
-load_pkgs("arrow", "duckdb", "duckdbfs")
+# These packages are NOT part of the core course install. Install them ONCE
+# (a few minutes -- then put a # in front, like lab 1's install line):
+
+install.packages(c("arrow", "duckdb", "duckdbfs"))
+
+# And open them (every session):
+
+library(arrow)
+library(duckdb)
+library(duckdbfs)
 
 # (a) Write our eviction data to parquet, a columnar on-disk format:
 parquet_file <- "data/cache/evictions.parquet"

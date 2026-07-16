@@ -1,21 +1,26 @@
 --- a/code/lab3_evictions.R
 +++ b/code/lab3_evictions.R
-@@ -47,12 +47,12 @@
+@@ -400,15 +400,15 @@
+ # Rebuild the whole measure, start to finish, for another county --
+ # ideally the place you are eyeing for Assignment 1 and beyond. Fill the
+ # two blanks, then run each step:
+-
+-my_county_raw <- get_acs(
+-  geography = "tract",
+-  variables = rb_vars,     # the same commented vector -- reuse is the point
+-  state     = "__",
+-  county    = "__",
+-  year      = 2024
+-)
  
- # Pedagogical counterexample (fails — co_totrent has many rows per group).
- # Compare to first(co_totrent) in the next block.
--indiana_evictions %>%
--  group_by(county, year) %>%
--  summarize(
--    evictions = sum(filings),
--    renters = co_totrent
--  )
-+# indiana_evictions %>%
-+#   group_by(county, year) %>%
-+#   summarize(
-+#     evictions = sum(filings),
-+#     renters = co_totrent
-+#   )
++# my_county_raw <- get_acs(
++#   geography = "tract",
++#   variables = rb_vars,     # the same commented vector -- reuse is the point
++#   state     = "__",
++#   county    = "__",
++#   year      = 2024
++# )
++# 
+ # (a) Reshape it: drop moe, pivot wider (copy from Section 4).
  
- indiana_evictions %>%
-   group_by(county, year) %>%
+ 

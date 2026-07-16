@@ -352,10 +352,10 @@ get_acs(
   geography = "county",
   variables = "B25071_001",
   state     = "CA",
-  year      = 2023
+  year      = 2024
 )
 
-# (year = 2023 here means the 2019-2023 five-year ACS: five years of survey
+# (year = 2024 here means the 2020-2024 five-year ACS: five years of survey
 # responses pooled together so that even small counties have enough answers
 # to report. Notice R told you that in a message.)
 #
@@ -367,7 +367,7 @@ rent_burden <- get_acs(
   geography = "county",
   variables = "B25071_001",
   state     = my_state,
-  year      = 2023
+  year      = 2024
 )
 
 # Silent again -- saving always is. Check the Environment pane: rent_burden
@@ -612,7 +612,7 @@ ggplot(top10, aes(x = estimate, y = reorder(NAME, estimate))) +
 #
 # Now look at WHO is on the chart. Most people expect San Francisco or
 # Los Angeles on top. Instead the leaders are smaller Northern California
-# counties -- Humboldt, Nevada, Butte -- and San Francisco is not in the
+# counties -- Humboldt, Butte, Lake -- and San Francisco is not in the
 # top 10 at all. Why? Rent burden is a RATIO. Rents are lower in those
 # counties, but renter incomes are lower still. Hold that thought for
 # discussion -- it is this whole course in miniature: precarity is about
@@ -647,7 +647,7 @@ ggplot(top10, aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_col(fill = "steelblue") +
   labs(
     title    = "The most rent-burdened counties in California",
-    subtitle = "Median gross rent as a share of income, 2019-2023 ACS",
+    subtitle = "Median gross rent as a share of income, 2020-2024 ACS",
     x        = "Median rent as a share of renter income (%)",
     y        = NULL,
     caption  = "Source: ACS 5-year estimates. Dashed line = 30% cost-burden threshold."
@@ -665,7 +665,7 @@ my_first_chart <- ggplot(top10, aes(x = estimate, y = reorder(NAME, estimate))) 
   geom_col(fill = "steelblue") +
   labs(
     title    = "The most rent-burdened counties in California",
-    subtitle = "Median gross rent as a share of income, 2019-2023 ACS",
+    subtitle = "Median gross rent as a share of income, 2020-2024 ACS",
     x        = "Median rent as a share of renter income (%)",
     y        = NULL,
     caption  = "Source: ACS 5-year estimates. Dashed line = 30% cost-burden threshold."
@@ -731,7 +731,7 @@ my_rent_burden <- get_acs(
   geography = "county",
   variables = "B25071_001",
   state     = "__",
-  year      = 2023
+  year      = 2024
 )
 
 # (b) Meet your data: how many counties does your state have?

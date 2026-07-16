@@ -25,7 +25,7 @@ library(tidycensus)
 # --------------------------------------------------------------------------
 # My variable: B25064_001, "Median gross rent" -- the typical renter's
 # monthly rent plus basic utilities, in dollars. (Found it by searching
-# "median gross rent" in load_variables(2023, "acs5") %>% View().)
+# "median gross rent" in load_variables(2024, "acs5") %>% View().)
 #
 # New trick worth copying: name the code INSIDE c() and tidycensus uses
 # your name in the variable column instead of the raw code.
@@ -35,7 +35,7 @@ wa_rent <- get_acs(
   variables = c(median_rent = "B25064_001"),
   state     = "WA",
   county    = c("King", "Pierce", "Snohomish", "Spokane", "Yakima"),
-  year      = 2023
+  year      = 2024
 )
 
 # Always look before you plot:
@@ -43,7 +43,7 @@ wa_rent <- get_acs(
 wa_rent
 
 # Five rows, one per county, estimates in dollars, county-level margins
-# of error of only $14-25 -- tight enough to compare counties honestly.
+# of error of only $13-30 -- tight enough to compare counties honestly.
 
 # --------------------------------------------------------------------------
 # 2. One clear chart
@@ -55,7 +55,7 @@ a1_chart <- ggplot(wa_rent, aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_col(fill = "steelblue") +                       # one bar per county
   labs(
     title    = "The typical rent differs by almost $1,000 across Washington",
-    subtitle = "Median gross rent by county, 2019-2023 ACS",
+    subtitle = "Median gross rent by county, 2020-2024 ACS",
     x        = "Median gross rent (dollars per month)",
     y        = NULL,                                   # county names speak for themselves
     caption  = "Source: ACS 5-year estimates, table B25064."
@@ -72,8 +72,8 @@ ggsave("a1_example_chart.png", a1_chart, width = 8, height = 5)
 # The pattern to imitate: first DESCRIBE what the chart shows, then
 # INTERPRET or note a surprise. Honest and plain beats fancy.
 #
-#   "Median gross rent in King County ($2,035) is nearly double Yakima
-#   County's ($1,068), and the three Puget Sound metro counties all sit
+#   "Median gross rent in King County ($2,092) is nearly double Yakima
+#   County's ($1,109), and the three Puget Sound metro counties all sit
 #   far above the two Eastern Washington counties. What surprised me is
 #   the size of the within-metro gap: Pierce County renters pay about
 #   $300 less than King County renters despite being part of the same

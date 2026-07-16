@@ -85,7 +85,7 @@ rb_raw <- get_acs(
   variables = rb_vars,
   state     = "CA",
   county    = "Alameda",
-  year      = 2023
+  year      = 2024
 )
 
 # Reshape long to wide and compute the share (Lab 3's pivot_wider move --
@@ -101,11 +101,11 @@ rent_burden <- rb_raw %>%
 
 # Meet the result:
 
-nrow(rent_burden)       # 379 tracts in Alameda County (as of the 2023 ACS)
+nrow(rent_burden)       # 379 tracts in Alameda County (as of the 2024 ACS)
 summary(rent_burden$p_rb)
 
-# Read that summary line out loud: the median tract's share is about 0.46.
-# In HALF of Alameda County's neighborhoods, at least ~46% of renter
+# Read that summary line out loud: the median tract's share is about 0.47.
+# In HALF of Alameda County's neighborhoods, at least ~47% of renter
 # households are rent-burdened. Also notice: 2 NA's. Two tracts have no
 # renter households to measure (one is mostly open water on the Bay --
 # the same two edge-case tracts you met in Lab 3). Real data always
@@ -139,7 +139,7 @@ summary(rent_burden$p_rb)
 seg <- ntdf(
   state  = "CA",
   county = "Alameda",
-  year   = 2023
+  year   = 2024
 )
 
 # One small cleanup: ntdf() returns the type column as a "factor" (R's
@@ -167,8 +167,8 @@ glimpse(seg)
 seg %>%
   count(nt_conc, sort = TRUE)
 
-# When we ran this (July 2026): "3 Group Mixed" led with 173 tracts, then
-# "4 Group Mixed" (96) and "Asian-White" (43) -- and 15 "Black-Latine"
+# When we ran this (July 2026): "3 Group Mixed" led with 177 tracts, then
+# "4 Group Mixed" (92) and "Asian-White" (37) -- and 13 "Black-Latine"
 # tracts where White and Asian residents are each under 10%. Even in a
 # county famous for diversity, many neighborhoods are missing whole
 # groups. That IS segregation, measured.
@@ -294,7 +294,7 @@ ggplot(rb_by_type_solid, aes(x = median_rb, y = reorder(nt_group, median_rb))) +
   geom_col(fill = "steelblue") +
   labs(
     title    = "Rent burden is highest in Alameda's Black-Latine neighborhoods",
-    subtitle = "Median tract share of renter households paying 30%+ of income, 2019-2023 ACS",
+    subtitle = "Median tract share of renter households paying 30%+ of income, 2020-2024 ACS",
     x        = "Median rent-burdened share",
     y        = NULL,
     caption  = "Source: ACS 5-year + ERN neighborhood package. Types with 10+ tracts."
@@ -302,10 +302,10 @@ ggplot(rb_by_type_solid, aes(x = median_rb, y = reorder(nt_group, median_rb))) +
   theme_minimal()
 
 # When we ran this, Black-Latine tracts topped the chart (median share
-# about 0.56) and majority-Asian tracts sat lowest (about 0.24) -- in the
-# same county, the typical neighborhood's rent-burden rate more than
-# DOUBLES depending on who lives there. That is the course thesis in one
-# picture: housing precarity is racially structured.
+# about 0.55) and majority-Asian tracts sat lowest (about 0.32) -- in the
+# same county, the typical neighborhood's rent-burden rate swings by more
+# than 20 percentage points depending on who lives there. That is the
+# course thesis in one picture: housing precarity is racially structured.
 #
 # Notice the title: it states the FINDING, not the topic. "Rent burden by
 # neighborhood type" is a label; a claim your reader can check against the
@@ -365,7 +365,7 @@ bay_rb <- get_acs(
   variables = rb_vars,
   state     = "CA",
   county    = bay_counties,
-  year      = 2023
+  year      = 2024
 ) %>%
   select(GEOID, NAME, variable, estimate) %>%
   pivot_wider(names_from = variable, values_from = estimate) %>%
@@ -380,8 +380,8 @@ bay_rb %>%
 
 # Look at that ranking. When we ran it, SOLANO County -- the Bay Area's
 # most affordable rents -- had the region's highest rent-burdened share
-# (about 54%), and famously expensive San Francisco had the LOWEST (about
-# 36%). Sound familiar? It is Lab 1's Humboldt lesson at county scale:
+# (about 57%), and famously expensive San Francisco had the LOWEST (about
+# 38%). Sound familiar? It is Lab 1's Humboldt lesson at county scale:
 # burden is the ratio of rent to income, and it is worst where incomes
 # lag, not where rents are highest. If your final project only maps rents,
 # you will miss this entirely.
@@ -431,7 +431,7 @@ write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "output/bay_rb_by_county.csv
 #   5. The "Check" tab flags any county it could not match (with a clean
 #      GEOID column there should be none). Proceed.
 #   6. Step "Visualize": choose your color palette and steps, write a
-#      claim-style title, add the source line (ACS 5-year, 2019-2023).
+#      claim-style title, add the source line (ACS 5-year, 2020-2024).
 #   7. Publish to get a shareable link / embed code for your slides.
 #
 # Two honest caveats:
@@ -456,7 +456,7 @@ library(tmap)
 # Cache map downloads so re-runs are instant:
 options(tigris_use_cache = TRUE)
 
-alameda_tracts <- tracts(state = "CA", county = "Alameda", year = 2023)
+alameda_tracts <- tracts(state = "CA", county = "Alameda", year = 2024)
 
 rb_map_data <- alameda_tracts %>%
   left_join(rb_seg, by = "GEOID")
@@ -527,7 +527,7 @@ tm_shape(rb_map_data) +
 my_seg <- ntdf(
   state  = "__",
   county = "__",
-  year   = 2023
+  year   = 2024
 ) %>%
   mutate(nt_conc = as.character(nt_conc))
 
