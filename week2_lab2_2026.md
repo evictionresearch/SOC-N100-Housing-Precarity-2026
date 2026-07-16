@@ -23,6 +23,17 @@ The timing plan is a suggestion, not a constraint.
       still need a push.)
 - [ ] Optional full pass: "Manual test checklist" section in `DATAHUB.md`
 
+## ggplot placement — decided (Jul 16)
+
+Lab 1 §10 stays skipped: do **not** re-teach it tonight. Lab 2 §6 already teaches
+charts from zero — nine chunks, one new idea each — and says so to students at its
+open ("We skipped lab 1's chart section in class, so tonight is your first chart").
+§10's only moves that §6 doesn't cover are the horizontal orientation (`y = NAME`),
+`geom_vline`, and saving a chart as an object — which is why lab 2's close names
+§10 "the horizontal twin," the at-home practice before A1 (with §11 as the moe
+habit in full). Re-running §10 first would double-teach ~25 minutes of identical
+skills and push §7 (the A1 seed) or §8 off the table.
+
 ## Suggested timing (~110 min + buffer)
 
 | Lab § | Beat | Min |
