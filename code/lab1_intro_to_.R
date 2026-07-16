@@ -683,18 +683,18 @@ my_first_chart
 # ggsave() writes the most recent chart to an image file. In its basic
 # form it needs only a file name:
 
-ggsave("lab1_rent_burden.png")
+ggsave("~/lab1_rent_burden.png")
 
-# Where did it go? Your HOME folder. Click the little house icon in the
-# Files pane (bottom-right) and there it is: lab1_rent_burden.png. Click
-# it to admire your work. To download it from
+# Where did it go? The ~ at the front of the file name means YOUR HOME
+# FOLDER -- click the little house icon in the Files pane (bottom-right)
+# and there it is: lab1_rent_burden.png. Click it to admire your work. To download it from
 # the DataHub to your own computer: check the box next to the file, then
 # More (gear icon) > Export. You will attach charts like this to your
 # assignments.
 #
 # If the shape looks squished, ggsave() accepts size inputs (in inches):
 
-ggsave("lab1_rent_burden.png", width = 8, height = 5)
+ggsave("~/lab1_rent_burden.png", width = 8, height = 5)
 
 # ==========================================================================
 # 11. Data humility: these are estimates, not facts

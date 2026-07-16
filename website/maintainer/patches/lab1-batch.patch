@@ -1,6 +1,6 @@
 --- a/code/lab1_intro_to_.R
 +++ b/code/lab1_intro_to_.R
-@@ -242,9 +242,9 @@
+@@ -245,9 +245,9 @@
  # not be. So: run the install line below ONCE tonight. It takes a minute
  # and prints a lot of text -- that is normal. You will not need to run it
  # again this term (put a # in front of it afterward if you like).
@@ -12,7 +12,7 @@
  # Now open both toolboxes. These two lines will appear at the top of every
  # lab this term -- library() calls are how a script announces its tools:
  
-@@ -282,8 +282,8 @@
+@@ -285,8 +285,8 @@
  # a confusing error about "invalid char in json text". No harm done if so --
  # paste your real key and run the line again; it self-corrects.)
  
@@ -23,7 +23,7 @@
  # What the three inputs mean:
  #   - the text in quotes: your personal key (a long string of letters/numbers)
  #   - overwrite = TRUE : if some key is already saved, replace it -- this is
-@@ -301,8 +301,8 @@
+@@ -304,8 +304,8 @@
  # It should show your key. If it shows PASTE-YOUR-KEY-HERE, redo the
  # paste-and-run above:
  
@@ -34,7 +34,7 @@
  # Housekeeping notes:
  #   - Once the check above shows your real key, put a # in front of the
  #     census_api_key(...) line -- same retire-it move as the install line
-@@ -437,9 +437,9 @@
+@@ -440,9 +440,9 @@
  # tells you: "A tibble: __ x 5" at the top. A tibble is just the
  # tidyverse's slightly polished data frame.)
  
@@ -47,7 +47,7 @@
  # --------------------------------------------------------------------------
  # 9.2 arrange(): SORT the rows
  # --------------------------------------------------------------------------
-@@ -727,17 +727,17 @@
+@@ -730,17 +730,17 @@
  # (a) Pull county rent burdens for your state. Replace the blank with its
  #     two-letter abbreviation in quotes ("WA", "TX", "NY", "GA", ...):
  

@@ -52,8 +52,8 @@ indiana_evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d
 # Forward slashes, even on Windows. (Working on your own laptop instead of
 # the DataHub? Change the address to wherever your course folder lives.)
 #
-# (Next to the .rds you will see the same data as a .qs2 file -- a faster
-# format we use in my lab for big files. Same table, fancier container.)
+# (You may spot .qs / .qs2 files next to it -- older compressed copies
+# from my lab's tooling. Ignore those; the .rds is the one we use.)
 #
 # Where did this file come from? ERN collects raw eviction case records
 # from county courts, cleans them, links names to demographics, and
@@ -675,10 +675,10 @@ eviction_map <- tm_shape(marion_map_data) +
     style   = "jenks"
   )
 
-tmap_save(eviction_map, "lab4_eviction_map.png", width = 7, height = 7)
+tmap_save(eviction_map, "~/lab4_eviction_map.png", width = 7, height = 7)
 
-# Check the Files pane -- lab4_eviction_map.png is in your project
-# folder, ready for a writeup.
+# Check the Files pane (house icon) -- lab4_eviction_map.png is in your
+# home folder (that is what the ~ does), ready for a writeup.
 
 # ==========================================================================
 # B7. Counts vs rates -- the map version of an old lesson

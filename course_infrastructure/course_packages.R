@@ -174,7 +174,6 @@ course_cran_packages <- c(
   "librarian",
   "lubridate",
   "janitor",
-  "qs2",
   "tigris",
   "sf",
   "viridis",

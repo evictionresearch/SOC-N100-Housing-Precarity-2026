@@ -17,10 +17,12 @@ tutorial they will ever see.
   rely on it). Students are told to put the placeholder text back after the
   line runs so keys don't linger in scripts. **Never commit a key to git.**
   If one is committed accidentally: revoke it at Census and request a new one.
-- **Eviction data (lab 4):** loaded with base
-  `readRDS("data/evictions/d5_case_aggregated.rds")`. The `.qs2` file next
-  to it is the same table in a faster format (maintainer/ERN default);
-  regenerate both with `Rscript course_infrastructure/convert_eviction_data.R`.
+- **Eviction data (labs 4 & 6):** loaded with base
+  `readRDS("data/evictions/d5_case_aggregated.rds")`. The `.qs`/`.qs2` files
+  next to it are maintainer conversion artifacts — **deprecated for teaching
+  (2026-07-16)**: labs teach `saveRDS()`/`readRDS()` for private caches,
+  `write_csv()` for sharing, and parquet for big or Python-bound tables.
+  Regenerate the data files with `Rscript course_infrastructure/convert_eviction_data.R`.
 
 DataHub caveat (unchanged): hub administrators can access user home
 directories. A free, rate-limited, revocable Census key is safe enough for
@@ -36,15 +38,17 @@ Moved to [`../course_infrastructure/`](../course_infrastructure/) on
 for the file list. Students never `source()` any of them.
 
 Batch smoke-testing of all labs: [`website/maintainer/run_all_labs.R`](../website/maintainer/run_all_labs.R)
-(applies patches from `website/maintainer/patches/` to fill in-class `__`
-blanks, then reverses them). **Note:** patches must be regenerated after the
-2026-07 lab rewrites — see the maintainer notes.
+(applies patches from `website/maintainer/patches/` — they comment in-class
+`__` blanks and RUN-ONCE install/key lines — then reverses them; regenerated
+2026-07-16, covering labs 1/3/5/6).
 
 **Students never need to open the `.Rproj`** (dropped from the lab flow
 2026-07-09 to remove setup friction): labs 1–3 and 5 are
 working-directory-independent, and lab 4 reads the eviction file via the
 full home path `~/SOC-N100-Housing-Precarity-2026/...` (every DataHub
-clone lands there). Lab outputs (`ggsave`, `write_csv`) land in the
-session's working directory — the home folder on a fresh hub session.
-Maintainer scripts and the batch runner still assume the repo root (open
-`SOC-N100.Rproj`).
+clone lands there). Lab outputs (`ggsave`, `write_csv`, `tmap_save`) are
+written explicitly to `~` (the home folder) so the save location never
+depends on the working directory (2026-07-16; a proper file-path lesson
+comes later in the course). Maintainer scripts and the batch runner still
+assume the repo root (open `SOC-N100.Rproj`); the batch runner redirects
+the labs' `~` writes into `output/`.

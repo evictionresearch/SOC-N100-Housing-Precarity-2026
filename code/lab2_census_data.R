@@ -241,8 +241,7 @@ two_counties %>%
 #   B19013A = White alone            B19013D = Asian alone
 #   B19013B = Black alone            B19013I = Hispanic or Latino
 #
-# (There are nine letters in all, A through I -- search B19013 in the
-# catalog to see the full set. Two
+# (You can see the full A through I list by searching B19013 in the catalog. Two
 # cautions we will come back to in this course: these groups are how the
 # Census asks about race and ethnicity, and "White alone" overlaps with
 # "Hispanic or Latino" -- a person can be counted in both. Keep that in
@@ -300,19 +299,18 @@ sf_race_income
 
 # Five rows, one per group. Before charting, read the estimate column like
 # a sociologist. The median White household in San Francisco makes 175732;
-# the median Black household makes 54384. That is not a gap -- that is a
-# canyon: more than three times as much. Notice also where each group sits
-# against the 80/50/30 lines you built in section 3: the Black median (54384)
-# is below SF's VERY-low-income line (70485), and the Latinx median
-# (102392) is below the low-income line (112776). The White median is far
-# above the AMI itself.
+# the median Black household makes 54384. That is a HUGE gap: more than three 
+# times as much. Notice also where each group sits against the 80/50/30 lines 
+# you built in section 3: the Black median (54384) is below SF's 
+# VERY-low-income line (70485), and the Latinx median (102392) is below the 
+# low-income line (112776). The White median is far above the AMI itself.
 #
 # One habit to build before we chart this: the ACS is a SURVEY -- a sample
 # of households, not a count of everyone -- so every value it reports is an
 # ESTIMATE, and the moe column is its margin of error: the Bureau's honest
 # "give or take" number. Always ask whether a gap is real or inside the
 # noise. The largest margin here is about 8700. The White-Black gap is
-# over 121000. The canyon is real.
+# over 121000. The gap is real.
 
 # ==========================================================================
 # 6. Your first chart, one layer at a time
@@ -323,7 +321,7 @@ sf_race_income
 # with the grey AMI bands. You are rebuilding that lecture graphic for San
 # Francisco, from raw data. ggplot2 (it rode in with the tidyverse) builds
 # charts the way you build a sandwich: start with a base, add ONE layer at
-# a time with +. One new idea per chunk, as always.
+# a time with +. 
 #
 # First, the table we want to draw. Keep just the four race/ethnicity rows
 # (the overall AMI becomes a reference line instead of a bar -- a chart
@@ -460,11 +458,15 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
 # ggsave() writes the most recent chart to an image file. The size inputs
 # are in inches:
 
-ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
+ggsave("~/lab2_sf_income_by_race.png", width = 8, height = 5)
 
-# Where did it go? Your HOME folder. Click the little house icon in the
-# Files pane (bottom-right) and there it is -- click the file to admire
-# your work. To download it from the DataHub to your own computer: check
+# Where did it go? The ~ at the front of the file name means YOUR HOME
+# FOLDER -- the one the house icon in the Files pane (bottom-right) opens.
+# Without it, R saves into whichever folder it happens to be working in,
+# which varies with how you opened RStudio (file paths get their own
+# lesson later in the course). With ~, your chart lands in the same easy
+# spot every time. Click the house icon and there it is -- click the file
+# to admire your work. To download it from the DataHub to your own computer: check
 # the box next to the file, then More (gear icon) > Export. You will
 # attach charts like this to your assignments.
 
@@ -474,7 +476,8 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 # bars plus one reference line. If you feel a fourth element coming on,
 # that is usually a second plot trying to happen. Browse the ggplot
 # cheatsheet for plot types as you plan your assignments:
-#   https://opensource.posit.co/resources/cheatsheets/
+#   https://opensource.posit.co/resources/cheatsheets/, specifically 
+# https://opensource.posit.co/resources/cheatsheets/data-visualization/
 # (copies also live in the class repo under docs/cheatsheets)
 #
 # (Extra practice, any time after tonight: lab 1 section 10 builds a
@@ -484,7 +487,7 @@ ggsave("lab2_sf_income_by_race.png", width = 8, height = 5)
 # minutes before Assignment 1.)
 
 # ==========================================================================
-# 7. YOUR TURN: your county's income canyon
+# 7. YOUR TURN: your county's income gap
 # ==========================================================================
 # Run the whole arc for a county YOU care about (an A1 candidate!):
 #
@@ -546,6 +549,8 @@ sf_tenure <- get_acs(
 )
 
 names(sf_tenure)
+sf_tenure 
+glimpse(sf_tenure)
 
 # One row now, and every variable became TWO columns: your name plus E
 # (the Estimate) and your name plus M (its Margin of error). So
@@ -565,6 +570,8 @@ sf_own_rates <- sf_tenure %>%
   )
 
 sf_own_rates %>% select(white, black, asian, latinx)
+sf_own_plot_df
+glimpse(sf_own_rates)
 
 # Read it: about 47% of Asian households in San Francisco own their home,
 # 38% of White households, 26% of Latinx households, 22% of Black
@@ -574,8 +581,8 @@ sf_own_rates %>% select(white, black, asian, latinx)
 # holds in your county. Second, the gap the lecture traced from covenants
 # to lending is right here in 2024: the Black rate is under half the
 # Asian rate. And remember why ownership matters -- it is where American
-# families store wealth (Tuesday's Seattle figures: median owner net
-# worth $898,000 vs renter $36,000).
+# families store wealth (Tuesday's Seattle figures, 2019: median owner
+# net worth $898,000 vs renter $36,000).
 
 # --------------------------------------------------------------------------
 # 8.3 Chart it -- with a table you build by hand
@@ -606,7 +613,7 @@ ggplot(sf_own_plot_df, aes(x = reorder(group, -share), y = share)) +
   ) +
   theme_minimal()
 
-ggsave("lab2_sf_homeownership_by_race.png", width = 8, height = 5)
+ggsave("~/lab2_sf_homeownership_by_race.png", width = 8, height = 5)
 
 # YOUR TURN (3): rebuild this chart for YOUR county -- three edits: state,
 # county, and the title. Does the national ordering hold where you live?

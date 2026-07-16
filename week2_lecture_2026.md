@@ -478,7 +478,11 @@ they're short and they're the tool we use all term."
   (p.37); Seattle 2007→2016: 68.3→65.1 / 64.8→61.4 / 42.1→36.9 / 34.7→28.3 — Zillow/Urban
   Institute/IPUMS (p.38)
 - Seattle net worth 2019: Own $898k/Rent $36k; White $456k/Asian $446k/Latino $90k/Black $23k —
-  Mark Nowlin, *Seattle Times*; Acxiom NetWorth Gold/Nielsen (pp.40–41)
+  Mark Nowlin, *Seattle Times*; Acxiom NetWorth Gold/Nielsen (pp.40–41). ✅ Re-verified
+  2026-07-16 against the article body ("Seattle household net worth ranks among top in
+  nation — but wealth doesn't reach everyone," seattletimes.com, 2019; body text rounds:
+  owners "nearly $900,000," renters $36,000, White/Asian ~$450k, Latino ~$90k, Black ~$23k;
+  geography = King + Snohomish counties; slide prints the graphic's exact values)
 - Poverty/rent medians 2000–16: +2pp, +$684 (p.49)
 - Tier theory: 2013–2017 ACS, new movers (pp.50–53)
 - MN/IN: 50%+ and 80%+ filing-rate neighborhoods in IN (p.57)

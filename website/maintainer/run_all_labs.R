@@ -16,7 +16,9 @@
 #   when testing outside DataHub.
 #
 # Plots: ggplot/tmap code executes; graphics go to a null PDF device (nothing
-# opens on screen). ggsave() in labs still writes files under output/.
+# opens on screen). Student scripts save charts/CSVs to ~ (the hub home);
+# batch runs redirect ggsave/tmap_save/write_csv into output/ here. Lab 6's
+# cache still writes to ~/data/cache (and labs may create an empty ~/output).
 # Interactive tmap ("view" mode) is forced to static "plot" mode here.
 #
 # Maintainer-only: website/maintainer/patches/*.patch comments in-class blanks
@@ -28,8 +30,7 @@ args <- commandArgs(trailingOnly = TRUE)
 lab_batch_patches <- list(
   "1" = "website/maintainer/patches/lab1-batch.patch",
   "3" = "website/maintainer/patches/lab3-batch.patch",
-  "5" = "website/maintainer/patches/lab5-batch.patch",
-  "6" = "website/maintainer/patches/lab6-batch.patch"
+  "5" = "website/maintainer/patches/lab5-batch.patch"
 )
 
 run_system_patch <- function(patch_path, reverse = FALSE, strict = TRUE) {
@@ -237,6 +238,17 @@ run_batch_labs <- function(repo_root, lab_ids, args) {
     env$View <- function(x, ...) {
       message("[", label, "] View() skipped in batch run")
       invisible(x)
+    }
+    # Student scripts save to ~ (hub home); redirect writes into output/ so
+    # a maintainer machine stays clean.
+    env$ggsave <- function(filename, ...) {
+      ggplot2::ggsave(file.path(repo_root, "output", "plots", basename(filename)), ...)
+    }
+    env$tmap_save <- function(tm, filename, ...) {
+      tmap::tmap_save(tm, file.path(repo_root, "output", "plots", basename(filename)), ...)
+    }
+    env$write_csv <- function(x, file, ...) {
+      readr::write_csv(x, file.path(repo_root, "output", basename(file)), ...)
     }
     env$tmap_mode <- function(mode = "plot", ...) {
       message("[", label, "] tmap_mode('", mode, "') -> plot (batch run)")

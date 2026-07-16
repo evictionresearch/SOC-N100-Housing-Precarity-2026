@@ -34,7 +34,7 @@ Student work under `~/` persists between sessions on each hub (NFS-backed home d
 - **Data Sources**: `nycflights13@1.0.2`, `Lahman@12.0-0`, `ipumsr@0.8.1`
 
 **SOC-N100 packages requested for image (may require session `install.packages()` until CDSS merges):**
-`tidycensus`, `tigris`, `janitor`, `qs2`, `librarian`, `evictionresearch/neighborhood`
+`tidycensus`, `tigris`, `janitor`, `qs2` *(since deprecated for teaching, 2026-07-16)*, `librarian`, `evictionresearch/neighborhood`
 
 **SOC-N100 CLI tools requested for image (conda, via `datahub-user-image/environment.yml`):**
 `gh` (GitHub CLI — for private-repo auth and general GitHub workflows; students can `conda install -c conda-forge gh` until pre-installed)
@@ -210,8 +210,7 @@ In RStudio:
 getwd()                                    # .../SOC-N100-Housing-Precarity-2026
 file.exists("SOC-N100.Rproj")              # TRUE
 file.exists("code/lab1_intro_to_.R")       # TRUE
-file.exists("data/evictions/d5_case_aggregated.qs2")  # TRUE
-file.exists("data/evictions/d5_case_aggregated.rds")  # TRUE (fallback)
+file.exists("data/evictions/d5_case_aggregated.rds")  # TRUE (labs 4 & 6 read this)
 ```
 
 3. Install lab packages (first session, or when something is missing):
@@ -239,16 +238,14 @@ Documented in [`code/README.md`](code/README.md):
 
 Re-running a lab is idempotent: packages already installed are not reinstalled.
 
-### Eviction data (`qs2` primary, `.rds` fallback)
+### Eviction data (`.rds`)
 
-Labs **3** and **4** load eviction data with **`qs2::qs_read()`** on `data/evictions/d5_case_aggregated.qs2`. A commented **`readRDS()`** line points to `.rds` if qs2 fails. Staff background: [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd).
+Labs **4** and **6** load eviction data with base **`readRDS()`** on `data/evictions/d5_case_aggregated.rds`. The `.qs`/`.qs2` copies are maintainer conversion artifacts — **deprecated for teaching (2026-07-16)**; labs teach `saveRDS`/`write_csv`/parquet instead. Staff background: [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd).
 
-**Quick check after `source("code/install_course_packages.R")`:**
+**Quick check:**
 
 ```r
-requireNamespace("qs2")
-source("code/course_paths.R"); source("code/course_data.R")
-d <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+d <- readRDS("data/evictions/d5_case_aggregated.rds")
 nrow(d)   # 139072
 ```
 
@@ -273,7 +270,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 1. [ ] `gh auth status` shows logged in (private repo) OR git-pull link works (public repo)
 2. [ ] Repo at `~/SOC-N100-Housing-Precarity-2026` on expected branch
 3. [ ] **`SOC-N100.Rproj`** opened at repo root (`getwd()` is clone root, not `website/`)
-4. [ ] `source("code/install_course_packages.R")` completes; `requireNamespace("qs2")` is TRUE
+4. [ ] `source("course_infrastructure/install_course_packages.R")` completes; `requireNamespace("neighborhood")` is TRUE
 5. [ ] Lab 1: first run prompts for Census key (dialog saves to `~/.Renviron`); runs through tidyverse section
 6. [ ] Lab 2: `get_acs()` returns data with no key prompt
 7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)

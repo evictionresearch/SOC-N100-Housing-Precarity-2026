@@ -22,6 +22,8 @@ draft: true
 | Course dependency | `qs` in install script | **`qs2`** (+ RDS fallback; no `qs`) |
 | Legacy `.qs` in repo | — | Provenance; regenerate via `course_infrastructure/convert_eviction_data.R` |
 
+**Update (2026-07-16):** `qs2` is now **deprecated for all student-facing teaching** (Tim's call): labs read and cache **`.rds`**, share **`.csv`**, and teach **parquet** (bonus-lab Part 5) for big or Python-bound tables. The `.qs`/`.qs2` files stay in `data/evictions/` as maintainer provenance only, and `qs2` is dropped from `course_packages.R`.
+
 **Trigger:** [`qs` was archived from CRAN on 2026-01-17](https://cran.r-project.org/web/packages/qs/index.html) and **failed to compile** on Berkeley r.datahub even from the [CRAN Archive](https://cran.r-project.org/src/contrib/Archive/qs/). Students could not complete labs 3–4.
 
 ---

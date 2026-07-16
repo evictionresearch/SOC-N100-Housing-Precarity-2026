@@ -14,19 +14,18 @@
 #   1. How to see what memory you are using (before it's too late)
 #   2. Free memory fast: rm() + gc(), and dropping geometry you don't need
 #   3. Work in chunks: pull big ACS queries one state at a time
-#   4. Cache to disk with qs2 so you never re-download or re-compute
+#   4. Cache results to disk so you never re-download or re-compute
 #   5. duckdb + arrow: query data that is BIGGER than your memory limit
 #      (the approach used by ESPM-288, Berkeley's spatial data science course)
 # =============================================================================
 
-# Open the toolboxes. Three old friends plus qs2, the fast save-to-disk
-# format from Part 4. (If any library() line says "there is no package",
-# run install.packages("that-name") once, then the library() line again.)
+# Open the toolboxes -- all old friends by now. (If any library() line says
+# "there is no package", run install.packages("that-name") once, then the
+# library() line again.)
 
 library(tidyverse)
 library(tidycensus)
 library(sf)
-library(qs2)
 
 # =============================================================================
 # Part 1: Know your budget -- watching memory in RStudio
@@ -37,12 +36,12 @@ library(qs2)
 # for a breakdown. On r.datahub your budget is the class limit -- when the
 # gauge nears it, it is time to clean up (Part 2) or restructure (Parts 3-5).
 
-# Ask R how big an object is. (Same eviction file as lab 4, in its qs2
-# form -- the full path works no matter which folder you are sitting in:)
-evictions <- qs2::qs_read("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.qs2")
+# Ask R how big an object is. (The same eviction file -- and the same
+# readRDS() call -- as lab 4; the full path works from any folder:)
+evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.rds")
 object.size(evictions) %>% format(units = "MB")
 
-# The file is ~6 MB on disk but tens of MB in memory -- compression on disk
+# The file is ~7 MB on disk but tens of MB in memory -- compression on disk
 # hides the true in-memory cost. Geometry columns are the biggest offenders:
 # an sf data frame of tracts can be 10-50x the size of the same data without
 # geometry.
@@ -109,24 +108,31 @@ rent_by_state <- map(states_of_interest, function(st) {
 # for several counties, loop over counties instead of states.
 
 # =============================================================================
-# Part 4: Cache to disk with qs2 -- never download twice
+# Part 4: Cache to disk with saveRDS() -- never download twice
 # =============================================================================
 
 # Census pulls are slow and re-running them wastes both time and memory.
 # Save intermediate results to disk and reload instantly on the next session.
 
-dir.create("data/cache", showWarnings = FALSE, recursive = TRUE)
+# (~ = your home folder, as always)
 
-cache_file <- "data/cache/rent_by_state.qs2"
+dir.create("~/data/cache", showWarnings = FALSE, recursive = TRUE)
+
+cache_file <- "~/data/cache/rent_by_state.rds"
 if (file.exists(cache_file)) {
-  rent_by_state <- qs2::qs_read(cache_file)     # instant reload
+  rent_by_state <- readRDS(cache_file)          # instant reload
 } else {
   # (the expensive get_acs() work from Part 3 goes here)
-  qs2::qs_save(rent_by_state, cache_file)
+  saveRDS(rent_by_state, cache_file)
 }
 
 # This "compute once, cache, reload" pattern also protects you from session
 # crashes: if RStudio dies, your downloaded data survives on disk.
+#
+# WHICH FORMAT WHEN: .rds is R's native format -- perfect for a private
+# cache like this one. When a table needs to LEAVE your R world, use
+# write_csv() (lab 5) so any person or tool can open it -- or parquet
+# (Part 5, next) when the data is big and Python teammates need it too.
 
 # =============================================================================
 # Part 5: Bigger than memory -- duckdb and arrow
@@ -137,10 +143,11 @@ if (file.exists(cache_file)) {
 # leave the data ON DISK and send the *computation* to it with DuckDB --
 # an in-process SQL engine that streams through files without loading them.
 
-# These packages are NOT part of the core course install. Install them ONCE
-# (a few minutes -- then put a # in front, like lab 1's install line):
+# These packages are NOT part of the core course install. Install them ONCE:
+# remove the # from the install line below, run it (a few minutes), then put
+# the # back -- the same retire-the-line move as lab 1's install:
 
-install.packages(c("arrow", "duckdb", "duckdbfs"))
+# install.packages(c("arrow", "duckdb", "duckdbfs"))
 
 # And open them (every session):
 
@@ -148,8 +155,9 @@ library(arrow)
 library(duckdb)
 library(duckdbfs)
 
-# (a) Write our eviction data to parquet, a columnar on-disk format:
-parquet_file <- "data/cache/evictions.parquet"
+# (a) Write our eviction data to parquet, the universal columnar format --
+# pandas and polars in Python read it natively:
+parquet_file <- "~/data/cache/evictions.parquet"
 evictions %>%
   sf::st_drop_geometry() %>%      # no-op if there is no geometry column
   arrow::write_parquet(parquet_file)
@@ -181,5 +189,6 @@ ev %>%
 # 1. Watch the Environment gauge; object.size() to find the hogs
 # 2. rm() + gc() stale objects; st_drop_geometry() unless you're mapping
 # 3. Chunk big ACS pulls (one state/county per call, no geometry until the map)
-# 4. Cache with qs2::qs_save() / qs_read() -- compute once, reload instantly
+# 4. Cache with saveRDS() / readRDS() -- compute once, reload instantly;
+#    ship tables as csv (anyone can open) or parquet (big + Python-friendly)
 # 5. Too big anyway? parquet + duckdb/arrow: query on disk, collect() the answer

@@ -393,15 +393,16 @@ bay_rb %>%
 # The universal answer is a CSV file -- "comma separated values" -- which
 # Excel, Google Sheets, Datawrapper, and every tool on earth can read.
 #
-# First make a folder to keep outputs tidy (if it already exists, R just
-# grumbles a warning -- that is fine, nothing breaks):
+# First make a folder inside your home folder (the ~ again) to keep
+# outputs tidy (if it already exists, R just grumbles a warning -- that
+# is fine, nothing breaks):
 
-dir.create("output")
+dir.create("~/output")
 
 # write_csv(the_object, "where/to/put_it.csv") -- that is the whole verb:
 
-write_csv(rb_seg, "output/alameda_rb_by_tract.csv")
-write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "output/bay_rb_by_county.csv")
+write_csv(rb_seg, "~/output/alameda_rb_by_tract.csv")
+write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "~/output/bay_rb_by_county.csv")
 
 # Check the Files pane (click the house icon -- the folder was created in
 # your home directory): an output folder with two CSVs. Click one to peek.

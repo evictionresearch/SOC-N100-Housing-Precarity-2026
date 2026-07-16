@@ -2,8 +2,8 @@
 
 | File | Format | Used when |
 |------|--------|-----------|
-| **`d5_case_aggregated.qs2`** | [qs2](https://cran.r-project.org/package=qs2) | **Default in labs 3–4** (`qs2::qs_read`) |
-| `d5_case_aggregated.rds` | base R | **Backup** if qs2 fails — uncomment `readRDS()` in the lab |
+| **`d5_case_aggregated.rds`** | base R | **Default in labs 4 & 6** (`readRDS()`) |
+| `d5_case_aggregated.qs2` | [qs2](https://cran.r-project.org/package=qs2) | Maintainer conversion artifact — **deprecated for teaching (2026-07-16)** |
 | `d5_case_aggregated.qs` | legacy qs (archived CRAN) | Provenance only; maintainer conversion source |
 
 ## Regenerate `.rds` and `.qs2` from legacy `.qs`
@@ -14,12 +14,9 @@ Rscript course_infrastructure/convert_eviction_data.R
 
 Background: [`website/maintainer/notes.qmd`](../../website/maintainer/notes.qmd).
 
-## Verify on DataHub (after install_course_packages)
+## Verify on DataHub
 
 ```r
-requireNamespace("qs2")
-source("course_infrastructure/course_paths.R")
-source("course_infrastructure/course_data.R")
-d <- qs2::qs_read(file.path(repo_root, eviction_data_qs2))
+d <- readRDS("data/evictions/d5_case_aggregated.rds")
 nrow(d)   # 139072
 ```

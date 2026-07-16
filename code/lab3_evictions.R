@@ -378,7 +378,8 @@ rb_hist <- ggplot(alameda_rb_clean, aes(x = p_rb)) +
 
 rb_hist
 
-ggsave("lab3_alameda_rent_burden.png", rb_hist, width = 8, height = 5)
+# (~ in the file name = your home folder -- same trick as lab 2.)
+ggsave("~/lab3_alameda_rent_burden.png", rb_hist, width = 8, height = 5)
 
 # How to read it: the mass of tracts sits between roughly 0.37 and 0.57,
 # the dashed median line lands just above 0.47, and a tail of
