@@ -44,7 +44,13 @@ library(tidycensus)
 # (If R says "there is no package called 'tidycensus'", you are probably on
 # a fresh account -- run install.packages("tidycensus") once, then the
 # library() line again. If get_acs() later complains about a missing key,
-# redo the census_api_key() step from lab 1, section 6.)
+# redo the census_api_key() step from lab 1, section 6.). 
+# Also remember to start with a fresh RStudio session. This pulls the latest
+# code and data you need from github.com. 
+# To do that, just close your current RStudio session tab in your browser, go
+# to the class webpage 
+# https://evictionresearch.net/SOC-N100-Housing-Precarity-2026/
+# and click on the RStudio link in the header. 
 
 # ==========================================================================
 # 2. The catalog: every variable the ACS knows
@@ -56,15 +62,15 @@ library(tidycensus)
 # Its two basic inputs: which year, and which dataset. "acs5" means the
 # 5-year ACS -- the same pooled version we used in lab 1:
 
-vars_2023 <- load_variables(2023, "acs5")
+vars_2024 <- load_variables(2024, "acs5")
 
 # How big is this catalog?
 
-nrow(vars_2023)
+nrow(vars_2024)
 
 # About 28,000 rows -- one per variable. Open it like any table:
 
-View(vars_2023)
+View(vars_2024)
 
 # Three columns matter:
 #   name    = the code you give get_acs()  (e.g., "B19013_001")
@@ -103,18 +109,18 @@ sf_income <- get_acs(
   variables = "B19013_001",       # median household income (you just found it)
   state     = "CA",
   county    = "San Francisco",
-  year      = 2023
+  year      = 2024
 )
 
 sf_income
 
-# One row: San Francisco County, estimate 141446. The median -- half of SF
+# One row: San Francisco County, estimate 140970. The median -- half of SF
 # households earn more, half earn less. Researchers call this the AREA
 # MEDIAN INCOME (AMI) when they use it as a local yardstick.
 #
 # (If you compared notes with lab 1's income exercise you might notice
 # slightly different numbers there. Those were the 2022 estimates; these
-# are 2023. The ACS re-estimates every year -- one more reason we always
+# are 2024. The ACS re-estimates every year -- one more reason we always
 # say the year out loud.)
 #
 # Remember HUD's income tiers from lab 1, which you computed by hand?
@@ -151,8 +157,8 @@ sf_ami <- sf_income %>%
 sf_ami %>%
   select(NAME, estimate, low_income, very_low, extremely_low)
 
-# Read it out loud: in San Francisco, a household earning $113,157 a year
-# is LOW INCOME by HUD's standard. $70,723 is VERY low. Sit with that.
+# Read it out loud: in San Francisco, a household earning $112,776 a year
+# is LOW INCOME by HUD's standard. $70,485 is VERY low. Sit with that.
 
 # YOUR TURN (2): copy the pattern -- pull B19013_001 for one of the other
 # Bay Area counties from lab 1's exercise (San Mateo, Santa Clara, Alameda,
@@ -177,7 +183,7 @@ hinds_ami <- get_acs(
   variables = "B19013_001",
   state     = "MS",
   county    = "Hinds",
-  year      = 2023
+  year      = 2024
 ) %>%
   mutate(
     low_income     = estimate * 0.8,
@@ -200,8 +206,8 @@ two_counties <- bind_rows(sf_ami, hinds_ami)
 two_counties %>%
   select(NAME, estimate, low_income, very_low, extremely_low)
 
-# Read across the rows. Hinds County's overall median income (49966) is
-# BELOW San Francisco's "very low income" line (70723). The same dollar
+# Read across the rows. Hinds County's overall median income (49402) is
+# BELOW San Francisco's "very low income" line (70485). The same dollar
 # income can mean a stable life in one county and housing precarity in
 # another. That is why every measure this course builds starts from local
 # context -- and why a national poverty line misses so much.
@@ -232,7 +238,7 @@ get_acs(
   variables = c("B19013_001", "B19013A_001"),
   state     = "CA",
   county    = "San Francisco",
-  year      = 2023
+  year      = 2024
 )
 
 # Two rows now -- one per variable -- and the "variable" column tells you
@@ -250,7 +256,7 @@ get_acs(
   variables = c(ami = "B19013_001", white = "B19013A_001"),
   state     = "CA",
   county    = "San Francisco",
-  year      = 2023
+  year      = 2024
 )
 
 # Same data, readable labels. Now the full pull -- five variables, named:
@@ -266,26 +272,26 @@ sf_race_income <- get_acs(
   ),
   state     = "CA",
   county    = "San Francisco",
-  year      = 2023
+  year      = 2024
 )
 
 sf_race_income
 
 # Five rows, one per group. Before charting, read the estimate column like
-# a sociologist. The median White household in San Francisco makes 177030;
-# the median Black household makes 51610. That is not a gap -- that is a
+# a sociologist. The median White household in San Francisco makes 175732;
+# the median Black household makes 54384. That is not a gap -- that is a
 # canyon: more than three times as much. Notice also where each group sits
-# against the HUD lines you built in section 3: the Black median (51610)
-# is below SF's VERY-low-income line (70723), and the Latinx median
-# (99984) is below the low-income line (113157). The White median is far
+# against the HUD lines you built in section 3: the Black median (54384)
+# is below SF's VERY-low-income line (70485), and the Latinx median
+# (102392) is below the low-income line (112776). The White median is far
 # above the AMI itself.
 #
 # One habit to build before we chart this: the ACS is a SURVEY -- a sample
 # of households, not a count of everyone -- so every value it reports is an
 # ESTIMATE, and the moe column is its margin of error: the Bureau's honest
 # "give or take" number. Always ask whether a gap is real or inside the
-# noise. The largest margin here is about 5800. The White-Black gap is
-# over 125000. The canyon is real.
+# noise. The largest margin here is about 8700. The White-Black gap is
+# over 121000. The canyon is real.
 
 # ==========================================================================
 # 6. Your first chart, one layer at a time
@@ -397,7 +403,7 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_hline(yintercept = sf_ami$low_income, linetype = "dashed") +
   labs(
     title    = "Median household income by race in San Francisco",
-    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2019-2023 ACS",
+    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2020-2024 ACS",
     x        = NULL,
     y        = "Median household income ($)",
     caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
@@ -416,7 +422,7 @@ ggplot(sf_race_plot_df, aes(x = reorder(variable, -estimate), y = estimate)) +
   geom_hline(yintercept = sf_ami$low_income, linetype = "dashed") +
   labs(
     title    = "Median household income by race in San Francisco",
-    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2019-2023 ACS",
+    subtitle = "Dashed line = HUD low-income threshold (80% of area median), 2020-2024 ACS",
     x        = NULL,
     y        = "Median household income ($)",
     caption  = "Source: ACS 5-year estimates, table B19013 and race iterations."
@@ -514,7 +520,7 @@ sf_tenure <- get_acs(
   ),
   state     = "CA",
   county    = "San Francisco",
-  year      = 2023,
+  year      = 2024,
   output    = "wide"
 )
 
@@ -539,13 +545,13 @@ sf_own_rates <- sf_tenure %>%
 
 sf_own_rates %>% select(white, black, asian, latinx)
 
-# Read it: about 49% of Asian households in San Francisco own their home,
-# 37% of White households, 26% of Latinx households, 22% of Black
+# Read it: about 47% of Asian households in San Francisco own their home,
+# 38% of White households, 26% of Latinx households, 22% of Black
 # households. Two things to notice. First, the locality lesson AGAIN:
 # nationally, Tuesday's chart had White homeownership on top -- in San
 # Francisco it is Asian households. Never assume the national pattern
 # holds in your county. Second, the gap the lecture traced from covenants
-# to lending is right here in 2023: the Black rate is under half the
+# to lending is right here in 2024: the Black rate is under half the
 # Asian rate. And remember why ownership matters -- it is where American
 # families store wealth (Tuesday's Seattle figures: median owner net
 # worth $898,000 vs renter $36,000).
@@ -572,7 +578,7 @@ ggplot(sf_own_plot_df, aes(x = reorder(group, -share), y = share)) +
   geom_col(fill = "steelblue") +
   labs(
     title    = "Who owns their home in San Francisco?",
-    subtitle = "Share of households that are owner-occupied, 2019-2023 ACS",
+    subtitle = "Share of households that are owner-occupied, 2020-2024 ACS",
     x        = NULL,
     y        = "Share of households that own (%)",
     caption  = "Source: ACS 5-year estimates, table B25003 and race iterations."
