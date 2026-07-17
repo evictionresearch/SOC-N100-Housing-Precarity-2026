@@ -1,0 +1,24 @@
+--- a/code/lab4_evictions_mapping.R
++++ b/code/lab4_evictions_mapping.R
+@@ -174,14 +174,14 @@
+ #
+ # Now the mistake, on purpose. We also want each county's renter count,
+ # which sits in co_totrent. The tempting move is to just name it:
+-
+-indiana_evictions %>%
+-  group_by(county, year) %>%
+-  summarize(
+-    evictions = sum(filings),
+-    renters   = co_totrent
+-  )
+ 
++# indiana_evictions %>%
++#   group_by(county, year) %>%
++#   summarize(
++#     evictions = sum(filings),
++#     renters   = co_totrent
++#   )
++# 
+ # R complains -- read the message. It says summarize() expected ONE value
+ # per group and got many, warns you this is deprecated, and suggests
+ # reframe(). Here is what actually went wrong: sum(filings) collapses a

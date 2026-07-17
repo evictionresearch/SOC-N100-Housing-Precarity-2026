@@ -273,7 +273,7 @@ Run on **r.datahub** with a Berkeley CalNet account after the branch is pushed:
 4. [ ] `source("course_infrastructure/install_course_packages.R")` completes; `requireNamespace("neighborhood")` is TRUE
 5. [ ] Lab 1: first run prompts for Census key (dialog saves to `~/.Renviron`); runs through tidyverse section
 6. [ ] Lab 2: `get_acs()` returns data with no key prompt
-7. [ ] Lab 3: `qs2::qs_read()` loads eviction data (or `.rds` backup after comment swap)
+7. [ ] Lab 4: `readRDS()` loads `data/evictions/d5_case_aggregated.rds`
 8. [ ] Labs 4–5: geospatial packages and `evictionresearch/neighborhood` load
 9. [ ] Optional full batch: `Rscript website/maintainer/run_all_labs.R --per-lab` from repo root (see `website/maintainer/notes.qmd`; single-process runs exceed the 1 GB pod)
 10. [ ] Save a file under `~/` and confirm it persists after stopping and restarting the server

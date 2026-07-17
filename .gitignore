@@ -44,6 +44,7 @@ vignettes/*.pdf
 
 # Local lab / batch run artifacts (not course materials)
 output/
+Rplots.pdf
 my_first_plot.png
 lab1_rent_burden.png
 lab2_sf_income_by_race.png

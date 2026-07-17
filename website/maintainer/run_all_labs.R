@@ -30,6 +30,7 @@ args <- commandArgs(trailingOnly = TRUE)
 lab_batch_patches <- list(
   "1" = "website/maintainer/patches/lab1-batch.patch",
   "3" = "website/maintainer/patches/lab3-batch.patch",
+  "4" = "website/maintainer/patches/lab4-batch.patch",
   "5" = "website/maintainer/patches/lab5-batch.patch"
 )
 
@@ -128,8 +129,8 @@ find_repo_root <- function() {
 lab_scripts <- c(
   "1" = "code/lab1_intro_to_.R",
   "2" = "code/lab2_census_data.R",
-  "3" = "code/lab3_evictions.R",
-  "4" = "code/lab4_li_renters_mapping.R",
+  "3" = "code/lab3_rent_burden.R",
+  "4" = "code/lab4_evictions_mapping.R",
   "5" = "code/lab5_rb_seg.R",
   "6" = "code/lab6_bonus_memory.R"  # bonus: memory constraints (duckdb/arrow)
 )

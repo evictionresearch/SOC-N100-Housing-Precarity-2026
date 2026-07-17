@@ -61,7 +61,12 @@ Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
 
 #### Tuesday July 21 - Lecture
 
-#### Thursday July 23 - Lab - working with Census data cont.
+#### Thursday July 23 - Lab
+
+* Lab 3: building your first real measure — the share of renters who are rent-burdened (`code/lab3_rent_burden.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F))
+* Reading Census tables like a researcher: dollars vs. counts and the universe rule, down to census-tract neighborhoods, reshaping with `pivot_wider()`, and summarizing with `group_by()` + `summarize()` — the skills Assignment 2's build-a-measure asks for
+* Walkthrough of the Assignment 1 model answer (`code/a1_example.R`) — A1 is due Monday July 27
+* Optional after-class extra: the burden over time — write your first function and `map()` it across years
 
 #### **Assignment 1** - *Due Monday, July 27 @5pm*
 

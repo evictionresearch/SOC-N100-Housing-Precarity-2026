@@ -47,9 +47,10 @@ Open `website/SOC-N100-website-for-maintainers.Rproj` in RStudio, then render vi
 Lab scripts live in `code/`:
 - `lab1_intro_to_.R` — intro to R
 - `lab2_census_data.R` — tidycensus / ACS data
-- `lab3_evictions.R` — eviction data analysis
-- `lab4_li_renters_mapping.R` — low-income renter mapping
+- `lab3_rent_burden.R` — census table literacy & the rent-burden measure
+- `lab4_evictions_mapping.R` — ERN eviction data, rates, and maps
 - `lab5_rb_seg.R` — rent burden and segregation
+- `lab6_bonus_memory.R` — bonus: working under memory constraints
 - `README.md` — package practices (plain base-R/`library()` pedagogy)
 
 See [`code/README.md`](code/README.md) for package install conventions.

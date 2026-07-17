@@ -29,9 +29,10 @@ Open `website/SOC-N100.Rproj` in RStudio, then render via Quarto. The output dir
 Lab scripts live in `code/`:
 - `lab1_intro_to_.R` — intro to R
 - `lab2_census_data.R` — tidycensus / ACS data
-- `lab3_evictions.R` — eviction data analysis
-- `lab4_li_renters_mapping.R` — low-income renter mapping
+- `lab3_rent_burden.R` — census table literacy & the rent-burden measure
+- `lab4_evictions_mapping.R` — ERN eviction data, rates, and maps
 - `lab5_rb_seg.R` — rent burden and segregation
+- `lab6_bonus_memory.R` — bonus: working under memory constraints
 
 Labs use **tidyverse**, **tidycensus**, **ggplot2**, **sf**, and related packages. Students run these via Berkeley DataHub (not locally).
 

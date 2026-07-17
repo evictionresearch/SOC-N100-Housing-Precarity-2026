@@ -484,3 +484,146 @@ my_county_raw <- get_acs(
 # always -- read it out loud, paste the full message to your AI, ask for
 # the explanation before the fix, keep the share link.
 # ==========================================================================
+
+# ==========================================================================
+# 11. EXTRA PRACTICE (optional): the burden over TIME
+# ==========================================================================
+# Everything tonight was one year. But the question a county supervisor
+# actually asks is "is it getting WORSE?" -- and answering it just means
+# running tonight's build for several years and letting the x-axis be
+# year. This closing section is optional, for after class. (If you did
+# lab 2's optional section 10, the two chart ideas at the end are review;
+# everything else here is new and taught from zero.)
+#
+# The plan: (1) turn tonight's build into a reusable RECIPE, (2) run the
+# recipe for 2016, 2020, and 2024, (3) stack the results, (4) draw lines.
+# We work at the COUNTY level -- three counties to compare -- so each
+# year is one small, quick pull.
+
+# --------------------------------------------------------------------------
+# 11.1 function(): turn your build into a recipe
+# --------------------------------------------------------------------------
+# You have been USING functions all course -- get_acs(), mutate(), and
+# median() are recipes somebody else wrote. Tonight you write one. The
+# shape:
+#
+#   recipe_name <- function(blank) { steps that use the blank }
+#
+# Our steps are tonight's sections 3-5 glued into one chain -- pull the
+# B25070 counts (county level this time), drop moe, widen, compute the
+# share. The only thing that changes between runs is the year, so the
+# year is the blank:
+
+burden_one_year <- function(y) {
+  get_acs(
+    geography = "county",
+    variables = rb_vars,       # the same commented vector from section 3
+    state     = "CA",
+    county    = c("Alameda", "San Francisco", "Solano"),
+    year      = y
+  ) %>%
+    select(-moe) %>%
+    pivot_wider(names_from = variable, values_from = estimate) %>%
+    mutate(
+      year     = y,            # stamp the rows with the year they came from
+      rb_count = B25070_007 + B25070_008 + B25070_009 + B25070_010,
+      p_rb     = rb_count / B25070_001
+    )
+}
+
+# Running that block SAVES the recipe (check the Environment pane -- it
+# is listed under Functions) but cooks nothing yet. Cook once, filling
+# the blank with 2016:
+
+burden_one_year(2016)
+
+# Three rows -- Alameda, San Francisco, and Solano in 2016 -- with the
+# same p_rb you built tonight, plus the year stamp. One new county in
+# the mix: Solano (Vallejo, Fairfield), which has the cheapest rents of
+# these three. Hold that thought.
+
+# --------------------------------------------------------------------------
+# 11.2 map(): run the recipe once per year
+# --------------------------------------------------------------------------
+# You could type burden_one_year(2020) and burden_one_year(2024) and
+# stack the printouts by hand. map() does the repetition for you: hand
+# it a c() of years and the recipe, and it runs the recipe on each one:
+
+burden_list <- map(c(2016, 2020, 2024), burden_one_year)
+
+# (Notice: no parentheses after burden_one_year in that line. We are
+# handing map() the recipe itself, not one cooked result.) Back comes a
+# LIST of three tables, one per year. list_rbind() stacks a list of
+# tables into one table -- the same job bind_rows() did in lab 2:
+
+burden_over_time <- burden_list %>% list_rbind()
+
+burden_over_time %>% select(year, NAME, p_rb)
+
+# Nine rows: 3 counties x 3 years. This recipe-map-stack pattern is the
+# workhorse of temporal analysis, and you will meet it again in the
+# bonus lab, looping over whole states.
+
+# --------------------------------------------------------------------------
+# 11.3 A new layer: geom_line()
+# --------------------------------------------------------------------------
+# geom_col() drew one bar per row; geom_line() CONNECTS the rows with a
+# line -- the natural shape for time. One county first (filter, lab 1):
+
+alameda_over_time <- burden_over_time %>%
+  filter(NAME == "Alameda County, California")
+
+ggplot(alameda_over_time, aes(x = year, y = p_rb)) +
+  geom_line()
+
+# Alameda's renter burden dipped into 2020 and climbed most of the way
+# back by 2024. But one county alone has no comparison, and comparison
+# is the whole game. We want all three, each with its own line.
+
+# --------------------------------------------------------------------------
+# 11.4 A new idea: color INSIDE aes()
+# --------------------------------------------------------------------------
+# In section 7 you SET a color -- fill = "steelblue", outside aes(): one
+# look for everything, chosen by you. Put color INSIDE aes() and point
+# it at a COLUMN, and R draws one line per value of that column, each in
+# its own color, with a legend for free:
+
+ggplot(burden_over_time, aes(x = year, y = p_rb, color = NAME)) +
+  geom_line()
+
+# Inside aes() = a MAPPING: the look varies with your data. Outside
+# aes() = a SETTING: one look for everything. That distinction is half
+# of ggplot. Now finish it -- a title that states the finding, like
+# tonight's histogram:
+
+ggplot(burden_over_time, aes(x = year, y = p_rb, color = NAME)) +
+  geom_line() +
+  labs(
+    title    = "The heaviest renter burden is not where rents are highest",
+    subtitle = "Share of renter households paying 30%+ of income, ACS 5-year snapshots",
+    x        = NULL,
+    y        = "Share of renter households rent-burdened",
+    color    = NULL,
+    caption  = "Source: ACS 5-year estimates, table B25070."
+  ) +
+  theme_minimal()
+
+ggsave("~/lab3_burden_over_time.png", width = 8, height = 5)
+
+# Read it with tonight's eyes. Solano -- the cheapest rents of the three
+# (2024 median gross rent: $2,163, vs Alameda's $2,357 and San
+# Francisco's $2,476) -- carries the HIGHEST burdened share in all three
+# years: 0.54 in 2016, 0.57 in 2024. Famously expensive San Francisco is
+# lowest the whole way (about 0.41, then 0.38). Burden is rent RELATIVE
+# TO INCOME -- lab 1's Humboldt lesson, now moving through time. And
+# notice the shape: every county dipped into 2020, then rose -- but only
+# Solano now sits above where it started.
+#
+# YOUR TURN (5): swap the three counties inside burden_one_year() for
+# your own -- your A1/A2 area plus two neighbors -- rerun 11.1 through
+# 11.4, and fix the title so it states YOUR finding. Then two sentences:
+# what moved, and does it read like soft-displacement pressure building
+# or easing?
+# [PUT YOUR ANSWER BELOW]
+#
+# ==========================================================================

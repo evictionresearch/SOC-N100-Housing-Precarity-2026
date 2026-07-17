@@ -6,6 +6,7 @@ Unified diffs used only by [`../run_all_labs.R`](../run_all_labs.R). They tempor
 |-------|-----|------------------|
 | `lab1-batch.patch` | 1 | `__` blanks (filter + YOUR-TURN state pull), RUN-ONCE `install.packages` / `census_api_key` lines, key echo |
 | `lab3-batch.patch` | 3 | `__` blanks (YOUR-TURN tract pull) |
+| `lab4-batch.patch` | 4 | The on-purpose `summarize(renters = co_totrent)` error demo (fatal on R ≥ 4.6) |
 | `lab5-batch.patch` | 5 | RUN-ONCE `remotes` + `install_github` lines, `__` blanks (YOUR-TURN `ntdf()` chunk) |
 
 Lab 6 needs no patch: its install line ships commented (students uncomment it once); the batch machine needs `arrow`/`duckdb`/`duckdbfs` installed.
