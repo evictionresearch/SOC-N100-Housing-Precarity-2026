@@ -230,7 +230,7 @@ View(vars_2024)
 # And check the universe while you are there: renter-occupied housing
 # units. So our measure is
 #
-#   (007 + 008 + 009 + 010) / 001
+#   (B25070_007 + B25070_008 + B25070_009 + B25070_010) / B25070_001
 #
 # -- the share of renter households at or past the 30% cost-burden line.
 # This is a measure the Eviction Research Network actually uses, and you
@@ -282,7 +282,8 @@ nrow(alameda_raw)
 # OWN ROW. Look at the printout: the same tract appears six times, once
 # per variable, stacked vertically.
 #
-# This shape is called LONG data. The Census always hands you long data.
+# This shape is called LONG data. The Census always hands you long data by
+# default.
 
 # ==========================================================================
 # 5. Reshaping: pivot_wider()
@@ -317,7 +318,36 @@ nrow(alameda_raw)
 #   names_from  = which column holds the future COLUMN NAMES
 #   values_from = which column holds the future CELL VALUES
 #
-# Try the obvious version first:
+# Before aiming it at 2,274 rows of Census data, practice the move on a
+# table small enough to check every number by eye. Remember three_cities
+# from lab 1, section 4 -- the tiny table you built by hand? Here it is
+# again, except MELTED into the long shape the Census uses: one row per
+# city-measure pair.
+
+three_cities_long <- data.frame(
+  city    = c("Oakland", "Oakland", "Fresno", "Fresno", "Chico", "Chico"),
+  measure = c("rent", "income", "rent", "income", "rent", "income"),
+  value   = c(2200, 6100, 1300, 4400, 1400, 4300)
+)
+
+three_cities_long
+
+# Six rows: every city appears twice, once per measure -- exactly how
+# the Census would deliver it. Now hand pivot_wider() its two inputs:
+
+three_cities_long %>%
+  pivot_wider(
+    names_from  = measure,   # this column's values become column NAMES
+    values_from = value      # this column's values fill the cells
+  )
+
+# Three rows, and rent and income sit side by side as columns again --
+# the exact table you typed by hand in lab 1. Six long rows in, three
+# wide rows out, every number accounted for, nothing lost. That is the
+# whole move.
+#
+# Now the real Alameda table. Same verb, same two inputs, so this
+# SHOULD just work:
 
 alameda_messy <- alameda_raw %>%
   pivot_wider(
@@ -473,7 +503,7 @@ summary(alameda_rb_clean$p_rb)
 # B25070 table at the COUNTY rung of section 1's ladder, for five Bay
 # counties, and rebuild the measure. Read this chain out loud: pull, and
 # then drop moe, and then widen, and then compute. It is sections 4
-# through 6 in one breath -- thirty seconds of typing now that you own
+# through 6 in one breath -- thirty seconds of typing now that you know
 # the moves. That is what the repetition buys.
 
 bay_raw <- get_acs(

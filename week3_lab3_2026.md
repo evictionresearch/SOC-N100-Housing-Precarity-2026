@@ -31,6 +31,12 @@ r.datahub via the git-pull link on the course site.
   4002's real six rows drawn long → wide ("nothing lost, nothing computed"), the
   fear-reducer for pivot_wider; **§17 optional tail** — severe burden + A2 menu (block
   below); site Week 4 bullets now name lab 4's eviction parts A/B explicitly.
+- Pre-class add (Tim's call): **§5 now succeeds BEFORE it fails** — `three_cities_long`
+  (lab 1's hand-built table, melted) pivots cleanly back to the lab-1 original, so
+  students' first-ever pivot works; the 2,169-row moe accident follows unchanged. Tim's
+  own midday comment polishes (spelled-out formula codes in §3; "by default" in §4) are
+  in place; commit 35a6630 "lab 3 push" predates the toy-pivot add — **push again
+  before 5pm**.
 - Same-named sections renumbered: group_by/summarize is **§8** (opens Part B), YOUR
   TURN **§12**, A1 **§13**, recap **§14**. YT numbering 1–5 unchanged.
 
@@ -79,7 +85,7 @@ the top-code stripe, histogram median line just above 0.47). Timing is a suggest
 | 2 | Table anatomy: dollars vs counts; **THE UNIVERSE RULE** box (read aloud); YT1 (B25064 = dollar) | 10 |
 | 3 | The hunt: they find B25070 in View() ("gross rent as a percentage"); buckets 007–010; the measure | 8 |
 | 4 | The pull: 6 vars × 379 tracts = 2,274 rows; the income stowaway; long data | 7 |
-| 5 | pivot_wider — let them hit the **2,169-row accident** (designed); select(-moe) → 379; YT2 | 12 |
+| 5 | pivot_wider: **success first** — melt lab 1's three_cities by hand, pivot it back (6 rows → 3, checkable by eye); THEN the real table → the **2,169-row accident** (designed); select(-moe) → 379; YT2 | 14 |
 | 6 | mutate the measure; summary(): median ~0.47; the 2 NA tracts; if_else() | 12 |
 | 7 | The four questions + cheat sheet + 60-second ggplot recap | 5 |
 | 7.1 | Bar: county build "in one breath," label collision → horizontal swap → reorder → percent_format; **read the ranking against rents** | 14 |

@@ -51,6 +51,7 @@ Lab scripts live in `code/`:
 - `lab4_evictions_mapping.R` — ERN eviction data, rates, and maps
 - `lab5_rb_seg.R` — rent burden and segregation
 - `lab6_bonus_memory.R` — bonus: working under memory constraints
+- `r_functions_cheatsheet.R` — student reference card: every function in the labs, grouped by task (regenerate inventory with `website/maintainer/list_lab_functions.R`)
 - `README.md` — package practices (plain base-R/`library()` pedagogy)
 
 See [`code/README.md`](code/README.md) for package install conventions.

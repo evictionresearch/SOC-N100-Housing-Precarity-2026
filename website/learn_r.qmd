@@ -6,6 +6,7 @@ Everything on this page is **free** and was link-checked in July 2026. You do no
 
 ## Start with the course materials
 
+- **The course R cheat sheet** — `code/r_functions_cheatsheet.R`, already on your DataHub (open it from the Files pane, same as a lab; [browse it on GitHub](https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026/blob/main/code/r_functions_cheatsheet.R)). Every function our labs use, one line and one example each, grouped by task and tagged with the lab where you first meet it. Ctrl-F it whenever a lab line looks unfamiliar.
 - **[Analyzing US Census Data](https://walker-data.com/census-r/) (Kyle Walker)** — our course reference text, free to read online. The assigned chapters walk through exactly the tools we use in lab: tidycensus (Ch 1–2), wrangling Census data with the tidyverse (Ch 3–4), and Census geography and mapping (Ch 5–6).
 - **[Posit cheatsheets](https://opensource.posit.co/resources/cheatsheets/)** — one-page references for the tools we use constantly. Copies of the most useful ones (data visualization, data transformation, data import, R best practices, Quarto) live in the [class repo's `docs/cheatsheets` folder](https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026/tree/main/docs/cheatsheets), so they are already on your DataHub.
 

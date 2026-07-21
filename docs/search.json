@@ -4,14 +4,14 @@
     "href": "resources.html",
     "title": "Resources",
     "section": "",
-    "text": "R Coding Resources\nTidycensus Book: Analyzing U.S. Census Data: Methods, Maps, and Models in R\nDatawrapper.de"
+    "text": "R Cheat Sheet: every function in this course — code/r_functions_cheatsheet.R, already on your DataHub. One line + one example for every function the labs use, grouped by task, tagged with the lab where you first meet it. Keep it open in an RStudio tab and Ctrl-F it.\nR Coding Resources\nTidycensus Book: Analyzing U.S. Census Data: Methods, Maps, and Models in R\nDatawrapper.de"
   },
   {
     "objectID": "resources.html#class-materials",
     "href": "resources.html#class-materials",
     "title": "Resources",
     "section": "",
-    "text": "R Coding Resources\nTidycensus Book: Analyzing U.S. Census Data: Methods, Maps, and Models in R\nDatawrapper.de"
+    "text": "R Cheat Sheet: every function in this course — code/r_functions_cheatsheet.R, already on your DataHub. One line + one example for every function the labs use, grouped by task, tagged with the lab where you first meet it. Keep it open in an RStudio tab and Ctrl-F it.\nR Coding Resources\nTidycensus Book: Analyzing U.S. Census Data: Methods, Maps, and Models in R\nDatawrapper.de"
   },
   {
     "objectID": "resources.html#other-datasets-or-data-points",
@@ -39,7 +39,7 @@
     "href": "learn_r.html#start-with-the-course-materials",
     "title": "Learn R",
     "section": "Start with the course materials",
-    "text": "Start with the course materials\n\nAnalyzing US Census Data (Kyle Walker) — our course reference text, free to read online. The assigned chapters walk through exactly the tools we use in lab: tidycensus (Ch 1–2), wrangling Census data with the tidyverse (Ch 3–4), and Census geography and mapping (Ch 5–6).\nPosit cheatsheets — one-page references for the tools we use constantly. Copies of the most useful ones (data visualization, data transformation, data import, R best practices, Quarto) live in the class repo’s docs/cheatsheets folder, so they are already on your DataHub."
+    "text": "Start with the course materials\n\nThe course R cheat sheet — code/r_functions_cheatsheet.R, already on your DataHub (open it from the Files pane, same as a lab; browse it on GitHub). Every function our labs use, one line and one example each, grouped by task and tagged with the lab where you first meet it. Ctrl-F it whenever a lab line looks unfamiliar.\nAnalyzing US Census Data (Kyle Walker) — our course reference text, free to read online. The assigned chapters walk through exactly the tools we use in lab: tidycensus (Ch 1–2), wrangling Census data with the tidyverse (Ch 3–4), and Census geography and mapping (Ch 5–6).\nPosit cheatsheets — one-page references for the tools we use constantly. Copies of the most useful ones (data visualization, data transformation, data import, R best practices, Quarto) live in the class repo’s docs/cheatsheets folder, so they are already on your DataHub."
   },
   {
     "objectID": "learn_r.html#if-you-have-never-coded-before",

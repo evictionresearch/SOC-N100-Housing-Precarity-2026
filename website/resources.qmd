@@ -5,6 +5,7 @@ format: html
 
 ## Class Materials
 
+* [**R Cheat Sheet: every function in this course**](https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026/blob/main/code/r_functions_cheatsheet.R) — `code/r_functions_cheatsheet.R`, already on your DataHub. One line + one example for every function the labs use, grouped by task, tagged with the lab where you first meet it. Keep it open in an RStudio tab and Ctrl-F it.
 * [R Coding Resources](learn_r.qmd)
 * Tidycensus Book: [Analyzing U.S. Census Data: Methods, Maps, and Models in R](https://walker-data.com/census-r/index.html)
 * [Datawrapper.de](https://www.datawrapper.de/)
