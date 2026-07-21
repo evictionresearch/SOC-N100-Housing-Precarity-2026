@@ -239,19 +239,25 @@ Tuesdays &amp; Thursdays | 5-7pm | July 7 to August 13, 2026<br>
 <h4 class="anchored" data-anchor-id="readings-2">Readings</h4>
 <p><strong><em>Due before lab, Thursday July 23</em></strong></p>
 <ul>
-<li><a href="https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html">Walker (2023) Chapter 3 &amp; Chapter 4</a></li>
+<li><a href="https://walker-data.com/census-r/wrangling-census-data-with-tidyverse-tools.html">Walker (2023) Chapter 3</a> &amp; <a href="https://walker-data.com/census-r/exploring-us-census-data-with-visualization.html">Chapter 4</a> — chapter 3 is lab 3’s wrangling verbs (filter/mutate/group_by, margins of error); chapter 4 is its charts. Read them behind the lab and everything clicks twice.</li>
 </ul>
 </section>
-<section id="tuesday-july-21---lecture" class="level4">
-<h4 class="anchored" data-anchor-id="tuesday-july-21---lecture">Tuesday July 21 - Lecture</h4>
+<section id="tuesday-july-21---lab" class="level4">
+<h4 class="anchored" data-anchor-id="tuesday-july-21---lab">Tuesday July 21 - Lab</h4>
+<ul>
+<li>Warm-up tour in <a href="https://www.socialexplorer.com/">Social Explorer</a>: how census geographies nest — states, counties, tracts, block groups, blocks — and what size each polygon really is</li>
+<li>Lab 3, part A: building your first real measure — the share of renters who are rent-burdened (<code>code/lab3_rent_burden.R</code> on the <a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F">DataHub</a>)</li>
+<li>Reading Census tables like a researcher: dollars vs.&nbsp;counts and the universe rule, hunting down table B25070 in the catalog yourself, census-tract neighborhoods, and reshaping with <code>pivot_wider()</code> — the skills Assignment 2’s build-a-measure asks for</li>
+<li>Charts, done right: which plot answers which question — bar charts and histograms tonight, with the <a href="https://opensource.posit.co/resources/cheatsheets/data-visualization/">ggplot2 cheat sheet</a> at your elbow</li>
+</ul>
 </section>
 <section id="thursday-july-23---lab" class="level4">
 <h4 class="anchored" data-anchor-id="thursday-july-23---lab">Thursday July 23 - Lab</h4>
 <ul>
-<li>Lab 3: building your first real measure — the share of renters who are rent-burdened (<code>code/lab3_rent_burden.R</code> on the <a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F">DataHub</a>)</li>
-<li>Reading Census tables like a researcher: dollars vs.&nbsp;counts and the universe rule, down to census-tract neighborhoods, reshaping with <code>pivot_wider()</code>, and summarizing with <code>group_by()</code> + <code>summarize()</code> — the skills Assignment 2’s build-a-measure asks for</li>
+<li>Lab 3, part B: summarizing with <code>group_by()</code> + <code>summarize()</code>, then two more chart shapes — boxplots and scatterplots — and the which-chart-when card</li>
+<li>Your turn: rebuild the measure and charts for your own county (the seed of Assignment 1 and beyond)</li>
 <li>Walkthrough of the Assignment 1 model answer (<code>code/a1_example.R</code>) — A1 is due Monday July 27</li>
-<li>Optional after-class extra: the burden over time — write your first function and <code>map()</code> it across years</li>
+<li>Optional after-class extras: the burden over time (write your first function and <code>map()</code> it across years), and who carries the burden — rent-burden rates by household income group, built from the same Census table (B25074) the Eviction Research Network’s own models pull</li>
 </ul>
 </section>
 <section id="assignment-1---due-monday-july-27-5pm" class="level4">
@@ -269,14 +275,19 @@ Tuesdays &amp; Thursdays | 5-7pm | July 7 to August 13, 2026<br>
 <h2 class="anchored" data-anchor-id="week-4">Week 4</h2>
 <section id="readings-3" class="level4">
 <h4 class="anchored" data-anchor-id="readings-3">Readings</h4>
-<p><strong><em>Due Thursday July 30</em></strong> <a href="https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html">Walker (2023) Chapters 5 &amp; 6</a></p>
+<p><strong><em>Due Thursday July 30</em></strong> <a href="https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html">Walker (2023) Chapter 5, sections 5.1–5.2</a> and <a href="https://walker-data.com/census-r/mapping-census-data-with-r.html">Chapter 6, sections 6.1–6.3</a> — the simple core of Census mapping: what the shapes are, then choropleth maps with <code>geom_sf</code> and <code>tmap</code> (the tool lab 4 uses). The rest of both chapters is optional reference — skip the coordinate-system math (§5.4) and the advanced maps (§6.6) unless you’re curious.</p>
 </section>
-<section id="tuesday-july-28---lab---pulling-in-external-datasets" class="level4">
-<h4 class="anchored" data-anchor-id="tuesday-july-28---lab---pulling-in-external-datasets">Tuesday July 28 - Lab - pulling in external datasets</h4>
+<section id="tuesday-july-28---lab" class="level4">
+<h4 class="anchored" data-anchor-id="tuesday-july-28---lab">Tuesday July 28 - Lab</h4>
+<ul>
+<li>Lab 4, part A: real eviction records — load ERN’s Indiana court-filing data, compute eviction rates, and make your first joins to Census data (<code>code/lab4_evictions_mapping.R</code> on the <a href="https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&amp;urlpath=rstudio%2F">DataHub</a>)</li>
+<li>Hard displacement meets lab 3’s soft-displacement measures</li>
+</ul>
 </section>
 <section id="thursday-july-30---lab" class="level4">
 <h4 class="anchored" data-anchor-id="thursday-july-30---lab">Thursday July 30 - Lab</h4>
 <ul>
+<li>Lab 4, part B: put eviction rates on maps</li>
 <li><a href="https://urban-displacement.github.io/edr-sandag/">Review San Diego Displacement Study</a></li>
 </ul>
 </section>
@@ -308,6 +319,7 @@ Tuesdays &amp; Thursdays | 5-7pm | July 7 to August 13, 2026<br>
 <section id="readings-4" class="level4">
 <h4 class="anchored" data-anchor-id="readings-4">Readings</h4>
 <p><strong><em>Due Tuesday August 4</em></strong> <a href="https://www.portland.gov/sites/default/files/2020-01/2-gentrification-and-displacement-study-05.18.13.pdf">Bates (2013) “Gentrification and Displacement Study: Implementing an Equitable Inclusive Development Strategy in the Context of Gentrification”</a></p>
+<p><em>Optional, for Thursday’s segregation lab:</em> <a href="https://walker-data.com/census-r/modeling-us-census-data.html">Walker (2023) section 8.1, “Indices of segregation and diversity”</a> — just that section; the rest of chapter 8 (regression and machine learning) is beyond our scope.</p>
 </section>
 <section id="tuesday-august-4---lecture" class="level4">
 <h4 class="anchored" data-anchor-id="tuesday-august-4---lecture">Tuesday August 4 - Lecture</h4>
