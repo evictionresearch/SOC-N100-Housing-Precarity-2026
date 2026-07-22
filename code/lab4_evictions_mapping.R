@@ -208,7 +208,8 @@ county_year
 
 # One more column before we can talk to the Census: a join key. Census
 # county GEOIDs are state code + county code glued together: "18" (Indiana)
-# + "001" (Adams County) = "18001". paste0() glues text end to end --
+# + "001" (Adams County) = "18001" -- lab 3's geography ladder, cashing
+# in as an ID you can BUILD. paste0() glues text end to end --
 # and because these are TEXT codes, the leading zeros survive (lab 1's
 # leading-zero trap, still paying rent):
 
@@ -358,7 +359,8 @@ summary(county_rates$black_eviction_rate)
 rates_2019 <- county_rates %>%
   filter(year == 2019)
 
-# Base scatter (lab 1 layers, new geom): each point is one county.
+# Base scatter -- lab 3's geom_point(), on a new question: each point is
+# one county.
 
 ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
   geom_point()

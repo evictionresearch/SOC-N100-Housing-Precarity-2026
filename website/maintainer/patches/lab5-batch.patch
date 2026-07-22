@@ -19,7 +19,7 @@
  # The remotes:: prefix means "use the install_github tool from the remotes
  # toolbox without opening the whole toolbox." You will see this
  # package::function() style often in other people's code.
-@@ -525,16 +525,16 @@
+@@ -526,16 +526,16 @@
  #
  # (a) Segregation types for your county:
  

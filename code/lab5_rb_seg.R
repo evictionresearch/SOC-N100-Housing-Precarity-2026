@@ -24,7 +24,7 @@
 #          summarize(), your own rent-burden measure
 #   Lab 4: outside data (evictions), joins, rates, and maps with tmap
 #
-# Today adds: a GitHub package, case_when(), boxplots, write_csv(), and
+# Today adds: a GitHub package, case_when(), write_csv(), and
 # publishing. After this you own a complete research pipeline.
 
 # ==========================================================================
@@ -314,12 +314,13 @@ ggplot(rb_by_type_solid, aes(x = median_rb, y = reorder(nt_group, median_rb))) +
 # split it into two plots.
 
 # --------------------------------------------------------------------------
-# 5.1 One new chart type: the boxplot
+# 5.1 The boxplot again: the spread behind the medians
 # --------------------------------------------------------------------------
-# The bar chart shows one number (the median) per type. A BOXPLOT shows
-# each type's whole spread: the box is the middle 50% of tracts, the line
-# inside is the median, the whiskers reach the typical range, and the dots
-# are outlier tracts. Same aes() thinking, new geom_:
+# The bar chart shows one number (the median) per type. Lab 3's chart
+# card says the shape for "compare whole spreads across groups" is the
+# BOXPLOT -- box = middle 50% of tracts, middle line = median, whiskers =
+# the typical range, dots = outlier tracts. Same move as lab 3's
+# three-county boxes, with one new trick in the reorder:
 
 rb_seg %>%
   filter(nt_group %in% rb_by_type_solid$nt_group) %>%   # the 10+ types only
