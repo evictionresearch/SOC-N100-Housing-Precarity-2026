@@ -1,12 +1,11 @@
 <!-- Assignment 1 description for bCourses (Canvas).
-     To use: on the Create Assignment page, click the </> icon at the bottom
-     right of the rich-text editor, paste everything BELOW this comment,
-     then click </> again to flip back to the visual editor.
-     Set separately in the Canvas fields: due date Mon Jul 27 5:00pm,
+     STATUS: FINAL and LIVE as of 2026-07-23 -- this file mirrors Tim's
+     final edit as posted on bCourses (his wording, verbatim). Kept here
+     as the version-controlled copy and as the template for A2's page.
+     Canvas fields set separately: due Mon Jul 27 5:00pm,
      Submission Type = Online > File Uploads.
-     Note: these save/download/upload steps double as Tim's Thursday
-     teaching script. Students have not yet been shown how to save an
-     R script. -->
+     Steps 1-5 double as the Thursday Jul 23 teaching script (first time
+     students save an R script; Tim demos with a1_thomas.R). -->
 
 <h3>Assignment 1 (due Monday, July 27 at 5:00pm)</h3>
 
@@ -14,50 +13,32 @@
 
 <h4>The task</h4>
 <ol>
-  <li>Use <code>get_acs()</code> to pull <strong>one</strong> ACS variable that says something about housing precarity (rent burden, median rent, the share of households that rent&hellip;).</li>
-  <li>Make <strong>one</strong> chart of it. A bar chart across your counties works well, and after Lab 3 you know to turn it sideways when the county names are long.</li>
-  <li>Write <strong>2&ndash;3 sentences</strong> describing what the chart shows and anything that surprised you.</li>
+  <li>Use <code>get_acs()</code> to pull <strong>one</strong> ACS variable that says something about housing precarity (rent burden, median rent, the share of households that rent, race/ethnic concentrations, etc.).</li>
+  <li>Make <strong>one</strong> chart of it. A bar chart across your counties works well or a histogram across a distribution within a county.</li>
+  <li>Write a short paragraph (minimum 2&ndash;3 sentences) describing what the chart shows and anything that surprised you. Keep it simple. No bibliography or ASA formatting yet. Maybe speak to what this might mean for that population or area. You can write as much as you want but I need you to interpret the plot like you&rsquo;re describing it to someone.</li>
 </ol>
-<p>Keep it simple. No bibliography or ASA formatting yet.</p>
+
+<h4>What you will turn in: exactly two files</h4>
+<ol>
+  <li><strong>Your R script</strong>, named <code>a1_[yourlastname].R</code>, a fresh file you write yourself. We&rsquo;ll go over this in class on July 23rd</li>
+  <li><strong>A Word document</strong> (or PDF) with your chart image pasted in and your writeup under it.</li>
+</ol>
+
+<h3>How to save an R script and submit it</h3>
 
 <h4>Step 1. Study the model answer, then close it</h4>
-<p>The class repo contains a complete example of this assignment, <code>code/a1_example.R</code> (in the Files pane on the DataHub, open the <code>SOC-N100-Housing-Precarity-2026</code> folder, then <code>code</code>). Read it top to bottom and run it. It shows you the <em>shape</em> of a finished submission: a script that runs clean, a labeled chart saved with <code>ggsave()</code>, the interpretation sentences, and the AI-citation format.</p>
-<p><strong>Then close it and build your own.</strong> The example is a model, not a template. Your submission must be a fresh script you write yourself, about <em>your</em> place, with <em>your</em> variable and <em>your</em> sentences. Do not submit an edited copy of <code>a1_example.R</code> and do not reuse its text; your graders know the example line by line. Borrowing its <em>structure</em> (pull, chart, save, sentences) is exactly what it is for.</p>
+<p>The class repo contains a complete example, <code>code/a1_example.R</code>. Read it top to bottom and run it &mdash; it shows the <em>shape</em> of a finished submission. Then close it and build your own. The example is a model, not a template. Your submission must be a fresh script about <em>your</em> place, with <em>your</em> variable and <em>your</em> sentences; your graders know the example line by line. Borrowing its <em>structure</em> (pull, chart, save, sentences) is exactly what it is for.</p>
 
-<h4>Step 2. Create and save a NEW R script (first time doing this, so here is the whole move)</h4>
-<ol>
-  <li>In RStudio on the DataHub: <strong>File &gt; New File &gt; R Script</strong>. A blank script opens. This one is yours.</li>
-  <li>Write your assignment there. Start with <code>library(tidyverse)</code> and <code>library(tidycensus)</code> at the top, like every lab.</li>
-  <li><strong>File &gt; Save</strong>. Name it like <code>a1_lastname_firstname.R</code>, and save it to your <strong>Home folder</strong>, the folder the save window usually starts in (if you are not sure, click <strong>Home</strong> in the save window&rsquo;s sidebar).</li>
-  <li><strong>Important: do NOT save it inside the <code>SOC-N100-Housing-Precarity-2026</code> class folder.</strong> That folder belongs to the course&rsquo;s automatic updates. It refreshes from GitHub every time you click the class RStudio link, and files you add to it can be lost. Your Home folder is safe; the class folder is not yours to keep things in.</li>
-  <li>For your chart, end your script with <code>ggsave("~/a1_lastname_firstname.png", width = 8, height = 5)</code> and run it. The <code>~/</code> means the image lands in that same safe Home folder.</li>
-  <li>Before you submit, the one test that matters: <strong>Session &gt; Restart R</strong>, then run your script top to bottom. If it runs clean on the DataHub, it will run for the grader.</li>
-</ol>
+<h4>Step 2. Create a NEW script in your Home folder (first time doing this, so here is the whole move)</h4>
+<p><strong>File &gt; New File &gt; R Script</strong>. Write your assignment there, starting with the two <code>library()</code> lines like every lab. <strong>File &gt; Save</strong>, named <code>a1_[yourlastname].R</code> (Tim&rsquo;s is <code>a1_thomas.R</code>), to your <strong>Home folder</strong> &mdash; and here is the warning that matters: <strong>do NOT save your work inside the <code>SOC-N100-Housing-Precarity-2026</code> class folder.</strong> That folder is managed by the course&rsquo;s git repository and updates every time you click the class RStudio link; anything you add there is likely to be overwritten or lost. Your Home folder (the house icon) is safe. End your script with <code>ggsave("~/a1_[yourlastname].png", width = 8, height = 5)</code> to save the plot you made. Then the one test that matters: <strong>Session &gt; Restart R</strong>, run it top to bottom &mdash; if it runs clean on the DataHub, it runs for the grader.</p>
 
-<h4>Step 3. Download your two files from the DataHub to your computer</h4>
-<ol>
-  <li>In the Files pane (bottom right), click the <strong>house icon</strong> to open your Home folder. Your <code>.R</code> script and your <code>.png</code> chart are both there.</li>
-  <li><strong>Check the box</strong> next to your <code>.R</code> file, then click <strong>More (the gear icon) &gt; Export</strong> and download it. Repeat for the <code>.png</code>.</li>
-</ol>
+<h4>Step 3. Download to your computer</h4>
+<p>The DataHub cannot submit to bCourses for you, so the path is download, then upload. Go to the Files pane &rarr; house icon &rarr; check the box next to your <code>.R</code> script you edited and saved &rarr; <strong>More (gear icon) &gt; Export</strong>; repeat for the <code>.png</code>.</p>
 
-<h4>Step 4. Upload to bCourses</h4>
-<ol>
-  <li>On this assignment page, click <strong>Start Assignment</strong> (or <strong>New Attempt</strong> if you are resubmitting).</li>
-  <li>Under <strong>File Upload</strong>, click <strong>Choose File</strong> and select your <code>.R</code> script.</li>
-  <li>Click <strong>+ Add Another File</strong> and attach your chart image.</li>
-  <li>Your 2&ndash;3 sentences can go in the <strong>Comments</strong> box when you submit, as comments inside your script, or in a third file (Word or PDF) with the chart pasted in. Any of those is fine.</li>
-  <li>Click <strong>Submit Assignment</strong>. You should see a confirmation with a timestamp; that is your receipt.</li>
-</ol>
-<p><em>(Button names can shift a little as bCourses updates; if you get stuck, post on the class discussion page.)</em></p>
+<h4>Step 4. Build your write-up document</h4>
+<p>Paste the chart image into Word or Google Docs, write your minimum 2&ndash;3 sentences under it (describe first, then interpret), add your AI share links near the sentences, save as <code>.docx</code> or PDF (Google Docs: <strong>File &gt; Download &gt; PDF</strong>).</p>
 
-<p><strong>AI policy reminder.</strong> Include the <em>public share link(s)</em> for any AI conversations you used, pasted as comments in your script next to the code they helped with and next to your sentences. If you used no AI, say so in one comment line. (See the AI policy in the syllabus.)</p>
+<h4>Step 5. Upload both files</h4>
+<p><strong>Start Assignment</strong> &rarr; <strong>File Upload</strong> &rarr; <strong>Choose File</strong> (your <code>.R</code>) &rarr; <strong>+ Add Another File</strong> (your write-up) &rarr; <strong>Submit Assignment</strong>; the timestamp confirmation is your receipt.</p>
 
-<h4>What gets checked (the grader&rsquo;s literal checklist)</h4>
-<ul>
-  <li>A fresh script written by you, not an edited <code>a1_example.R</code></li>
-  <li>Script runs top to bottom on the DataHub with no edits</li>
-  <li>The chart has a title, labeled axes, and a source caption</li>
-  <li>The chart file is saved with <code>ggsave()</code> and attached</li>
-  <li>2&ndash;3 honest sentences that describe, then interpret</li>
-  <li>AI share links pasted as comments next to the code they helped</li>
-</ul>
+<p><strong>AI policy reminder</strong> &mdash; public share links in both places they helped (script comments and the write-up), or a one-line &ldquo;no AI used&rdquo; note. Then the grader&rsquo;s checklist: fresh script named <code>a1_[yourlastname].R</code>, not an edited example; runs top to bottom with no edits; chart has title, labeled axes, source caption, saved with <code>ggsave()</code>; write-up has the chart pasted in with honest sentences; AI links in both files; both files uploaded by Monday 5pm.</p>

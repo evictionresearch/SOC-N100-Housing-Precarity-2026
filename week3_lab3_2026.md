@@ -118,7 +118,7 @@ save/download/upload how-to now lives on the bCourses assignment page itself.
 | 10 | Scatter: hypothesis first; 4-row warning; **$250,001 top-code stripe**; geom_smooth; poorer-half 53% vs richer-half 40% | 15 |
 | 11 | The chart-picker card (steal it for A1/A2) | 3 |
 | 12 | YOUR TURN: start (a)–(c) in class, (d)–(f) at home — circulate | 15 |
-| 13–14 | A1 walkthrough — open `code/a1_example.R` live ("model, not template"); then TEACH the first-ever save-a-script move (File > New File > R Script → save to HOME, **never the class folder** — it refreshes from GitHub) using the bCourses page's Step 2–4 as the script; pitch §15–§17 as optional | 12 |
+| 13–14 | A1 walkthrough — open `code/a1_example.R` live ("model, not template"); then TEACH the first-ever save-a-script move (File > New File > R Script → save to HOME, **never the class folder** — it refreshes from GitHub) using the bCourses page's Steps 2–5 as the script (demo file: a1_thomas.R; naming = a1_[yourlastname].R; submission = exactly two files, .R + Word doc with chart pasted in); pitch §15–§17 as optional | 12 |
 
 ## Numbers you'll say out loud (live-verified 2026-07-21, year = 2024)
 

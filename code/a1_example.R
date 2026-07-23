@@ -28,12 +28,29 @@ library(tidyverse)
 library(tidycensus)
 
 # --------------------------------------------------------------------------
-# 1. Pull one variable for my counties
+# 1. FIRST STEP: find your variable in the Census catalog
 # --------------------------------------------------------------------------
-# My variable: B25064_001, "Median gross rent" -- the typical renter's
-# monthly rent plus basic utilities, in dollars. (Found it by searching
-# "median gross rent" in load_variables(2024, "acs5") %>% View().)
-#
+# Before you can pull anything you need a variable code, and you find
+# those by looking, not by memorizing. Load the catalog and open it --
+# lab 2's move:
+
+vars_2024 <- load_variables(2024, "acs5")
+View(vars_2024)
+
+# In the View tab's search box (top right), type words for your topic
+# and read the label and concept columns until one says what you mean.
+# My search was  median gross rent , which leads to B25064_001 --
+# "Median Gross Rent (Dollars)", the typical renter's monthly rent plus
+# basic utilities. For your own hunt, try searches like
+#   gross rent as a percentage   (rent burden, lab 3's table)
+#   tenure                       (who owns vs. who rents)
+#   hispanic or latino origin by race   (racial/ethnic composition)
+# Write down the code you pick and what it measures in plain English --
+# that sentence becomes your chart's subtitle and caption.
+
+# --------------------------------------------------------------------------
+# 2. Pull my variable for my counties
+# --------------------------------------------------------------------------
 # New trick worth copying: name the code INSIDE c() and tidycensus uses
 # your name in the variable column instead of the raw code.
 
@@ -53,7 +70,7 @@ wa_rent
 # of error of only $13-30 -- tight enough to compare counties honestly.
 
 # --------------------------------------------------------------------------
-# 2. One clear chart
+# 3. One clear chart
 # --------------------------------------------------------------------------
 # The lab-3 bar chart pattern (section 7.1): horizontal bars so the
 # county names stay readable, sorted by value, a title that states the
@@ -77,10 +94,12 @@ a1_chart
 ggsave("~/a1_example_chart.png", a1_chart, width = 8, height = 5)
 
 # --------------------------------------------------------------------------
-# 3. My 2-3 sentences (this is the part graders read first)
+# 4. My write-up paragraph (this is the part graders read first)
 # --------------------------------------------------------------------------
 # The pattern to imitate: first DESCRIBE what the chart shows, then
-# INTERPRET or note a surprise. Honest and plain beats fancy.
+# INTERPRET or note a surprise. Honest and plain beats fancy. (In your
+# submission, these sentences go in a Word doc, written under your
+# pasted-in chart image -- see the bCourses page for the full steps.)
 #
 #   "Median gross rent in King County ($2,092) is nearly double Yakima
 #   County's ($1,109), and the three Puget Sound metro counties all sit
@@ -95,7 +114,7 @@ ggsave("~/a1_example_chart.png", a1_chart, width = 8, height = 5)
 # thread they can follow across your work.)
 
 # --------------------------------------------------------------------------
-# 4. Citing your AI use (required -- see the syllabus AI policy)
+# 5. Citing your AI use (required -- see the syllabus AI policy)
 # --------------------------------------------------------------------------
 # Paste the PUBLIC share link as a comment right next to the code it
 # helped with, plus a few words on what you asked. Model:
@@ -107,14 +126,20 @@ ggsave("~/a1_example_chart.png", a1_chart, width = 8, height = 5)
 # use is not.
 
 # --------------------------------------------------------------------------
-# 5. Submission checklist
+# 6. Submission checklist
 # --------------------------------------------------------------------------
-#   [ ] A FRESH script written by you (not an edited copy of this file),
-#       saved in your home folder, runnable top to bottom with no edits
-#   [ ] The saved chart image (a1_example_chart.png -> yours will differ)
-#   [ ] Your 2-3 sentences (as comments in your script, in the bCourses
-#       comment box, or in a small write-up file -- any of those is fine)
-#   [ ] AI share links as comments next to the relevant code, or a
-#       one-line "no AI used" note
-#   [ ] Uploaded to bCourses by Monday July 27, 5pm
+#   [ ] A FRESH script named a1_yourlastname.R (not an edited copy of
+#       this file), saved in your HOME folder, runnable top to bottom
+#       on the DataHub with no edits
+#   [ ] The chart has a title, labeled axes, and a source caption, and
+#       is saved with ggsave()
+#   [ ] The write-up doc (Word or PDF) has the chart image pasted in,
+#       with your short paragraph under it (minimum 2-3 sentences --
+#       describe first, then interpret the plot like you are explaining
+#       it to someone)
+#   [ ] AI share links as comments next to the relevant code and near
+#       your sentences in the doc, or a one-line "no AI used" note
+#   [ ] BOTH files -- the .R script and the write-up doc -- uploaded to
+#       bCourses by Monday July 27, 5pm (click-by-click steps are on
+#       the bCourses assignment page)
 # ==========================================================================
