@@ -463,6 +463,10 @@ alameda_tracts <- tracts(state = "CA", county = "Alameda", year = 2024)
 rb_map_data <- alameda_tracts %>%
   left_join(rb_seg, by = "GEOID")
 
+# --------------------------------------------------------------------------
+# 9.1 The first map -- Lab 4's recipe
+# --------------------------------------------------------------------------
+
 tm_shape(rb_map_data) +
   tm_fill(
     col     = "p_rb",
@@ -473,15 +477,122 @@ tm_shape(rb_map_data) +
 
 # (If your tmap version prints notes about "v3 code" and newer function
 # names, that is advice, not an error -- the map still draws.)
+
+# --------------------------------------------------------------------------
+# 9.2 Where the colors break: the style menu
+# --------------------------------------------------------------------------
+# Lab 4 showed that WHERE the bins fall is an editorial choice (jenks vs
+# the default). Here is the fuller menu -- each style answers a different
+# question:
 #
+#   style = "equal" / "pretty"   even-width ruler bins   "fair intervals"
+#   style = "quantile"           equal COUNTS per bin    "rank the tracts"
+#   style = "jenks"              natural clusters        "let the data group itself"
+#   style = "sd"                 bins one standard       "how far from a
+#                                deviation wide,          TYPICAL tract?"
+#                                centered on the mean
+#
+# Try quantile -- five bins, each holding a fifth of the tracts:
+
+tm_shape(rb_map_data) +
+  tm_fill(
+    col     = "p_rb",
+    title   = "Share rent-burdened (quantile)",
+    palette = "Reds",
+    style   = "quantile"
+  )
+
+# Maximum drama: a fifth of the county in every shade, top fifth darkest
+# (everything above about 0.59 here). Quantile maps ALWAYS look striking
+# -- even when the underlying differences are small. That is their power
+# and their danger.
+#
+# Now sd -- read the legend before the map:
+
+tm_shape(rb_map_data) +
+  tm_fill(
+    col     = "p_rb",
+    title   = "Share rent-burdened (sd)",
+    palette = "Reds",
+    style   = "sd"
+  )
+
+# The bins are all the same width -- about 0.15, one standard deviation
+# -- and the middle boundary sits at the county mean (about 0.46). This
+# map answers "how unusual is this tract?" Most of the county sits in
+# the middle shades (within one sd of typical); only the true outliers
+# darken. And notice the legend's bottom bin dips BELOW ZERO: the sd
+# ruler is symmetric around the mean and does not know a share cannot be
+# negative. Legends tell on their break styles -- read them.
+#
+# The rule from Lab 4, upgraded: same data, four honest maps, four
+# different stories. WHICH story is yours to choose -- so choose it on
+# purpose, and SAY which style you used in the caption.
+
+# --------------------------------------------------------------------------
+# 9.3 Choosing your colors
+# --------------------------------------------------------------------------
+# palette = takes ColorBrewer names -- the same palettes from lab 2's
+# favorite picker, https://colorbrewer2.org (find a palette you like,
+# use its name). Sequential palettes (Reds, Blues, YlOrRd, PuBu...) run
+# light-to-dark and suit values that run low-to-high, like shares. A
+# minus sign flips any palette's direction: palette = "-Reds".
+#
+# DIVERGING palettes (RdBu, BrBG, PuOr...) have two directions and a
+# neutral middle -- made for values with a meaningful CENTER. Pair one
+# with style = "sd", whose center IS the mean, and the map splits the
+# county into below-average blue and above-average red:
+
+tm_shape(rb_map_data) +
+  tm_fill(
+    col     = "p_rb",
+    title   = "Burden vs. the typical tract",
+    palette = "-RdBu",     # reversed so red = above average
+    style   = "sd"
+  )
+
+# One map, one sentence: blue tracts carry less burden than the county's
+# typical tract, red tracts more. Break style and palette are a TEAM --
+# match them to the question, not to what looks prettiest.
+
+# --------------------------------------------------------------------------
+# 9.4 Make it interactive
+# --------------------------------------------------------------------------
+# Lab 4's mode switch, now with a payoff for exploration: popup.vars
+# puts columns you choose into a click-card on every tract, and a
+# little transparency (alpha) lets the base map's streets and city
+# names show through:
+
+tmap_mode("view")
+
+tm_shape(rb_map_data) +
+  tm_fill(
+    col        = "p_rb",
+    title      = "Share rent-burdened",
+    palette    = "Reds",
+    style      = "jenks",
+    alpha      = 0.7,
+    popup.vars = c("p_rb", "nt_group")
+  )
+
+# Zoom to a neighborhood you know. Click a tract: its burden share and
+# its segregation type, together -- the whole lab in one click-card.
+# When you are done exploring, flip back (static is what goes in a
+# paper or on a slide; interactive is for exploring and presenting live):
+
+tmap_mode("plot")
+
 # Where are the dark tracts? Compare with the segregation map idea from
 # Lab 4 -- or simply color the SAME shapes by type: swap col = "p_rb" for
 # col = "nt_group" and re-run. Two maps, one story, ready for a slide.
 
-# YOUR TURN (3): make the nt_group version of the map. Which parts of the
-# county light up as Mixed, and how does that overlay with the high-burden
-# tracts from the first map? Two sentences:
-# [PUT YOUR ANSWER BELOW]
+# YOUR TURN (3): make the nt_group version of the map (types are
+# categories, so break styles do not apply -- but palettes do). Then
+# remap p_rb one more time with YOUR choice of break style and palette
+# from 9.2-9.3, and defend the choice in one sentence: what question
+# does your map answer? Which parts of the county light up as Mixed, and
+# how does that overlay with the high-burden tracts?
+# [PUT YOUR ANSWERS BELOW]
 #
 
 # ==========================================================================
