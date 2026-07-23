@@ -5,11 +5,18 @@
 # ==========================================================================
 #
 # WHAT THIS FILE IS: a model Assignment 1 submission, start to finish.
-# Your A1 should look like this with YOUR area and YOUR variable swapped
-# in. The assignment: pick a county or set of counties you care about,
-# pull ONE ACS variable that says something about housing precarity, make
-# ONE chart, write 2-3 sentences, and include AI share links. Due Monday
+# The assignment: pick a county or set of counties you care about, pull
+# ONE ACS variable that says something about housing precarity, make ONE
+# chart, write 2-3 sentences, and include AI share links. Due Monday
 # July 27 at 5pm on bCourses.
+#
+# HOW TO USE IT: read it top to bottom, run it, study the SHAPE of it --
+# then close it and start your own FRESH script (File > New File >
+# R Script), saved in your HOME folder, never inside this class folder
+# (the class folder refreshes from GitHub and can lose your additions).
+# This file is a model, not a template: your submission is about YOUR
+# place, in YOUR words, and your graders know this example line by line.
+# Full save/download/upload steps are on the bCourses assignment page.
 #
 # I know Washington State well from years of eviction research there, so
 # my example area is five Washington counties -- three in the Seattle
@@ -48,8 +55,9 @@ wa_rent
 # --------------------------------------------------------------------------
 # 2. One clear chart
 # --------------------------------------------------------------------------
-# The lab-1 bar chart pattern: bars sorted by value, human labels, the
-# source in the caption, saved to a file.
+# The lab-3 bar chart pattern (section 7.1): horizontal bars so the
+# county names stay readable, sorted by value, a title that states the
+# finding, the source in the caption, saved to a file.
 
 a1_chart <- ggplot(wa_rent, aes(x = estimate, y = reorder(NAME, estimate))) +
   geom_col(fill = "steelblue") +                       # one bar per county
@@ -64,7 +72,9 @@ a1_chart <- ggplot(wa_rent, aes(x = estimate, y = reorder(NAME, estimate))) +
 
 a1_chart
 
-ggsave("a1_example_chart.png", a1_chart, width = 8, height = 5)
+# (~ = your home folder, so the file lands somewhere safe no matter how
+# you opened RStudio -- same habit as every lab.)
+ggsave("~/a1_example_chart.png", a1_chart, width = 8, height = 5)
 
 # --------------------------------------------------------------------------
 # 3. My 2-3 sentences (this is the part graders read first)
@@ -99,9 +109,11 @@ ggsave("a1_example_chart.png", a1_chart, width = 8, height = 5)
 # --------------------------------------------------------------------------
 # 5. Submission checklist
 # --------------------------------------------------------------------------
-#   [ ] This script, runnable top to bottom on the DataHub with no edits
+#   [ ] A FRESH script written by you (not an edited copy of this file),
+#       saved in your home folder, runnable top to bottom with no edits
 #   [ ] The saved chart image (a1_example_chart.png -> yours will differ)
-#   [ ] Your 2-3 sentences (in the script as comments is fine)
+#   [ ] Your 2-3 sentences (as comments in your script, in the bCourses
+#       comment box, or in a small write-up file -- any of those is fine)
 #   [ ] AI share links as comments next to the relevant code, or a
 #       one-line "no AI used" note
 #   [ ] Uploaded to bCourses by Monday July 27, 5pm

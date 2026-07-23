@@ -31,6 +31,12 @@ r.datahub via the git-pull link on the course site.
   4002's real six rows drawn long → wide ("nothing lost, nothing computed"), the
   fear-reducer for pivot_wider; **§17 optional tail** — severe burden + A2 menu (block
   below); site Week 4 bullets now name lab 4's eviction parts A/B explicitly.
+- **Thursday reality (set Tue night):** class ended at §6, so **Thursday starts at §7**
+  — see the reworked Part B table below. The A1 bCourses description (task + the full
+  save-on-DataHub / download / upload-to-bCourses how-to) is drafted at
+  `website/maintainer/a1_bcourses_description.html` — paste it via the assignment
+  editor's `</>` (raw HTML) button; set due date + File Uploads submission type in the
+  Canvas fields. Push the lab 4/5 seam fixes + this sheet before Thursday.
 - Pre-class add (Tim's call): **§5 now succeeds BEFORE it fails** — `three_cities_long`
   (lab 1's hand-built table, melted) pivots cleanly back to the lab-1 original, so
   students' first-ever pivot works; the 2,169-row moe accident follows unchanged. Tim's
@@ -93,17 +99,26 @@ the top-code stripe, histogram median line just above 0.47). Timing is a suggest
 
 Designated cut if long: 7.2 slides to Thursday (Part B still fits — 8/9/10 compress).
 
-## Suggested timing — PART B, Thursday (~110 min + buffer)
+## Suggested timing — PART B, Thursday (starts at §7 — Tuesday ended at §6)
+
+**Tuesday actual (Jul 21): class reached the end of §6** — the measure is built, no
+charts yet. Thursday is the whole chart arc plus A1, so it runs tight. Designated cuts,
+in order: YT4 steps (d)–(f) become homework; §10's read-it compresses; §8 shrinks to
+the 158-of-379 beat with YT3 as homework. Protect §13 — A1 is due Monday, and the
+save/download/upload how-to now lives on the bCourses assignment page itself.
 
 | Lab § | Beat | Min |
 |---|---|---|
-| — | Reboot: fresh sessions re-run §1–§7 top-to-bottom (<1 min of pulls) | 8 |
-| 8 | summarize() + group_by(); **158 of 379 majority-burdened** — "two of every five neighborhoods"; YT3 | 15 |
-| 9 | Boxplot: stamp-and-stack 3 counties (723 tracts); box anatomy; the **8-rows warning is designed**; read vs 7.1's bars | 18 |
-| 10 | Scatter: hypothesis first; 4-row warning; **$250,001 top-code stripe**; geom_smooth; poorer-half 53% vs richer-half 40% | 18 |
-| 11 | The chart-picker card (steal it for A1/A2) | 4 |
-| 12 | YOUR TURN: whole pipeline for their county + one chart of their choosing (A1/A2 seed) — circulate | 25 |
-| 13–14 | A1 walkthrough — open `code/a1_example.R` live; recap; pitch §15 as optional homework | 10 |
+| — | Reboot: fresh sessions run §1–§6 top to bottom (pulls take <1 min); recap the measure in one breath | 8 |
+| 7 | Which chart answers which question + cheat sheet + 60-second grammar recap | 5 |
+| 7.1 | Bar: county build "in one breath"; label collision → horizontal swap → reorder → percent_format; **read the ranking against rents** | 15 |
+| 7.2 | Histogram, layer by layer; computed median line; moe-humility beat | 12 |
+| 8 | summarize() + group_by(); **158 of 379 majority-burdened** — "two of every five neighborhoods"; YT3 | 10 |
+| 9 | Boxplot: stamp-and-stack 3 counties (723 tracts); box anatomy; the **8-rows warning is designed**; read vs 7.1's bars | 15 |
+| 10 | Scatter: hypothesis first; 4-row warning; **$250,001 top-code stripe**; geom_smooth; poorer-half 53% vs richer-half 40% | 15 |
+| 11 | The chart-picker card (steal it for A1/A2) | 3 |
+| 12 | YOUR TURN: start (a)–(c) in class, (d)–(f) at home — circulate | 15 |
+| 13–14 | A1 walkthrough — open `code/a1_example.R` live ("model, not template"); then TEACH the first-ever save-a-script move (File > New File > R Script → save to HOME, **never the class folder** — it refreshes from GitHub) using the bCourses page's Step 2–4 as the script; pitch §15–§17 as optional | 12 |
 
 ## Numbers you'll say out loud (live-verified 2026-07-21, year = 2024)
 

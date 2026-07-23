@@ -64,11 +64,10 @@ Tuesdays & Thursdays | 5-7pm | July 7 to August 13, 2026\
 * Warm-up tour in [Social Explorer](https://www.socialexplorer.com/): how census geographies nest — states, counties, tracts, block groups, blocks — and what size each polygon really is
 * Lab 3, part A: building your first real measure — the share of renters who are rent-burdened (`code/lab3_rent_burden.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F))
 * Reading Census tables like a researcher: dollars vs. counts and the universe rule, hunting down table B25070 in the catalog yourself, census-tract neighborhoods, and reshaping with `pivot_wider()` — the skills Assignment 2's build-a-measure asks for
-* Charts, done right: which plot answers which question — bar charts and histograms tonight, with the [ggplot2 cheat sheet](https://opensource.posit.co/resources/cheatsheets/data-visualization/) at your elbow
 
 #### Thursday July 23 - Lab
 
-* Lab 3, part B: summarizing with `group_by()` + `summarize()`, then two more chart shapes — boxplots and scatterplots — and the which-chart-when card
+* Lab 3, part B — picking up at section 7: charts, done right. Which plot answers which question — bar, histogram, boxplot, scatter, and the chart-picker card — with the [ggplot2 cheat sheet](https://opensource.posit.co/resources/cheatsheets/data-visualization/) at your elbow, plus summarizing with `group_by()` + `summarize()`
 * Your turn: rebuild the measure and charts for your own county (the seed of Assignment 1 and beyond)
 * Walkthrough of the Assignment 1 model answer (`code/a1_example.R`) — A1 is due Monday July 27
 * Optional after-class extras: the burden over time (write your first function and `map()` it across years), and who carries the burden — rent-burden rates by household income group, built from the same Census table (B25074) the Eviction Research Network's own models pull

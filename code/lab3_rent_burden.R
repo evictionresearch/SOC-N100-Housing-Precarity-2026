@@ -100,6 +100,8 @@ ca_burden_county <- get_acs(
   year      = 2024
 )
 
+ca_burden_county
+
 nrow(ca_burden_county)
 
 # 58 rows -- one per California county. This is exactly the table you
@@ -417,6 +419,8 @@ alameda_rb %>%
 # are rent-burdened. Let's inspect it the way a researcher would:
 
 summary(alameda_rb$p_rb)
+alameda_rb %>%
+  filter(p_rb == 1) %>% data.frame()
 
 # Read that summary line slowly -- three things worth noticing:
 #
@@ -443,14 +447,14 @@ alameda_rb_clean <- alameda_rb %>%
     p_rb = if_else(is.na(p_rb), 0, p_rb)
     #      if p_rb is missing -> use 0; otherwise -> keep p_rb as is
   )
-
+alameda_rb_clean
 summary(alameda_rb_clean$p_rb)
 
 # No more NA's. Note we saved the fixed table under a NEW name instead of
 # overwriting alameda_rb. Habit worth copying: when a step CHANGES your
 # data, give the result a new name. If something looks wrong later, you
 # can walk back through the chain of objects and find where it broke.
-
+ pick up here on thursday
 # ==========================================================================
 # 7. Charts, done right this time: which plot answers which question?
 # ==========================================================================
