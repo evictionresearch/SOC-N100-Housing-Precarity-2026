@@ -134,12 +134,19 @@ The final group project asks students to apply lab patterns to places they care 
 3. Their consolidated per-course issue pattern (one thread per course per term) is what staff prefer — our RAM request should stay a single issue, with the package request kept separate per current template guidance.
 4. What we should *not* copy: their dedicated-hub arrangement and cloud-native tooling are overkill for tract-level vector work. If SOC-N100 ever outgrows r.datahub, their duckdb/parquet larger-than-RAM patterns are the escape hatch to teach *before* asking for more RAM. **We now teach exactly this**: the Week 5 bonus lab [`code/lab6_bonus_memory.R`](../../code/lab6_bonus_memory.R) covers memory monitoring, `st_drop_geometry()`, chunked ACS pulls, qs2 caching, and duckdb/duckdbfs/arrow lazy queries — the `duckdb`/`duckdbfs`/`arrow` packages are in the [package request draft](datahub-package-request-draft.md).
 
-## 7. Recommendation
+## 7. Recommendation → outcome
 
-File the [Increase RAM Request](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml) as drafted in [`datahub-resource-request-draft.md`](datahub-resource-request-draft.md):
+**Filed 2026-07-10:** [berkeley-dsep-infra/datahub#8335](https://github.com/berkeley-dsep-infra/datahub/issues/8335) (from [`datahub-resource-request-draft.md`](datahub-resource-request-draft.md)).
 
-- **4 GB × ~50 students on r.datahub**, end date 2026-08-20 (course ends Aug 13–14 + grading buffer)
-- **8 GB instructor/TA subset** (Tim + Aaron + any TA) via a bCourses group in 1555635 — staff hold multiple sessions/students' work open in live labs and need headroom above 4 GB to reproduce and debug student out-of-memory failures
-- Justification: measured lab peaks (874 MB–1 GB), geospatial stack, final-project tier, LEGALST 123 + ESPM precedents
-- Filed by Aaron (`@aculich`, aculich@berkeley.edu) mentioning instructor of record `@timathomas`; bCourses **1555635** must be Published
-- If staff push back on the 200 GB threshold: fallback offers are (a) 2 GB for the term + a date-bounded 4 GB window for the final-project weeks (Astro 128 pattern), or (b) bCourses project-group subset targeting
+**Granted / deployed 2026-07-13** via [#8336](https://github.com/berkeley-dsep-infra/datahub/pull/8336) to `r.datahub` prod; issue **closed** 2026-07-17. Staff keyed RAM by **enrollment type** (not a custom bCourses group):
+
+| Key | Limit |
+|-----|-------|
+| `course::1555635::enrollment_type::student` | 4 GB |
+| `course::1555635::enrollment_type::teacher` | 8 GB |
+| `course::1555635::enrollment_type::ta` | 8 GB |
+
+- **4 GB × ~50 students on r.datahub**, end date 2026-08-20
+- **8 GB for Teacher/TA enrollments** in course 1555635 (Aaron needs Teacher or TA role for the 8G tier)
+- Justification that sailed: measured lab peaks (874 MB–1 GB), geospatial stack, final-project tier, LEGALST 123 + ESPM precedents
+- Custom staff group (`DataHub RAM tiers / SOC-N100 Staff 8GB`) was **not needed** — see superseded note in [`bcourses-staff-group-primer.md`](bcourses-staff-group-primer.md)

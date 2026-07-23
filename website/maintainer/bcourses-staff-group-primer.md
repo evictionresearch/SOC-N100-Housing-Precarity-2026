@@ -1,6 +1,8 @@
 # Primer: create the bCourses staff group for the 8 GB DataHub subset
 
-**Why:** the DataHub RAM template has no per-role tier. The [curriculum guide](https://curriculum-guide.datahub.berkeley.edu/support/memory-cpu/) says extra RAM can target "a subset of students that have been placed into a bCourses group" — so the way Tim and Aaron (plus any TA) get 8 GB while the class default stays 4 GB is a bCourses group that DataHub staff key the higher limit to. The group name goes into the `<group-set / group name>` placeholder in [`datahub-resource-request-draft.md`](datahub-resource-request-draft.md) **before** filing.
+> **Superseded for SOC-N100 Summer 2026.** DataHub granted RAM via `enrollment_type::teacher` / `::ta` (8G) and `::student` (4G) in [#8336](https://github.com/berkeley-dsep-infra/datahub/pull/8336) — no custom group was created. Keep this primer for **future** courses where staff prefer an explicit bCourses group subset instead of enrollment-type keys. Aaron’s 8G tier this term depends on a **Teacher or TA** role in course 1555635.
+
+**Why (historical):** the DataHub RAM template has no per-role tier. The [curriculum guide](https://curriculum-guide.datahub.berkeley.edu/support/memory-cpu/) says extra RAM can target "a subset of students that have been placed into a bCourses group" — so one path to give Tim and Aaron (plus any TA) 8 GB while the class default stays 4 GB is a bCourses group that DataHub staff key the higher limit to. The group name would go into the request’s “additional information” **before** filing.
 
 ## Who can do this
 

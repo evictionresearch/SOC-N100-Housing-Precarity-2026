@@ -1,22 +1,31 @@
-# DRAFT — not submitted. RAM request for SOC-N100 on r.datahub
+# RAM request for SOC-N100 on r.datahub
 
-**Status:** DRAFT pending review by Tim Thomas and Aaron Culich. Do not file until both approve.
+**Status:** **GRANTED / DEPLOYED** — filed 2026-07-10 as [berkeley-dsep-infra/datahub#8335](https://github.com/berkeley-dsep-infra/datahub/issues/8335) by `@aculich`; config PR [#8336](https://github.com/berkeley-dsep-infra/datahub/pull/8336) merged and deployed to **prod** 2026-07-13; issue closed 2026-07-17.
 
-**Where to file:** [Increase RAM Request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml) on berkeley-dsep-infra/datahub. The template is a form — paste each answer below into the matching field. Background and evidence: [`REQUESTS.md`](REQUESTS.md); process: [`datahub-official-guide.md`](datahub-official-guide.md).
+**How it was granted (not a custom bCourses group):** DataHub keyed RAM by **enrollment type** in `deployments/r/config/common.yaml`:
 
-**Who files it:** Aaron Culich (`@aculich`, aculich@berkeley.edu — repo-local git identity is set to this). The issue body mentions instructor of record `@timathomas` (verified handle: `gh api users/timathomas` → Tim Thomas) so he gets notified and can confirm on-thread.
+```yaml
+course::1555635::enrollment_type::teacher:  # 8G
+course::1555635::enrollment_type::ta:       # 8G
+course::1555635::enrollment_type::student:  # 4G
+```
+
+So the planned staff group (`DataHub RAM tiers / SOC-N100 Staff 8GB`) is **obsolete for this course**. Aaron gets 8 GB only with a **Teacher or TA** role in bCourses 1555635. See [`bcourses-staff-group-primer.md`](bcourses-staff-group-primer.md) for historical notes (superseded here).
+
+**Where to file (for future terms):** [Increase RAM Request template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml). Background: [`REQUESTS.md`](REQUESTS.md); process: [`datahub-official-guide.md`](datahub-official-guide.md).
+
+**Who filed it:** Aaron Culich (`@aculich`, aculich@berkeley.edu). Issue body mentioned instructor of record `@timathomas`.
 
 ## How to submit (checklist)
 
 - [ ] Tim confirms enrollment count (~50 assumed below)
-- [ ] Verify bCourses course **1555635** is set to **Published** (required for the hub to assign privileges)
-- [ ] Create a **bCourses group** in course 1555635 for instructional staff (Tim + Aaron + any TA) — needed for the 8 GB staff subset below; note the group-set/group name in the issue (how-to: [`bcourses-staff-group-primer.md`](bcourses-staff-group-primer.md); suggested names: `DataHub RAM tiers` / `SOC-N100 Staff 8GB`)
-- [ ] Tim approves this draft (or files it himself as instructor of record)
-- [ ] Open the [template](https://github.com/berkeley-dsep-infra/datahub/issues/new?template=add_memory_config_request.yml), paste field answers below
-- [ ] Do not assign anyone; labels (`support`, `add memory config`) apply automatically
-- [ ] If staff say the 8 GB staff subset needs its own issue, file a second memory request scoped to the staff bCourses group and cross-link the two
-- [ ] After staff merge: log out of r.datahub, log back in, verify with RStudio Environment tab (both a staff account at 8 GB and a student-tier check at 4 GB)
-- [ ] Note the issue URL in `REQUESTS.md` and `syllabus_TODO.md`
+- [x] bCourses course **1555635** published (required for hub privileges; confirmed by successful grant)
+- [x] ~~Create a bCourses staff group for 8 GB~~ — **superseded**: staff used `enrollment_type::teacher` / `::ta` (8G) vs `::student` (4G); no custom group needed. Primer kept as historical reference.
+- [x] Filed: [#8335](https://github.com/berkeley-dsep-infra/datahub/issues/8335) (2026-07-10)
+- [x] Labels applied by staff (`support`, `add memory config`)
+- [x] Deployed to prod via [#8336](https://github.com/berkeley-dsep-infra/datahub/pull/8336) (2026-07-13); issue closed 2026-07-17
+- [ ] After login: verify 4 GB (student) / 8 GB (Teacher or TA enrollment) in RStudio Environment tab — confirm Aaron’s bCourses role is Teacher or TA for the 8G tier
+- [x] Issue URL recorded in `REQUESTS.md` and `syllabus_TODO.md`
 
 ---
 
