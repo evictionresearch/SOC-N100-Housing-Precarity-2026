@@ -220,6 +220,11 @@
 #                     pivot_wider(names_from  = variable,
 #                                 values_from = estimate)
 #
+# pivot_longer()    the return trip: wide -> long, for multi-line   [lab 4]
+#                   charts (one row per year-group pair)
+#                     pivot_longer(-year, names_to = "group",
+#                                  values_to = "filings")
+#
 # left_join()       glue matching columns from a second table      [lab 4]
 #                   onto the first
 #                     left_join(co_census_wide,

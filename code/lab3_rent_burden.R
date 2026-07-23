@@ -454,7 +454,9 @@ summary(alameda_rb_clean$p_rb)
 # overwriting alameda_rb. Habit worth copying: when a step CHANGES your
 # data, give the result a new name. If something looks wrong later, you
 # can walk back through the chain of objects and find where it broke.
- pick up here on thursday
+
+# ======================= PICK UP HERE ON THURSDAY =========================
+
 # ==========================================================================
 # 7. Charts, done right this time: which plot answers which question?
 # ==========================================================================

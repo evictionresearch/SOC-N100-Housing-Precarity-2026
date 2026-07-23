@@ -92,11 +92,11 @@ Submit your R script, the chart, your sentences, and the share link(s) to any AI
 #### Tuesday July 28 - Lab
 
 * Lab 4, part A: real eviction records — load ERN's Indiana court-filing data, compute eviction rates, and make your first joins to Census data (`code/lab4_evictions_mapping.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F))
-* Hard displacement meets lab 3's soft-displacement measures
+* Hard displacement meets lab 3's soft-displacement measures — closing with eviction over time as multi-line charts: totals, then rates, then rates by race
 
 #### Thursday July 30 - Lab
 
-* Lab 4, part B: put eviction rates on maps
+* Lab 4, part B: put eviction rates on maps — plus what it means when a rate passes 100% (serial filing) and a first, gentle look at map reference systems
 * [Review San Diego Displacement Study](https://urban-displacement.github.io/edr-sandag/)
 
 ## Week 5

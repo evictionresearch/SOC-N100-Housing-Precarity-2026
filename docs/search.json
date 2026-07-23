@@ -18,7 +18,7 @@
     "href": "resources.html#other-datasets-or-data-points",
     "title": "Resources",
     "section": "Other datasets or data points",
-    "text": "Other datasets or data points\n\nHUD Fair Market Rent (FMR), FY2026\nApartmentlist.com monthly rents\nConsumer Price Index (CPI) calculator\nTim’s neighborhood package. This helps create segregated census tracts for any area using tidycensus."
+    "text": "Other datasets or data points\n\nEviction data in the class repo (data/evictions/): Indiana tract-month with race/sex estimated columns (2016–2022, the lab 4 file), Minnesota tract-month with race filings and rates (2017–2025), and an Indiana update with filing counts through April 2026 — see the folder’s README for schemas and the methodology notes that go with citing them\nHUD Fair Market Rent (FMR), FY2026\nApartmentlist.com monthly rents\nConsumer Price Index (CPI) calculator\nTim’s neighborhood package. This helps create segregated census tracts for any area using tidycensus."
   },
   {
     "objectID": "resources.html#additional-recommendations",
@@ -123,7 +123,7 @@
     "href": "index.html#week-4",
     "title": "Housing Precarity and Displacement",
     "section": "Week 4",
-    "text": "Week 4\n\nReadings\nDue Thursday July 30 Walker (2023) Chapter 5, sections 5.1–5.2 and Chapter 6, sections 6.1–6.3 — the simple core of Census mapping: what the shapes are, then choropleth maps with geom_sf and tmap (the tool lab 4 uses). The rest of both chapters is optional reference — skip the coordinate-system math (§5.4) and the advanced maps (§6.6) unless you’re curious.\n\n\nTuesday July 28 - Lab\n\nLab 4, part A: real eviction records — load ERN’s Indiana court-filing data, compute eviction rates, and make your first joins to Census data (code/lab4_evictions_mapping.R on the DataHub)\nHard displacement meets lab 3’s soft-displacement measures\n\n\n\nThursday July 30 - Lab\n\nLab 4, part B: put eviction rates on maps\nReview San Diego Displacement Study"
+    "text": "Week 4\n\nReadings\nDue Thursday July 30 Walker (2023) Chapter 5, sections 5.1–5.2 and Chapter 6, sections 6.1–6.3 — the simple core of Census mapping: what the shapes are, then choropleth maps with geom_sf and tmap (the tool lab 4 uses). The rest of both chapters is optional reference — skip the coordinate-system math (§5.4) and the advanced maps (§6.6) unless you’re curious.\n\n\nTuesday July 28 - Lab\n\nLab 4, part A: real eviction records — load ERN’s Indiana court-filing data, compute eviction rates, and make your first joins to Census data (code/lab4_evictions_mapping.R on the DataHub)\nHard displacement meets lab 3’s soft-displacement measures — closing with eviction over time as multi-line charts: totals, then rates, then rates by race\n\n\n\nThursday July 30 - Lab\n\nLab 4, part B: put eviction rates on maps — plus what it means when a rate passes 100% (serial filing) and a first, gentle look at map reference systems\nReview San Diego Displacement Study"
   },
   {
     "objectID": "index.html#week-5",

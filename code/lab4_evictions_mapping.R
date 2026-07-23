@@ -433,6 +433,111 @@ county_rates %>%
 # fixes, and all. [PUT YOUR ANSWER BELOW]
 
 
+# ==========================================================================
+# A9. The whole state through time: one line, then many
+# ==========================================================================
+# (Short on time tonight? This section is a perfect Thursday warm-up --
+# nothing after it depends on it running tonight.)
+#
+# A3 showed the pandemic collapse as BARS. Lab 3's chart card says time's
+# natural shape is the LINE -- and lines can carry something bars cannot:
+# several groups on one canvas. We build up in three steps: totals, then
+# rates, then rates BY RACE.
+#
+# Step 1 -- the total, as a line. Also grab the race counts while we are
+# here (same summarize, three more sums):
+
+indiana_yearly <- indiana_evictions %>%
+  group_by(year) %>%
+  summarize(
+    filings = sum(filings),
+    black   = sum(black_head),
+    white   = sum(white_head),
+    latine  = sum(latine_head)
+  )
+
+ggplot(indiana_yearly, aes(x = year, y = filings)) +
+  geom_line() +
+  labs(title = "One line: Indiana filings collapse in 2020, then climb back",
+       x = NULL, y = "Filings per year") +
+  theme_minimal()
+
+# Same numbers as A3's bars, drawn as motion.
+#
+# Step 2 -- one line PER RACE. Multiple lines need the LONG shape (one
+# row per year-group pair), and our race counts sit side by side as
+# columns. The verb is pivot_longer(): pivot_wider()'s return trip.
+# Name the two new columns it should build; -year means "melt every
+# column except year":
+
+yearly_counts_long <- indiana_yearly %>%
+  select(year, black, white, latine) %>%
+  pivot_longer(-year, names_to = "group", values_to = "filings")
+
+ggplot(yearly_counts_long, aes(x = year, y = filings, color = group)) +
+  geom_line() +
+  labs(title = "Counts follow group size", x = NULL,
+       y = "Filings per year", color = NULL) +
+  theme_minimal()
+
+# How to read a multi-line chart: every line answers the SAME question
+# for a different group, so the VERTICAL GAP between lines at any year
+# is the comparison -- and the gap's movement over time is the story.
+# (We chart the three largest groups; "other" bundles too many distinct
+# populations to read as one honest line.)
+#
+# Here the White line rides on top every year. Is that the story? Look
+# at the denominators before you decide: Indiana has about 535,000
+# White renter households and 153,000 Black renter households. Counts
+# track population size -- A7's lesson at full scale.
+#
+# Step 3 -- so divide each group's filings by ITS OWN renter households
+# (the county totals summed statewide; distinct() first so each county
+# counts once, not once per tract-month row):
+
+state_renters <- indiana_evictions %>%
+  distinct(county, co_totrent_black, co_totrent_white_nl, co_totrent_latine) %>%
+  summarize(
+    black  = sum(co_totrent_black),
+    white  = sum(co_totrent_white_nl),
+    latine = sum(co_totrent_latine)
+  )
+
+yearly_rates_long <- indiana_yearly %>%
+  mutate(
+    black  = black  / state_renters$black,
+    white  = white  / state_renters$white,
+    latine = latine / state_renters$latine
+  ) %>%
+  select(year, black, white, latine) %>%
+  pivot_longer(-year, names_to = "group", values_to = "rate")
+
+rates_by_race <- ggplot(yearly_rates_long, aes(x = year, y = rate, color = group)) +
+  geom_line() +
+  labs(
+    title    = "Black renters face more than double the eviction rate, every year",
+    subtitle = "Eviction filings per renter household, Indiana, 2016-2022",
+    x        = NULL,
+    y        = "Filings per renter household",
+    color    = NULL,
+    caption  = "Source: Eviction Research Network; denominators from the ACS."
+  ) +
+  theme_minimal()
+
+rates_by_race
+
+ggsave("~/lab4_rates_by_race.png", rates_by_race, width = 8, height = 5)
+
+# The lines FLIPPED. In counts, White households received the most
+# filings; per household, Black renters carry the highest rate in every
+# single year -- 0.16 to 0.18 before the pandemic against roughly 0.08
+# for White and Latine renters, and still on top through the 2020
+# collapse (0.089 vs 0.044). Read the moratorium with both eyes: it
+# pulled every line down, and it did not close the gap. A8's scatter
+# showed this inequality across counties in one year; these lines show
+# it across years for the whole state. Same finding, two shapes --
+# which one would you put on a slide, and when?
+
 # ============================== STOP HERE ================================
 # End of Part A (Tuesday). Thursday we take these rates to the map.
 # ==========================================================================
@@ -534,6 +639,65 @@ marion_2022 <- marion_2022 %>%
 # summarize for the first, arrange(desc()) for the second.)
 # [PUT YOUR ANSWER BELOW]
 
+
+# --------------------------------------------------------------------------
+# B2.1 When a rate passes 100%: filings are not families
+# --------------------------------------------------------------------------
+# Before we map 2022, rewind to 2017 for the single most instructive
+# number in this dataset. Build the same tract table for 2017, keeping
+# the Black-renter columns from Tuesday:
+
+marion_2017 <- indiana_evictions %>%
+  filter(county == "Marion", year == 2017) %>%
+  group_by(tract_geoid) %>%
+  summarize(
+    filings       = sum(filings),
+    renters       = first(tr_totrent),
+    black_filings = sum(black_head),
+    black_renters = first(tr_totrent_black)
+  )
+
+# Sort by the eviction rate -- and only tracts with a real renter base
+# (100+ renter households), so no small-denominator flukes:
+
+marion_2017 %>%
+  filter(renters >= 100) %>%
+  mutate(rate = filings / renters) %>%
+  arrange(desc(rate)) %>%
+  select(tract_geoid, filings, renters, rate) %>%
+  slice_head(n = 3)
+
+# Read the top row twice. Tract 360406: 2,235 filings against 1,082
+# renter households -- a rate of 2.07. TWO filings for every renter
+# household in the tract, in one year. How can more than 100% of
+# households be evicted? They cannot. A filing is a COURT CASE, not a
+# family: a landlord can file on the same household again and again,
+# and in some buildings the eviction court functions as the
+# rent-collection desk -- a summons in the mail every time rent runs
+# late. Researchers call this SERIAL FILING. So say the measure out
+# loud, precisely: filings PER renter household, never "the share of
+# households evicted." A rate can pass 1; a share cannot. If you catch
+# yourself -- or a headline -- reading one as the other, stop.
+#
+# Now the same table for Black renter households:
+
+marion_2017 %>%
+  filter(black_renters >= 100) %>%
+  mutate(black_rate = black_filings / black_renters) %>%
+  arrange(desc(black_rate)) %>%
+  select(tract_geoid, black_filings, black_renters, black_rate) %>%
+  slice_head(n = 3)
+
+# Tract 360406 again, worse: filings against Black-headed households
+# run to nearly THREE per Black renter household (2.79). And read the
+# second row -- tract 340108: 579 filings against 620 Black renter
+# households. Even stated carefully -- filings, not families -- that is
+# courthouse volume equal to 93% of every Black renter household in the
+# neighborhood, in a single year. Tuesday's scatter said Black renters
+# face higher eviction rates in most Indiana counties; the tract level
+# shows what "higher" means where it is worst. This is what the map you
+# are about to build is FOR: finding the neighborhoods where the
+# courthouse has become part of how the rental market runs.
 
 # ==========================================================================
 # B3. Joining a table to shapes -- ORDER MATTERS
@@ -697,7 +861,38 @@ tmap_save(eviction_map, "~/lab4_eviction_map.png", width = 7, height = 7)
 
 
 # ==========================================================================
-# B8. What you can do now (and what's next)
+# B8. Flat maps from a round planet: reference systems (file this away)
+# ==========================================================================
+# One quiet reason today went smoothly: every shape you drew came from a
+# single source (the Census, via tigris), and that source ships
+# everything in one COORDINATE REFERENCE SYSTEM -- the agreed-upon
+# recipe for flattening the round earth onto a flat map. Ask what ours
+# is:
+
+st_crs(marion_tracts)$Name
+
+# "NAD83" -- the Census Bureau's standard for the United States. Every
+# spatial object carries a tag like this, and mapping tools compare
+# tags before they combine layers.
+#
+# The one rule to file away for your final project: LAYERS MUST AGREE.
+# If you ever mix map sources -- Census shapes plus, say, a shapefile
+# from a city's open-data portal -- and the layers refuse to combine
+# ("st_crs(x) == st_crs(y) is not TRUE") or draw in the wrong place,
+# the diagnosis is two different reference systems, and the fix is one
+# line:
+#
+#   city_layer <- st_transform(city_layer, st_crs(marion_tracts))
+#
+# -- "make this layer use that layer's system." That is as deep as this
+# course goes. Today you never had to think about reference systems
+# because we stayed inside one source on purpose; when you mix sources,
+# think about it once, at the start. (The full story, when you want it:
+# Walker chapter 5, section 5.4 -- the optional part of this week's
+# reading.)
+
+# ==========================================================================
+# B9. What you can do now (and what's next)
 # ==========================================================================
 # After this lab you can:
 #   - load a data file with readRDS() and size it up with glimpse()
@@ -708,6 +903,8 @@ tmap_save(eviction_map, "~/lab4_eviction_map.png", width = 7, height = 7)
 #   - left_join() two data sources WITH row-count and anti_join checks
 #   - turn counts into rates, and handle divide-by-zero honestly with NA
 #   - argue about inequality with an equality-line scatter
+#   - put time on the x-axis: totals, then rates, then rates by race --
+#     reshape with pivot_longer() and read multi-line gaps as disparities
 #   - download tract shapes (tigris), join shapes-first, and build
 #     choropleths in tmap with deliberate break choices
 #

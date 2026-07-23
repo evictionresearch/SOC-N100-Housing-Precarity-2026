@@ -12,6 +12,8 @@ format: html
 
 ## Other datasets or data points
 
+* Eviction data in the class repo (`data/evictions/`): Indiana tract-month with race/sex estimated columns (2016–2022, the lab 4 file), Minnesota tract-month with race filings and rates (2017–2025), and an Indiana update with filing counts through April 2026 — see [the folder's README](https://github.com/evictionresearch/SOC-N100-Housing-Precarity-2026/tree/main/data/evictions) for schemas and the methodology notes that go with citing them
+
 * [HUD Fair Market Rent (FMR), FY2026](https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2026_code/2026summary.odn)
 * [Apartmentlist.com monthly rents](https://www.apartmentlist.com/research/category/data-rent-estimates)
 * [Consumer Price Index (CPI) calculator](https://www.bls.gov/data/inflation_calculator.htm)

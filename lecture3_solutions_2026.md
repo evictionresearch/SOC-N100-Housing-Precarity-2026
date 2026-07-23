@@ -40,26 +40,36 @@ Everything deferred from Weeks 1–2 is solutions-shaped — this lecture mostly
 Decide: teach Bates here at survey depth and go deep Aug 4 (reading is due then), or pull the
 reading forward. Recommend: survey here, depth Aug 4 — keeps this lecture on the big frame.
 
-## 2. The 4 P's **[CONFIRM the fourth]**
+## 2. The 4 P's ✅ RESOLVED (Tim, 2026-07-23)
 
-Verified framework (searched 2026-07-14): the standard formulation is **3 P's** —
-**Production, Preservation, Protection (tenant protections)** — e.g.
-[MTC/Bay Area Housing Finance Authority](https://mtc.ca.gov/about-mtc/authorities/bay-area-housing-finance-authority/housing-production-preservation-protection),
-[3pshousingplan.org](https://www.3pshousingplan.org/),
-[NLIHC on CA's 2019 bills](https://nlihc.org/resource/field-california-legislature-passes-affordable-housing-production-preservation-and-tenant).
+**The 4th P is PREVENT, and it comes first. Source: Tim's own framework**, published on the
+WA ERN page (verified live 2026-07-23 at <https://evictionresearch.net/washington/>):
+*"Prevent the filing before it reaches court, protect tenants once they're in it, preserve
+the low-cost homes that already exist, and produce more."* Order for the slide:
+**Prevent → Protect → Preserve → Produce** — prevention precedes protections, preservation,
+and production.
 
+- **Slide asset:** the WA page's **Figure 5, "No single lever stops an eviction — it takes
+  four"** — maps the four P's against the eviction timeline with effectiveness tiers
+  (Tier 1 = largest/fastest; Tier 3 = structural/slow). Tim: "The WA ern page has a great
+  image of this." Reuse it directly.
+- **Discuss each recommendation individually** (Tim's ask) — the page's five levers,
+  verified: **rental assistance** (Tier 1; direct payment to landlords for arrears);
+  **eviction diversion / pre-filing mediation** (Tier 1; restore WA's expired program);
+  **right to counsel** (Tier 1; fund to caseload — ties to the W1 RTC numbers in §3);
+  **standing protections** (Tier 2; just cause, source-of-income, rent stabilization);
+  **build and preserve homes** (long-term; the page cites a ~1.1M-unit shortfall by 2044 —
+  re-verify that figure on the page before sliding it).
+- Context slide if useful: the standard field formulation is **3 P's** (Production,
+  Preservation, Protection — MTC/BAHFA, 3pshousingplan.org, NLIHC) — Tim's contribution is
+  adding **Prevent** at the front. That's a legitimate "here's what my research adds" beat.
 - 📎 Chapple, on sequencing (surfaced via
-  [Journalist's Resource, "Preventing housing displacement: what works"](https://journalistsresource.org/economics/displacement-policy-what-works/)
-  — fetch the page before quoting on a slide): *"you want to make sure you have your tenant
+  [Journalist's Resource](https://journalistsresource.org/economics/displacement-policy-what-works/)
+  — fetch before quoting on a slide): *"you want to make sure you have your tenant
   protections and housing preservation policies in place first and then do some building."*
-- **[CONFIRM]** You said "the 4 P's" — no standard 4th P surfaced in the search. Tell me your
-  fourth (or the source you use) and I'll verify it for the build. 🚫 Don't present a 4th P
-  from memory without that check.
-- **[Thought exercise — framing suggestion]** The P's map onto the HPRM divergence: Production
-  + Preservation aim mostly at the *soft* (market) crisis; Protection aims at the *hard*
-  (eviction) crisis. If the fourth P is income/prosperity-shaped, it lands on Chapple's "it's
-  an income crisis" side. That mapping would make the whole course arc close in one slide —
-  worth building if the 4th P fits.
+  Note it matches the Prevent-first ordering.
+- Framing that now closes the arc: Prevent + Protect aim at the *hard* (eviction) crisis;
+  Preserve + Produce at the *soft* (market) crisis — two crises, four P's, one slide.
 
 ## 3. Policy-recommendation bank (already verified, ready to reuse)
 
@@ -158,7 +168,9 @@ fixed."
 
 ## Build checklist (before this becomes a spec)
 
-- [ ] Tim: name the **4th P** + its source
+- [x] ~~Tim: name the **4th P** + its source~~ — **Prevent** (Tim's own, first in order;
+      WA ERN page + its Figure 5 verified 2026-07-23; five recommendations to walk through
+      individually — see §2)
 - [ ] Fix the lecture date; update `index.qmd` Week 3 (or wherever it lands)
 - [ ] Decide Bates depth here vs Aug 4
 - [x] Week 2 did **not** deliver the HPRM slides (Jul 14 ended: Oregon → Moving forward →

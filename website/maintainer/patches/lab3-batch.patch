@@ -1,6 +1,6 @@
 --- a/code/lab3_rent_burden.R
 +++ b/code/lab3_rent_burden.R
-@@ -970,15 +970,15 @@
+@@ -976,15 +976,15 @@
  # Rebuild the whole arc, start to finish, for another county -- ideally
  # the place you are eyeing for Assignment 1 and beyond. Fill the two
  # blanks, then run each step:
