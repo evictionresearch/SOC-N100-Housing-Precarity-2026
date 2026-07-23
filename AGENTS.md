@@ -104,6 +104,7 @@ Controller repo: `~/tools/google-workspace-tools`. This project is bound to **UC
 
 - Allowed identities: `berkeley` / `aculich@berkeley.edu`; vault `develop`
 - Browse (Chrome hat): `browse` / `browse berkeley https://…` / `browse regagent` (AALLC) — see `~/tools/google-workspace-tools/docs/workspace-browse.md`
+- **Personal skill `bcal-declutter`:** archive cluttering bCal guest invites onto **Aaron misc** as Free copies (with resuscitation metadata), then decline originals with `sendUpdates=none`. Install: `cd ~/tools/google-workspace-tools && just bcal-declutter-install` → `~/.cursor/skills/bcal-declutter`. Briefing: `briefings/bcal-declutter/AGENT-BRIEFING.md`.
 - **Refuse by default** cross-org requests (personal, aallc, officialspay, emergingpatterns). Do not run foreign `gcloud-as` / `just` / vault access or attempt OAuth refresh for other orgs.
 - **Dotted-line orgs (no warning for context crossover):** `cidrlab` (CIDR Lab LLC). Shared principals and cross-references are fine; credentials, vaults, and billing never cross (see rule for details).
 - **Accidental other-org ask:** explain isolation-by-design; point to this project's commands or tell user to open the other org's workspace.
