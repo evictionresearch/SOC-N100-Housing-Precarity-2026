@@ -33,6 +33,7 @@ Amended 2026-06-29 after a full-site review (all tabs).
 - [x] ~~Create instructional-staff bCourses group~~ — superseded by enrollment_type keys (see `bcourses-staff-group-primer.md`)
 - [ ] Confirm Aaron’s bCourses 1555635 role is **Teacher or TA** (required for 8G tier)
 - [ ] After login: verify 4 GB (student) / 8 GB (Teacher/TA) in RStudio Environment tab on r.datahub
+- [ ] bCourses API: create access token → store `op://develop/bCourses API — aculich@berkeley.edu`; run `~/tools/google-workspace-tools/scripts/bcourses-soc-n100-probe.sh`
 
 ## DATAHUB PACKAGES (lower priority — after RAM resolves)
 - [ ] Run the verify-on-hub check from `website/maintainer/datahub-package-request-draft.md` on r.datahub; prune the package list to what's actually missing (incl. `duckdb`/`duckdbfs`/`arrow` for the Week 5 bonus lab `code/lab6_bonus_memory.R`)
