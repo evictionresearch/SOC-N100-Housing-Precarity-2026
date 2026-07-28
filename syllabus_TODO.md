@@ -28,11 +28,12 @@ Amended 2026-06-29 after a full-site review (all tabs).
 
 ## DATAHUB RAM (opened 2026-07-07, from Tim's "Ram upgrade" email)
 - [x] Repo-local git identity set to `Aaron Culich <aculich@berkeley.edu>` (2026-07-08; global config untouched) so commits/issues match `@aculich`'s Berkeley identity
-- [ ] Aaron reviews + sends reply to Tim: `website/maintainer/tim-ram-email-draft.md` (reframes 16 GB laptop-ask to 4 GB hub request)
-- [ ] Tim confirms enrollment (~50) and that bCourses 1555635 is **Published**
-- [ ] Create the instructional-staff **bCourses group** in 1555635 (Tim + Aaron + any TA) for the 8 GB staff subset; put the group name in the draft before filing — how-to: `website/maintainer/bcourses-staff-group-primer.md`
-- [ ] File the RAM issue from `website/maintainer/datahub-resource-request-draft.md` (template: add_memory_config_request.yml; filed by `@aculich`, mentions `@timathomas`); record issue URL in `website/maintainer/REQUESTS.md`
-- [ ] After merge: log out/in on r.datahub, verify 4 GB (student tier) and 8 GB (staff subset) in RStudio Environment tab
+- [ ] Aaron reviews + sends reply to Tim: `website/maintainer/tim-ram-email-draft.md` (reframes 16 GB laptop-ask to 4 GB hub request) — optional now that grant landed
+- [x] Filed + **granted**: [berkeley-dsep-infra/datahub#8335](https://github.com/berkeley-dsep-infra/datahub/issues/8335) → PR [#8336](https://github.com/berkeley-dsep-infra/datahub/pull/8336) deployed to prod 2026-07-13 (issue closed 2026-07-17). Students **4G**; Teacher/TA **8G** via `enrollment_type` — no custom staff group.
+- [x] ~~Create instructional-staff bCourses group~~ — superseded by enrollment_type keys (see `bcourses-staff-group-primer.md`)
+- [ ] Confirm Aaron’s bCourses 1555635 role is **Teacher or TA** (required for 8G tier)
+- [ ] After login: verify 4 GB (student) / 8 GB (Teacher/TA) in RStudio Environment tab on r.datahub
+- [ ] bCourses API: create access token → store `op://develop/bCourses API — aculich@berkeley.edu`; run `~/tools/google-workspace-tools/scripts/bcourses-soc-n100-probe.sh`
 
 ## DATAHUB PACKAGES (lower priority — after RAM resolves)
 - [ ] Run the verify-on-hub check from `website/maintainer/datahub-package-request-draft.md` on r.datahub; prune the package list to what's actually missing (incl. `duckdb`/`duckdbfs`/`arrow` for the Week 5 bonus lab `code/lab6_bonus_memory.R`)

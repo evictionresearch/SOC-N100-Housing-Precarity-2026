@@ -12,7 +12,8 @@ Everything in this folder is for **course staff and repo maintainers** — not s
 | [`REQUESTS.md`](REQUESTS.md) | Report: RAM-request history analysis, measured lab memory, capstone projection, ESPM-288 study |
 | [`datahub-resource-request-draft.md`](datahub-resource-request-draft.md) | **DRAFT** RAM request for r.datahub: 4 GB class + 8 GB instructor/TA subset (pending Tim/Aaron approval) |
 | [`datahub-package-request-draft.md`](datahub-package-request-draft.md) | **DRAFT** package-install request (course stack + duckdb/duckdbfs/arrow); file after RAM resolves |
-| [`bcourses-staff-group-primer.md`](bcourses-staff-group-primer.md) | How to create the bCourses staff group that the 8 GB subset keys on |
+| [`bcourses-staff-group-primer.md`](bcourses-staff-group-primer.md) | How to create the bCourses staff group that the 8 GB subset keys on (**superseded** for Summer 2026 — see session findings) |
+| [`SESSION-FINDINGS-2026-07-23.md`](SESSION-FINDINGS-2026-07-23.md) | Session write-up: RAM grant via enrollment_type, dual calendar invites decluttered, bCourses API next step |
 | [`tim-ram-email-draft.md`](tim-ram-email-draft.md) | **DRAFT** reply to Tim on 16 GB vs 4 GB (pending Aaron review) |
 | [`mirrors/`](mirrors/) | Gitignored local clones of official DataHub repos + issue dumps ([README](mirrors/README.md)) |
 
