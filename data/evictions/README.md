@@ -1,12 +1,11 @@
 # Eviction course data
 
-| File | Grain | Coverage | Used when |
+| File | Unit of observation | Coverage | Used when |
 |------|-------|----------|-----------|
 | **`d5_case_aggregated.rds`** | Indiana, tract × month, with race/sex estimated columns | 2016 – 2022-10 | **Default in labs 4 & 6** (`readRDS()`) — the classroom file |
 | `mn_tract_evictions.rds` / `.parquet` | Minnesota, tract × month, with race filings, race denominators, and precomputed rates | 2017 – 2025 | Final projects; state comparisons (MN vs IN protections) |
 | `in_lsc_tract_filings.rds` / `.parquet` | Indiana, tract × month, filing **counts only** | 2016 – 2026-04 | Final projects needing recent Indiana filings |
 | `in_lsc_county_filings.rds` / `.parquet` | Indiana, county × month, filing **counts only** | 2016 – 2026-04 | True county totals (see note 3) |
-| `d5_case_aggregated.qs2` / `.qs` | — | — | Maintainer conversion artifacts; deprecated for teaching (2026-07-16) |
 
 ## Reading the newer files
 
@@ -41,7 +40,7 @@ in_new <- readRDS("data/evictions/in_lsc_tract_filings.rds")
 ## Regenerate
 
 ```bash
-Rscript course_infrastructure/convert_eviction_data.R        # d5 formats from legacy .qs
+Rscript course_infrastructure/convert_eviction_data.R        # d5 .rds from the legacy .qs (removed from the repo 2026-07-28; retrieve from git history)
 Rscript course_infrastructure/build_eviction_data_updates.R  # MN + IN LSC updates (maintainer machine only)
 ```
 

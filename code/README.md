@@ -18,11 +18,12 @@ tutorial they will ever see.
   line runs so keys don't linger in scripts. **Never commit a key to git.**
   If one is committed accidentally: revoke it at Census and request a new one.
 - **Eviction data (labs 4 & 6):** loaded with base
-  `readRDS("data/evictions/d5_case_aggregated.rds")`. The `.qs`/`.qs2` files
-  next to it are maintainer conversion artifacts — **deprecated for teaching
-  (2026-07-16)**: labs teach `saveRDS()`/`readRDS()` for private caches,
-  `write_csv()` for sharing, and parquet for big or Python-bound tables.
-  Regenerate the data files with `Rscript course_infrastructure/convert_eviction_data.R`.
+  `readRDS("data/evictions/d5_case_aggregated.rds")`. The newer datasets in
+  that folder ship as `.rds` + `.parquet` pairs; labs teach
+  `saveRDS()`/`readRDS()` for private caches, `write_csv()` for sharing, and
+  parquet for big or Python-bound tables. (The legacy `.qs`/`.qs2` conversion
+  artifacts were removed 2026-07-28; git history keeps them.) To regenerate
+  data files, see `data/evictions/README.md`.
 
 DataHub caveat (unchanged): hub administrators can access user home
 directories. A free, rate-limited, revocable Census key is safe enough for

@@ -240,7 +240,7 @@ Re-running a lab is idempotent: packages already installed are not reinstalled.
 
 ### Eviction data (`.rds`)
 
-Labs **4** and **6** load eviction data with base **`readRDS()`** on `data/evictions/d5_case_aggregated.rds`. The `.qs`/`.qs2` copies are maintainer conversion artifacts — **deprecated for teaching (2026-07-16)**; labs teach `saveRDS`/`write_csv`/parquet instead. Staff background: [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd).
+Labs **4** and **6** load eviction data with base **`readRDS()`** on `data/evictions/d5_case_aggregated.rds`; the newer datasets alongside it ship as `.rds` + `.parquet` pairs. Labs teach `saveRDS`/`write_csv`/parquet. (The legacy `.qs`/`.qs2` copies were removed from the repo **2026-07-28**; git history keeps them.) Staff background: [`website/maintainer/notes.qmd`](website/maintainer/notes.qmd).
 
 **Quick check:**
 

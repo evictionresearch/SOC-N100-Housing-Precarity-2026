@@ -52,8 +52,16 @@ indiana_evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d
 # Forward slashes, even on Windows. (Working on your own laptop instead of
 # the DataHub? Change the address to wherever your course folder lives.)
 #
-# (You may spot .qs / .qs2 files next to it -- older compressed copies
-# from my lab's tooling. Ignore those; the .rds is the one we use.)
+# (Look closer at the folder and you will see the OTHER datasets come
+# twice -- a .rds and a .parquet of the same table. Two formats, two
+# jobs. .rds is R's native format: one function reads it, any R object
+# survives the trip exactly as saved, but only R speaks it. .parquet
+# is the format the wider data world shares tables in -- R, Python,
+# and SQL engines all read it, and it stores data by COLUMN, so a big
+# file can be read a few columns at a time instead of all at once.
+# Rule of thumb: .rds for your own work in R, .parquet when a table is
+# big or has to travel between tools. The bonus lab puts parquet to
+# work; today runs on .rds.)
 #
 # Where did this file come from? ERN collects raw eviction case records
 # from county courts, cleans them, links names to demographics, and
@@ -97,17 +105,18 @@ glimpse(indiana_evictions)
 # (You will also spot columns named latine_*: ERN uses "Latine" as the
 # gender-neutral term for Latino/Latina/Latinx populations.)
 #
-# So the GRAIN of this table -- what one row IS -- is one tract in one
-# month. Check that claim instead of trusting it: pick one tract, one
-# year, and count the rows. Twelve months, twelve rows:
+# So the UNIT OF OBSERVATION of this table -- what one row IS -- is one
+# tract in one month. Check that claim instead of trusting it: pick one
+# tract, one year, and count the rows. Twelve months, twelve rows:
 
 indiana_evictions %>%
   filter(tract_geoid == "18001030300", year == 2019) %>%
   select(tract_geoid, year, month, filings)
 
-# Knowing the grain is THE first question to ask of any dataset. Almost
-# every wrong number in a beginner's analysis comes from mistaking the
-# grain -- counting something twice, or summing what was already a total.
+# Knowing the unit of observation is THE first question to ask of any
+# dataset. Almost every wrong number in a beginner's analysis comes from
+# mistaking it -- counting something twice, or summing what was already
+# a total.
 
 # ==========================================================================
 # A3. Your first aggregation: the pandemic, visible from orbit
@@ -192,9 +201,29 @@ indiana_evictions %>%
 # reframe() is the tool for the rare case where you WANT many rows back;
 # that is not what we want here.)
 #
-# The fix: within a county, co_totrent repeats the SAME county total on
-# every row -- so just take the first one. first() is a summarizing rule
-# like sum(), it collapses many values to one:
+# See the mistake with your own eyes. summarize() works through the
+# groups alphabetically, so the first group it met was Adams County,
+# 2016. Print exactly what it saw there:
+
+indiana_evictions %>%
+  filter(county == "Adams", year == 2016) %>%
+  select(tract_geoid, month, filings, co_totrent)
+
+# 84 rows: 7 tracts x 12 months. Now read the two columns the way
+# summarize() did. filings is 84 monthly counts, and we gave R a rule
+# -- sum() -- that squeezes them into one number. co_totrent is ALSO
+# 84 values, but we gave R no rule at all; we just named the column.
+# That is the whole anatomy of the mistake (and of its message on
+# current R: "must be size 1, not 84").
+#
+# But look DOWN the co_totrent column: 2400, 2400, 2400... Adams
+# County has one renter total, and the file stamped that same number
+# onto every tract-month row -- 84 copies of one fact. Which is why
+# the fix is a rule that sounds almost too casual: take the FIRST
+# one. When every value in the group is an identical copy, the first
+# one IS the county total. first() is a legitimate summarizing rule
+# with the same standing as sum() -- sum() collapses many values by
+# adding them, first() collapses them by keeping the one on top:
 
 county_year <- indiana_evictions %>%
   group_by(county, year) %>%
@@ -205,6 +234,15 @@ county_year <- indiana_evictions %>%
   )
 
 county_year
+
+# (Two sanity notes before you trust it. First: first() was safe ONLY
+# because we looked and saw 84 identical copies -- on a column whose
+# values genuinely vary, first() would silently throw away the rest.
+# Second: sum() would have been the wrong rule here -- adding 84
+# copies of 2,400 would invent a county of 201,600 renter households.
+# Neither rule is "the" answer; match the rule to what the column
+# MEANS. Counts you are combining: sum(). One fact repeated on every
+# row: first().)
 
 # One more column before we can talk to the Census: a join key. Census
 # county GEOIDs are state code + county code glued together: "18" (Indiana)
@@ -295,6 +333,23 @@ nrow(county_rates)
 anti_join(county_year, co_census_wide, by = c("county_geoid" = "GEOID"))
 # 0 rows. Every county-year matched a census county. A clean join.
 
+# A 0-row answer only reassures you if you know what a FAILURE looks
+# like -- so let's break the join on purpose. Suppose we had matched on
+# county NAMES instead of codes. co_census (the long table from A5)
+# still has its NAME column; try pairing our "Adams" with theirs:
+
+anti_join(county_year, co_census, by = c("county" = "NAME"))
+
+# 644 rows -- EVERY county-year came back unmatched, the exact opposite
+# of clean. Why? Look at how each table spells the same place: ours
+# says "Adams", the Census says "Adams County, Indiana". To a join,
+# text matches EXACTLY or not at all -- there is no "close enough".
+# THIS is what anti_join() is for: when a join goes wrong, the
+# leftovers pile up where you can see them instead of silently
+# vanishing downstream. And it is why we built county_geoid out of
+# code pieces rather than trusting names: "18001" is spelled exactly
+# one way, everywhere.
+
 # ==========================================================================
 # A7. Rates at last -- and the divide-by-zero trap
 # ==========================================================================
@@ -322,17 +377,72 @@ county_rates %>%
   select(county, year, black_evictions, black_renters)
 
 # There it is: counties where the ACS estimates ZERO Black renter
-# households -- 28 of Indiana's 92 counties -- while the court records
-# still show eviction filings against Black-headed households there.
-# Sit with that for a second, because it is not a bug. It is two datasets
-# disagreeing about whether a small population exists: the ACS is a
-# sample, and in a mostly white rural county its estimate for a tiny
-# group can round to zero, while the courthouse still met real Black
-# families. Small groups are exactly where estimates are weakest -- lab
-# 1's margin-of-error lesson, back with teeth.
+# households -- 28 of Indiana's 92 counties -- while our black_head
+# column still carries positive numbers there. Before we referee that
+# disagreement, we need to know what black_head actually IS.
 #
-# So what value SHOULD the rate have there? Not 0 -- that would claim "no
-# eviction risk for Black renters," which is false. The honest answer is
+# Court records do not list race (A2 warned you). ERN estimates it
+# with an R package called wru ("Who are You?"), and the logic is
+# Bayes' rule: start with the defendant's SURNAME -- the Census
+# publishes how often each surname belongs to each race group -- then
+# update by WHERE they live, since neighborhoods differ. Out comes a
+# probability that each defendant's household is Black, white,
+# Latine... One filing might score 0.90, another 0.03. black_head is
+# those probabilities ADDED UP: an expected count. That is why it
+# carries decimals -- 0.195 is not a fifth of a family, it is a small
+# pile of small probabilities. (The method: Imai & Khanna 2016,
+# Political Analysis.)
+#
+# So the standoff is estimate vs. estimate -- a survey's count against
+# a model's expectation -- and neither side is ground truth. Watch how
+# differently it leans in two of our 28 counties. (%in% is a handy
+# filter comparison -- "is each value one of these?")
+
+county_rates %>%
+  filter(county %in% c("Brown", "Clinton")) %>%
+  select(county, year, evictions, black_evictions, black_renters)
+
+# Same Inf problem, very different stories.
+#
+# Brown County: 16 to 40 filings a year, and the probabilities across
+# ALL of them add up to at most 0.195 expected Black-headed filings --
+# that in its highest year. Probability dust. Most likely nothing
+# happened here that the census zero gets wrong: "roughly zero over
+# zero," nothing to report.
+#
+# Clinton County: 198 to 363 filings a year, and the probabilities add
+# up to 3 to 9.4 expected Black-headed filings EVERY year -- one to
+# three percent of the county's filings, year after year. Now look at
+# its denominator with lab 1 eyes: the ACS zero is an estimate too,
+# and it has a margin of error like every ACS number. Clinton's is
+# 0 +/- 27 households, so "zero" means "somewhere between 0 and 27."
+# Which story is true, then? Maybe a small, real Black renter
+# community lives inside that +/- 27, and some of those households met
+# the eviction court -- model right, survey zero misleading. Or maybe
+# wru misread a few hundred names and addresses by a few percent each
+# -- survey right, the 9.4 a mirage. From these two numbers alone YOU
+# CANNOT TELL, and no third dataset is waiting to break the tie.
+# Measuring tiny populations is like this all the way down.
+#
+# Working honestly under that uncertainty is the skill. What to DO:
+#   1. Never publish a rate built on a zero denominator: a shaky
+#      numerator over an unknown denominator makes a number that
+#      LOOKS precise and means nothing.
+#   2. Do not let the rate's failure erase the numerator. Clinton's
+#      filings still count in A9's statewide sums, and "roughly 3 to
+#      9 expected Black-headed filings a year, denominator too
+#      uncertain for a rate" is a reportable finding on its own.
+#   3. Treat a Clinton as a FLAG, not a conclusion -- a place worth
+#      pooling more years, another data source, or a phone call to
+#      someone who knows the county. (Brown is not a flag; there is
+#      nothing there to chase.)
+#   4. Only COMPARE rates where denominators are solid. A8 returns to
+#      this, and Thursday makes it a hard rule: filter(renters >= 100).
+#
+# All 28 counties still need SOMETHING in their rate column, though.
+# So what value SHOULD it be? Not 0 -- that would claim "no
+# eviction risk for Black renters," a certainty we just admitted we do
+# not have. The honest answer is
 # "cannot compute": NA, R's missing value. if_else() picks row by row --
 # if_else(condition, value_if_yes, value_if_no):
 
@@ -358,6 +468,8 @@ summary(county_rates$black_eviction_rate)
 
 rates_2019 <- county_rates %>%
   filter(year == 2019)
+
+glimpse(rates_2019)
 
 # Base scatter -- lab 3's geom_point(), on a new question: each point is
 # one county.
@@ -395,9 +507,17 @@ ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
   theme_minimal()
 
 # Count it instead of eyeballing it: among the counties where the Black
-# rate is computable, how many sit above the line?
+# rate is computable, how many sit above the line? One catch first.
+# Remember A3: group_by() plants flags. A4 planted two (county, year),
+# and summarize() pulls up only the LAST one -- so county_year, and
+# every table we built from it since, is still quietly grouped by
+# county. (That "Groups: county [92]" note at the top of the printouts
+# has been saying so all along.) Left alone, summarize() here would
+# answer once PER COUNTY -- 64 rows of 1s and 0s, not the one-row
+# total we want. ungroup() pulls up the remaining flag:
 
 rates_2019 %>%
+  ungroup() %>%
   filter(!is.na(black_eviction_rate)) %>%
   summarize(
     counties_with_a_rate = n(),
@@ -896,7 +1016,8 @@ st_crs(marion_tracts)$Name
 # ==========================================================================
 # After this lab you can:
 #   - load a data file with readRDS() and size it up with glimpse()
-#   - state the GRAIN of a table and verify it with a filter
+#   - state a table's unit of observation (what one row is) and verify
+#     it with a filter
 #   - aggregate with group_by() + summarize(), including first() for
 #     repeated group values -- and explain the many-values-per-group trap
 #   - build GEOID join keys with paste0() and text codes

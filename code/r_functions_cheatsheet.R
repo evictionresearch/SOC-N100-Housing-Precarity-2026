@@ -63,8 +63,8 @@
 #                   the whole toolbox
 #                     scales::dollar_format()
 #
-# %in%              is each value one of these?                    [lab 5]
-#                     filter(county %in% c("Alameda", "Solano"))
+# %in%              is each value one of these?                    [lab 4]
+#                     filter(county %in% c("Brown", "Clinton"))
 #
 # ~                 "goes with" -- writes the rules inside         [lab 5]
 #                   case_when()
@@ -207,6 +207,10 @@
 # first()           grab a group's first value (for a number       [lab 4]
 #                   repeated on every row)
 #                     summarize(renters = first(co_totrent))
+#
+# ungroup()         pull up group_by()'s flags (summarize() only   [lab 4]
+#                   removes the last one)
+#                     rates_2019 %>% ungroup() %>% summarize(...)
 
 # ==========================================================================
 # 6. DATA MANIPULATION: RESHAPING, STACKING, JOINING
