@@ -42,6 +42,8 @@ library(tidycensus)
 # one takes a single base-R function -- no packages at all:
 
 indiana_evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.rds")
+data <- readRDS("~/Downloads/file.rds")
+data3 <- read.csv("~/Downloads/fils_name.csv")
 
 # Read that path like a street address, left to right:
 #   ~                                  = your HOME folder (on the DataHub,
@@ -128,6 +130,7 @@ indiana_evictions %>%
 # Step 1: group_by() alone. Run it -- and notice that almost nothing
 # happens. The printout just gains a small "Groups: year" note at the top.
 # group_by() only plants a flag that says "treat each year as a team."
+summary(indiana_evictions)
 
 indiana_evictions %>%
   group_by(year)
@@ -166,6 +169,18 @@ indiana_evictions %>%
 # have the most total filings across all years? Sort your answer with
 # arrange(desc(...)). [PUT YOUR ANSWER BELOW]
 
+indiana_evictions %>%
+  group_by(county) %>%
+  summarize(total_filings = sum(filings)) %>%
+  ggplot(aes(x = total_filings, y = reorder(county, total_filings))) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Eviction filings in Indiana collapsed during the pandemic",
+    x     = NULL,
+    y     = "Filings per county",
+    caption = "Source: Eviction Research Network, Indiana court records."
+  ) +
+  theme_minimal()
 
 # ==========================================================================
 # A4. Aggregating to county-years -- and a very instructive mistake
@@ -374,7 +389,7 @@ summary(county_rates)
 
 county_rates %>%
   filter(is.infinite(black_eviction_rate)) %>%
-  select(county, year, black_evictions, black_renters)
+  select(county, year, evictions, black_evictions, black_renters)
 
 # There it is: counties where the ACS estimates ZERO Black renter
 # households -- 28 of Indiana's 92 counties -- while our black_head
@@ -459,7 +474,7 @@ county_rates <- county_rates %>%
 # honestly missing:
 
 summary(county_rates$black_eviction_rate)
-
+### Left off here
 # ==========================================================================
 # A8. The question that matters: is eviction racially unequal?
 # ==========================================================================
