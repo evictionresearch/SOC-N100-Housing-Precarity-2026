@@ -125,6 +125,8 @@ For this assignment you will submit:
 
 These assignments will be graded on the [scale in the syllabus](syllabus.html#course-grading). This grade is to help you see the quality of your work but the final grade will be graded as complete or incomplete. No late assignments will be accepted except for special accommodations. You can volunteer to present a 5-minute demo of your assignment in class.
 
+Your draft research question and hypotheses do double duty. Group formation happens in class on Tuesday August 4, and your group's project pitch starts from what each member drafted here.
+
 #### Readings
 
 ***Due Tuesday August 4***
@@ -132,13 +134,25 @@ These assignments will be graded on the [scale in the syllabus](syllabus.html#co
 
 *Optional, for Thursday's segregation lab:* [Walker (2023) section 8.1, "Indices of segregation and diversity"](https://walker-data.com/census-r/modeling-us-census-data.html) — just that section; the rest of chapter 8 (regression and machine learning) is beyond our scope.
 
-#### Tuesday August 4 - Lecture
+#### Tuesday August 4 - Lecture + final project groups
+
+*First hour - lecture: what actually helps.* The research-to-policy story behind everything you have built so far:
+
+* How eviction data becomes policy, and why most states still cannot see their own eviction crisis
+* Watch in class: Tim's testimony to the Washington State Senate ([slides](https://docs.google.com/presentation/d/1x7SCdTeBdczY5Ga5wvixMxtvTv-a4rTph6LIQWLsIk0/edit?pli=1&slide=id.g32100058b3b_1_1#slide=id.g32100058b3b_1_1) | [recording, starts at 40 minutes](https://tvw.org/video/senate-housing-2024121118/)) - a complex story told simply with data, and the model for your final presentation
+* The four P's of resolving displacement: Prevent, Protect, Preserve, Produce
+* Eviction data in the courtroom: the civil rights cases built on ERN's analysis
+* Four states, four rulebooks: how California, Minnesota, Indiana, and Texas handle eviction, and what happens to people after displacement
+* We put the Bates (2013) reading to work: Portland's toolkit for acting before displacement hits
+
+*Second hour - final project groups:*
 
 * Form randomly assigned groups of 2 or 3 and discussion on final group project
 * Draft some ideas on your final group project
     * Include what area you want to study (at least two counties or a region),
     * what you want to explore about displacement (at least 3-5 different data points/plots),
     * what data you will use to capture this.
+* Start from your Assignment 2 research question and hypotheses - your group pitch grows out of them
 * Present your idea to the group and get a sign-off from Tim
 
 #### Thursday August 6 - Lab
@@ -150,7 +164,7 @@ These assignments will be graded on the [scale in the syllabus](syllabus.html#co
 
 * [How to make an effective presentation video](https://drive.google.com/drive/folders/12WupIg1R57WOgEjr2yfvfYm-QoJy1mOE?usp=drive_link)
 
-* Example presentation: [Tim's Testimony Slides to the WA State Senate](https://docs.google.com/presentation/d/1x7SCdTeBdczY5Ga5wvixMxtvTv-a4rTph6LIQWLsIk0/edit?pli=1&slide=id.g32100058b3b_1_1#slide=id.g32100058b3b_1_1)
+* Example presentation, watched together in the August 4 lecture: [Tim's Testimony Slides to the WA State Senate](https://docs.google.com/presentation/d/1x7SCdTeBdczY5Ga5wvixMxtvTv-a4rTph6LIQWLsIk0/edit?pli=1&slide=id.g32100058b3b_1_1#slide=id.g32100058b3b_1_1)
     * [Recorded testimony (starts at 40 minutes)](https://tvw.org/video/senate-housing-2024121118/)
 
 #### Thursday August 13 - Presentation
