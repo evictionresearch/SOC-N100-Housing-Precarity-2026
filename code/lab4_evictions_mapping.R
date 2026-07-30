@@ -42,8 +42,6 @@ library(tidycensus)
 # one takes a single base-R function -- no packages at all:
 
 indiana_evictions <- readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.rds")
-data <- readRDS("~/Downloads/file.rds")
-data3 <- read.csv("~/Downloads/fils_name.csv")
 
 # Read that path like a street address, left to right:
 #   ~                                  = your HOME folder (on the DataHub,
@@ -493,13 +491,32 @@ ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
   geom_point()
 
 # Now the layer that turns a scatter into an argument: the EQUALITY LINE.
-# geom_abline() draws y = x. If eviction touched everyone equally, every
-# county would sit ON that line. A point ABOVE the line is a county where
-# Black renters are evicted at a HIGHER rate than renters overall:
+# Before adding it, read what ONE dot is telling you. Every county's dot
+# pins down two numbers at once:
+#   - how far RIGHT it sits = the overall eviction rate  (the x-axis)
+#   - how far UP it sits    = the Black eviction rate    (the y-axis)
 
 ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed")
+
+# geom_abline(slope = 1) draws the line y = x, marking every spot where
+# those two rates come out EQUAL, so up-ness equals right-ness. Think of
+# it as a break-even line -- a county can only land ON it when Black
+# renters and renters overall are evicted at the same rate.
+#
+# That makes each dot's position relative to the line the whole comparison:
+#   - a dot ON the line means the Black rate equals the overall rate
+#   - a dot ABOVE means the Black rate is HIGHER than overall (y > x)
+#   - a dot BELOW means the Black rate is LOWER than overall (y < x)
+# "Above" is inequality because the dot's height (the Black rate) has
+# climbed past its horizontal position (the overall rate). Make it
+# concrete. Imagine a county sitting at x = 0.02 -- 2 filings for every 100
+# renter households overall -- whose dot floats up at y = 0.05, or 5 per
+# 100 for Black renters. It rides well above the dashed line, and that IS
+# the finding. Black renters there were filed on at more than double the
+# overall rate. The taller a dot rides above the line, the wider that gap,
+# and the bigger the disparity:
 
 # (A note appeared in the Console: "Removed 28 rows containing missing
 # values". That is not an error -- it is our NA fix from A7 showing up.
@@ -521,6 +538,16 @@ ggplot(rates_2019, aes(x = eviction_rate, y = black_eviction_rate)) +
   ) +
   theme_minimal()
 
+# Look at what you just drew, and read the whole picture the way we read
+# one dot. More of the county dots sit ABOVE the dashed equality line than
+# below it -- the balance tips upward. Each of those dots is a county where
+# the Black eviction rate (how high the dot sits) runs higher than the
+# overall rate (how far across it sits). It is not every county -- some sit
+# right on the line or below it, where the two rates are close or the Black
+# rate is actually lower -- but the lean is unmistakable. That upward tilt
+# of the cloud IS the argument the chart is making. Eviction falls harder
+# on Black renters in more Indiana counties than not.
+#
 # Count it instead of eyeballing it: among the counties where the Black
 # rate is computable, how many sit above the line? One catch first.
 # Remember A3: group_by() plants flags. A4 planted two (county, year),
@@ -557,8 +584,20 @@ county_rates %>%
   select(county, renters, total_renters) %>%
   mutate(difference = renters - total_renters)
 
-# YOUR TURN (2): remake the 2019 scatter for 2022. Does the pandemic
-# recovery year look more or less unequal? [PUT YOUR ANSWER BELOW]
+# YOUR TURN (2): remake the 2019 scatter for 2022, then compare the two.
+# To build the data you change ONE thing -- the year. Copy the rates_2019
+# block, swap filter(year == 2019) for filter(year == 2022), and name it
+# rates_2022. Then feed it to the SAME ggplot from A8: same geom_point(),
+# same dashed geom_abline(), just update the year in the subtitle.
+#
+# "More or less unequal" is a reading, not a hunch -- judge it off the
+# equality line, the same one you just learned. Two things to look for:
+#   - Do MORE dots sit ABOVE the line in 2022 than in 2019? That is more
+#     counties where Black renters are evicted at the higher rate.
+#   - Do the above-line dots sit FARTHER above it? A taller gap between a
+#     dot and the line means a bigger disparity in that county.
+# Report what the 2022 chart actually shows, not what you expected to see.
+# [PUT YOUR ANSWER BELOW]
 
 
 # YOUR TURN (3) -- stretch: the Tenure table has other race iterations,
@@ -571,8 +610,6 @@ county_rates %>%
 # ==========================================================================
 # A9. The whole state through time: one line, then many
 # ==========================================================================
-# (Short on time tonight? This section is a perfect Thursday warm-up --
-# nothing after it depends on it running tonight.)
 #
 # A3 showed the pandemic collapse as BARS. Lab 3's chart card says time's
 # natural shape is the LINE -- and lines can carry something bars cannot:
@@ -638,6 +675,8 @@ state_renters <- indiana_evictions %>%
     latine = sum(co_totrent_latine)
   )
 
+state_renters
+
 yearly_rates_long <- indiana_yearly %>%
   mutate(
     black  = black  / state_renters$black,
@@ -646,6 +685,8 @@ yearly_rates_long <- indiana_yearly %>%
   ) %>%
   select(year, black, white, latine) %>%
   pivot_longer(-year, names_to = "group", values_to = "rate")
+
+yearly_rates_long
 
 rates_by_race <- ggplot(yearly_rates_long, aes(x = year, y = rate, color = group)) +
   geom_line() +
@@ -857,6 +898,7 @@ marion_map_data <- marion_tracts %>%
   left_join(marion_2022, by = c("GEOID" = "tract_geoid"))
 
 class(marion_map_data)
+marion_map_data
 
 # Still sf. Rule of thumb: THE SHAPES GO FIRST. (If you ever do get stuck
 # with a flat table that has a geometry column, st_as_sf() re-awakens it:
