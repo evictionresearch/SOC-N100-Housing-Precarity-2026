@@ -922,10 +922,19 @@ anti_join(marion_tracts %>% st_drop_geometry(), marion_2022,
 
 library(tmap)
 
-# HEADS UP before your first map: depending on the tmap version, you may
-# see chatty notes like "[v3->v4] ..." suggesting newer argument names.
-# Those are suggestions from a newer tmap translating our commands, NOT
-# errors -- the map draws either way. Read them, then move on.
+# HEADS UP before your first map: tmap recently renamed its controls.
+# In NEW tmap, "fill" colors the inside of a polygon and "col" colors
+# the OUTLINE; in the older dialect we teach (it matches most books and
+# help pages), col colors the inside. New tmap normally auto-translates
+# the old dialect for us, printing chatty "[v3->v4] ..." notes as it
+# goes -- notes, NOT errors; the map draws fine. But there is ONE trap:
+# a call whose only extra argument is col = is valid NEW code too, so
+# new tmap takes it literally and paints the OUTLINES -- grey tracts,
+# tinted borders, no error anywhere. The cure: col never travels alone.
+# Every colored map below carries a title = argument, which exists only
+# in the old dialect -- its presence tells tmap to translate the whole
+# call. If a map of yours ever comes out grey with colored edges, you
+# have met the trap: add a title = and re-run.
 #
 # Layer 1: tm_shape() declares WHICH spatial object we are drawing --
 # like ggplot()'s data argument. Plus tm_polygons() to actually draw
@@ -937,19 +946,17 @@ tm_shape(marion_map_data) +
 # Indianapolis appears -- every tract outlined, all the same color.
 # A map, but not yet an argument.
 #
-# Layer 2, one new input: col = names the column whose VALUES color the
-# tracts. This is the aes() moment -- data becomes shade:
-
-tm_shape(marion_map_data) +
-  tm_polygons(col = "eviction_rate")
-
-# A choropleth! Darker tracts = higher eviction rates. Now refine it,
-# one argument per step, same as lab 1's chart build.
-#
-# A legend title (people cannot read "eviction_rate"):
+# Layer 2: col = names the column whose VALUES color the tracts. This
+# is the aes() moment -- data becomes shade. And, per the HEADS UP, col
+# brings a chaperone: title = names the legend (people cannot read
+# "eviction_rate") and keeps new tmap translating the call correctly.
+# Two arguments this once; every step after adds just one:
 
 tm_shape(marion_map_data) +
   tm_polygons(col = "eviction_rate", title = "Filings per renter household, 2022")
+
+# A choropleth! Darker tracts = higher eviction rates. Now refine it,
+# one argument per step, same as lab 1's chart build.
 
 # A color palette that means something -- sequential red reads as
 # "more = worse" at a glance:
@@ -980,9 +987,7 @@ tm_shape(marion_map_data) +
 # Compare the two maps and their legends. Same data, different story
 # strength. WHERE THE BREAKS FALL IS AN EDITORIAL CHOICE -- two honest
 # analysts can make the same data whisper or shout. When you publish a
-# choropleth, say which break method you used. (This is "Pie Chart with
-# a Bayesian Chaser" in map form: the sophistication is in the choices,
-# the output stays simple.)
+# choropleth, say which break method you used.
 
 # YOUR TURN (5): change style = "jenks" to style = "quantile" (equal
 # COUNTS of tracts per bin). Which of the three tells the starkest
@@ -1022,6 +1027,9 @@ tmap_save(eviction_map, "~/lab4_eviction_map.png", width = 7, height = 7)
 
 # Check the Files pane (house icon) -- lab4_eviction_map.png is in your
 # home folder (that is what the ~ does), ready for a writeup.
+
+# If you run this save on your computer, and you're on a mac, the file may not
+# save correctly. That's because some applications may be missing.
 
 # ==========================================================================
 # B7. Counts vs rates -- the map version of an old lesson
