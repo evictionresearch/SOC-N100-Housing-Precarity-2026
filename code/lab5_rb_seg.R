@@ -288,10 +288,16 @@ rb_by_type_solid <- rb_by_type %>%
 rb_by_type_solid
 
 # The chart itself is pure Lab 1: ordered bars. (One reminder beat:
-# reorder() sorts the category labels by their values.)
+# reorder() sorts the category labels by their values.) And bring back
+# Lab 3's axis-dressing line, scale_x_continuous(labels =
+# scales::percent_format()), so the axis writes 0.4 as 40%. House rule
+# from here to your final slides: every axis names its units --
+# percent_format(), dollar_format(), or comma_format() for big counts
+# -- so readers never have to guess what 0.4 means.
 
 ggplot(rb_by_type_solid, aes(x = median_rb, y = reorder(nt_group, median_rb))) +
   geom_col(fill = "steelblue") +
+  scale_x_continuous(labels = scales::percent_format()) +
   labs(
     title    = "Rent burden is highest in Alameda's Black-Latine neighborhoods",
     subtitle = "Median tract share of renter households paying 30%+ of income, 2020-2024 ACS",
@@ -302,7 +308,7 @@ ggplot(rb_by_type_solid, aes(x = median_rb, y = reorder(nt_group, median_rb))) +
   theme_minimal()
 
 # When we ran this, Black-Latine tracts topped the chart (median share
-# about 0.55) and majority-Asian tracts sat lowest (about 0.32) -- in the
+# about 55%) and majority-Asian tracts sat lowest (about 32%) -- in the
 # same county, the typical neighborhood's rent-burden rate swings by more
 # than 20 percentage points depending on who lives there. That is the
 # course thesis in one picture: housing precarity is racially structured.
@@ -326,6 +332,7 @@ rb_seg %>%
   filter(nt_group %in% rb_by_type_solid$nt_group) %>%   # the 10+ types only
   ggplot(aes(x = p_rb, y = reorder(nt_group, p_rb, FUN = median))) +
   geom_boxplot(fill = "steelblue") +
+  scale_x_continuous(labels = scales::percent_format()) +   # house rule
   labs(
     title    = "The spread behind the medians",
     subtitle = "Tract-level rent-burdened share by neighborhood type, Alameda County",
@@ -338,7 +345,7 @@ rb_seg %>%
 # Two notes:
 #   - reorder(..., FUN = median) sorts the boxes by each group's median
 #     (reorder's usual sorting is by the mean; we say median explicitly).
-#   - See the dots at 0 and 1 in the Mixed group? Tracts where a handful
+#   - See the dots pinned at 0% and at 100%? Tracts where a handful
 #     of renter households make the share jump to extremes -- small
 #     denominators again, Lab 1's margin-of-error lesson wearing a new
 #     costume. The box, not the dots, is the story.
@@ -348,6 +355,103 @@ rb_seg %>%
 # for a presentation slide?
 # [PUT YOUR ANSWER BELOW]
 #
+
+# --------------------------------------------------------------------------
+# 5.2 Two kinds of burden, side by side: geom_col(position = "dodge")
+# --------------------------------------------------------------------------
+# One last chart move for the course, and the segregation story earns it.
+# Our p_rb lumps every burdened household together -- the one paying 32%
+# of income with the one paying 60%. Lab 3's table tour drew a line
+# inside B25070: brackets _007 to _009 are 30-49.9% of income (call it
+# MODERATE burden), bracket _010 is 50%+ -- SEVERE burden, rent
+# swallowing half the household's income. So far we charted their sum.
+# The sharper question: does segregation shape the two the same way?
+#
+# That takes TWO numbers per neighborhood type, side by side. Build the
+# table first -- every verb here is an old friend, and the B25070
+# bracket columns are still sitting in rb_seg from Section 1's
+# pivot_wider:
+
+rb_levels <- rb_seg %>%
+  filter(nt_group %in% rb_by_type_solid$nt_group) %>%   # the 10+ types again
+  mutate(
+    p_moderate = (B25070_007 + B25070_008 + B25070_009) / B25070_001,
+    p_severe   = B25070_010 / B25070_001
+  ) %>%
+  group_by(nt_group) %>%
+  summarize(
+    median_moderate = median(p_moderate),
+    median_severe   = median(p_severe)
+  )
+
+rb_levels
+
+# Five rows, two number columns. But ggplot wants one row PER BAR, and
+# we want ten bars. Lab 4's pivot_longer() -- pivot_wider's return trip
+# -- stacks the two columns into one, and case_when(), hired back in
+# Section 3, turns the column names into legend-ready labels:
+
+rb_levels_long <- rb_levels %>%
+  pivot_longer(-nt_group,
+               names_to = "burden_level", values_to = "median_share") %>%
+  mutate(burden_level = case_when(
+    burden_level == "median_moderate" ~ "Moderate (30-49.9%)",
+    burden_level == "median_severe"   ~ "Severe (50%+)"
+  ))
+
+rb_levels_long            # ten rows: 5 types x 2 burden levels. Ten bars.
+
+# Now the chart. In Lab 3 (section 15.4) you put color INSIDE aes() and
+# got one line per county, plus a legend, for free. Same move for bars,
+# with fill (bars are colored by fill; lines by color):
+
+ggplot(rb_levels_long,
+       aes(x = median_share, y = reorder(nt_group, median_share),
+           fill = burden_level)) +
+  geom_col()
+
+# A legend, two colors... but R STACKED each pair, gluing moderate and
+# severe end to end. That is geom_col()'s default when two bars land on
+# the same row -- position = "stack" -- and it answers "how do the
+# pieces add up to a total?" Not today's question (and quietly wrong
+# for it here: the stacked pairs look like Section 5's totals, but
+# medians of parts do not sum exactly to the median of the whole).
+#
+# Today's question is "compare the pieces TO EACH OTHER," and its
+# position is "dodge" -- as in step aside: every bar gets its own slot,
+# shoulder to shoulder:
+
+ggplot(rb_levels_long,
+       aes(x = median_share, y = reorder(nt_group, median_share),
+           fill = burden_level)) +
+  geom_col(position = "dodge") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(
+    title    = "The racial gap in rent burden is mostly a severe-burden gap",
+    subtitle = "Median tract share of renters at each burden level, 2020-2024 ACS",
+    x        = "Median share of renter households",
+    y        = NULL,
+    fill     = NULL,
+    caption  = "Source: ACS 5-year + ERN neighborhood package. Types with 10+ tracts."
+  ) +
+  theme_minimal()
+
+# Read it pair by pair. When we ran this, the MODERATE bars barely
+# moved: every neighborhood type sits between about 19% and 23%. The
+# SEVERE bars are where segregation shows: about 11% in Mostly Asian
+# tracts and 13% in Asian-White tracts, but 34% in Black-Latine
+# tracts -- three times as high, and the one type where severe burden
+# towers over moderate, at nearly half again its size. Section 5's
+# twenty-plus-point swing was never "a few more households just over
+# the 30% line." It is the deep end -- households handing over HALF
+# their income -- that is racially sorted. One argument, position =
+# "dodge", and the finding sharpens from "burden differs by
+# neighborhood" to "SEVERE burden is what differs."
+#
+# Add the row to Lab 3's chart card: compare a few groups on two
+# measures each -> dodged bars. And mind the 2-3-ideas rule harder
+# than ever here -- with dodging, every extra fill level multiplies
+# the bars. Two levels read at a glance; four is a wall of stripes.
 
 # ==========================================================================
 # 6. Scaling up: your project region, county by county
@@ -612,7 +716,7 @@ tmap_mode("plot")
 #   Eviction rates................. Lab 4 (ERN data, rates, joins)
 #   Segregation types.............. Lab 5 sec 2-3 (ntdf + case_when)
 #   Compare groups/places.......... Lab 3 + Lab 5 sec 5 (group_by,
-#                                   summarize, bars, boxplots)
+#                                   summarize, bars, boxplots, dodged bars)
 #   Maps........................... Lab 4 + Lab 5 sec 8-9 (tmap or
 #                                   Datawrapper)
 #   Ship it........................ Lab 5 sec 7 (write_csv, output folder)

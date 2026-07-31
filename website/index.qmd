@@ -159,7 +159,8 @@ As with Assignment 1, there is a complete worked example to learn from: `code/a2
 
 #### Thursday August 6 - Lab
 
-* Bonus lab: working with data under memory constraints (`code/lab6_bonus_memory.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F)) - the survival kit for your final project: watching your memory budget, dropping geometry, chunking big Census pulls, caching with saveRDS, and querying bigger-than-memory parquet data with duckdb + arrow
+* Lab 5, our last teaching lab: measure neighborhood racial segregation with ERN's `neighborhood` package, join it to the Lab 3 rent-burden measure, and test whether the two move together - with side-by-side (dodged) bar charts, getting results out of R as CSVs, web maps in Datawrapper, and the final-project toolkit (`code/lab5_rb_seg.R` on the [DataHub](https://r.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fevictionresearch%2FSOC-N100-Housing-Precarity-2026&urlpath=rstudio%2F))
+* Bonus self-study for the final project: working with data under memory constraints (`code/lab6_bonus_memory.R`, same DataHub link) - watching your memory budget, dropping geometry, chunking big Census pulls, caching with saveRDS, and querying bigger-than-memory parquet data with duckdb + arrow. We will not walk through it in class; read it when your group's data pulls get big
 
 ## Week 6
 #### Tuesday August 11 - Group Lab

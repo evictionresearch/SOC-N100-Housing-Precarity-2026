@@ -280,6 +280,9 @@
 #
 # geom_col()        bars -- compare a few places or groups         [lab 1]
 #                     + geom_col(fill = "steelblue")
+#                   two measures per group, side by side: map       [lab 5]
+#                   fill = inside aes(), then dodge the bars
+#                     + geom_col(position = "dodge")
 #
 # geom_histogram()  one number's spread across many rows           [lab 3]
 #                     + geom_histogram(bins = 25)

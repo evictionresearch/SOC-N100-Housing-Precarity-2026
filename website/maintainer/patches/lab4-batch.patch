@@ -1,6 +1,6 @@
 --- a/code/lab4_evictions_mapping.R
 +++ b/code/lab4_evictions_mapping.R
-@@ -183,14 +183,14 @@
+@@ -196,14 +196,14 @@
  #
  # Now the mistake, on purpose. We also want each county's renter count,
  # which sits in co_totrent. The tempting move is to just name it:
