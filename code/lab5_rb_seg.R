@@ -12,8 +12,8 @@
 #   2. You will join it to the rent-burden measure you built in Lab 3 and
 #      ask a real research question: do segregation and rent burden move
 #      together?
-#   3. You will look at MIGRATION data -- who left a county and where they
-#      went -- and at the hard limits of what it can prove.
+#   3. You will look at MIGRATION data -- who moved IN during the past
+#      year, by race, tract by tract -- and at its hard limits.
 #   4. You will get your results OUT of R -- as a file any tool can read --
 #      and learn two ways to publish a map of them.
 #   5. You will leave with a final-project checklist that points every task
@@ -26,7 +26,7 @@
 #          summarize(), your own rent-burden measure
 #   Lab 4: outside data (evictions), joins, rates, and maps with tmap
 #
-# Today adds: a GitHub package, case_when(), get_flows(), write_csv(),
+# Today adds: a GitHub package, case_when(), race iterations (B07004),
 # publishing, and -- if time allows -- downloading a dataset off an
 # agency's website yourself. After this you own a complete research
 # pipeline.
@@ -36,24 +36,25 @@
 # teaches it. (All of them are on the course cheat sheet too,
 # code/r_functions_cheatsheet.R.)
 #
-#   remotes::install_github()  L81   install a package from GitHub
-#   ntdf()                     L167  ERN's neighborhood segregation types
-#   count()                    L189  group and tally in one move
-#   levels()                   L203  a factor's categories, in stored order
-#   case_when()                L268  many-way recode (if_else's big sibling)
-#   read_csv()                 L598  read a CSV, from a file or a URL
-#   dim()                      L600  rows and columns at once
-#   str_pad()                  L619  pad an ID back to its full width
-#   round()                    L710  round numbers
-#   get_flows()                L742  ACS migration flows between counties
-#   nchar()                    L775  how many characters a value has
-#   abs()                      L805  drop the minus sign, to sort by size
-#   scales::comma_format()     L822  axis numbers with thousands commas
-#   scale_fill_manual()        L823  pick which category gets which color
-#   dir.create()               L900  make a folder
-#   write_csv()                L904  save a table as a CSV
-#   options()                  L958  change an R setting for this session
-#   tm_fill()                  L970  map fill without borders
+#   remotes::install_github()  L82    install a package from GitHub
+#   ntdf()                     L168   ERN's neighborhood segregation types
+#   count()                    L190   group and tally in one move
+#   levels()                   L204   a factor's categories, in stored order
+#   case_when()                L269   many-way recode (if_else's big sibling)
+#   read_csv()                 L600   read a CSV, from a file or a URL
+#   dim()                      L602   rows and columns at once
+#   str_pad()                  L621   pad an ID back to its full width
+#   round()                    L712   round numbers
+#   options()                  L938   change an R setting for this session
+#   tmap_arrange()             L1046  two maps side by side, pan/zoom linked
+#   get_flows()                L1221  county-to-county migration, incl. moved-OUT
+#   nchar()                    L1245  how many characters a value has
+#   abs()                      L1274  drop the minus sign, to sort by size
+#   scales::comma_format()     L1290  axis numbers with thousands commas
+#   scale_fill_manual()        L1291  pick which category gets which color
+#   dir.create()               L1343  make a folder
+#   write_csv()                L1347  save a table as a CSV
+#   tm_fill()                  L1413  map fill without borders
 
 # ==========================================================================
 # 0. Packages -- including your first GitHub package
@@ -724,21 +725,498 @@ bay_rb %>%
 # you will miss this entirely.
 
 # --------------------------------------------------------------------------
-# 6.1 Who left? A brief on migration data
+# 6.1 Who moved IN? A brief on migration data
 # --------------------------------------------------------------------------
 # Everything you have measured tonight is a SNAPSHOT of who is here now.
 # Rent burden, segregation type, pollution -- all of it describes the
 # people currently living in a tract.
 #
-# But displacement is about who LEFT. And the households pushed out of a
-# neighborhood are, by definition, not in the rows describing that
-# neighborhood anymore. A tract can look calm precisely because the people
-# under the most pressure are already gone. Every measure in this course
-# has that blind spot, and migration data is the closest thing we have to
-# looking into it.
+# But displacement is about MOVEMENT. The Census asks one question that
+# gets at it: did you live in this same house one year ago? Table B07004
+# carries the answer, and it is the closest the ACS lets us get to
+# watching new people arrive in a neighborhood.
 #
-# THE FUNCTION. tidycensus has a second data-getter you have not met:
-# get_flows(). Same shape as get_acs() -- geography, state, county, year:
+# READ THAT QUESTION AGAIN, BECAUSE THE DIRECTION IS EVERYTHING. The
+# Census asks it of people at the address where they live NOW. So B07004
+# is a table of ARRIVALS and STAYERS: who is here today, and which of them
+# were somewhere else a year ago. It is in-migration.
+#
+# It does NOT count who moved OUT, and it cannot. A household pushed out
+# of a tract last year is not in that tract's rows anymore -- it answers
+# the same question at its new address, counted in somebody else's
+# neighborhood. Keep the word IN attached to every number in this section.
+# We will come back to what that costs us at the end.
+#
+# WHY THIS TABLE. The Census also publishes county-to-county migration
+# flows, which are fun to look at, but they stop at the county line --
+# there is no tract version. B07004 works at BOTH county and tract level,
+# so it joins to everything else you built tonight. That difference is not
+# a technicality. It is the entire finding of this section.
+#
+
+vars_2024 <- load_variables(2024, "acs5")
+View(vars_2024)
+
+# SOMETHING NEW ABOUT TABLE NAMES: RACE ITERATIONS. Search the catalog for
+# B07004 and you will not find it. What you find is nine tables:
+#
+#   B07004A  White alone                B07004F  Some other race alone
+#   B07004B  Black alone                B07004G  Two or more races
+#   B07004C  Am. Indian / AK Native     B07004H  White alone, NOT Latine
+#   B07004D  Asian alone                B07004I  Latine (of any race)
+#   B07004E  Native Hawaiian / Pac. Isl.
+#
+# A trailing letter means "this same table, for this racial group." Once
+# you know the pattern you will see it on Census tables everywhere.
+#
+# Every one of the nine has the same six lines:
+#
+#   _001  Total  (everyone living here now)
+#   _002  Same house 1 year ago                     <- stayed put
+#   _003  Moved FROM elsewhere in the same county   <- arrived
+#   _004  Moved FROM a different county, same state <- arrived
+#   _005  Moved FROM a different state              <- arrived
+#   _006  Moved FROM abroad                         <- arrived
+#
+# Look at lines _003 through _006: every one says moved FROM. There is no
+# "moved TO" line anywhere in this table, and that is the point above.
+#
+# So "moved in during the past year" is _001 minus _002. Build the vector
+# exactly the way you built rb_vars in Section 1. One call can mix tables:
+
+mob_vars <- c(
+  "B07004H_001", "B07004H_002",   # White, not Latine: total, stayed put
+  "B07004B_001", "B07004B_002",   # Black
+  "B07004D_001", "B07004D_002",   # Asian
+  "B07004I_001", "B07004I_002"    # Latine
+)
+
+# START AT THE COUNTY LEVEL, the way most people would:
+
+mob_county <- get_acs(
+  geography = "county",
+  variables = mob_vars,
+  state     = "CA",
+  county    = "Alameda",
+  year      = 2024
+) %>%
+  select(GEOID, variable, estimate) %>%
+  pivot_wider(names_from = variable, values_from = estimate) %>%
+  mutate(
+    White  = round(100 * (B07004H_001 - B07004H_002) / B07004H_001, 1),
+    Black  = round(100 * (B07004B_001 - B07004B_002) / B07004B_001, 1),
+    Asian  = round(100 * (B07004D_001 - B07004D_002) / B07004D_001, 1),
+    Latine = round(100 * (B07004I_001 - B07004I_002) / B07004I_001, 1)
+  ) %>%
+  select(White, Black, Asian, Latine)
+
+mob_county
+
+# Read those four numbers, and read them as ARRIVALS: about 12.4% of the
+# White residents living in Alameda today moved into their current home
+# within the past year. Same for 12.8% of Black residents, 12.6% of Asian
+# residents, 10.6% of Latine residents. Nearly identical. If you stopped
+# here you would write "mobility barely differs by race in Alameda
+# County," and you would have a defensible, sourced, completely misleading
+# sentence.
+#
+# Do not stop here.
+#
+# THE SAME TABLE AT TRACT LEVEL. One word changes in the call:
+
+mob_tract <- get_acs(
+  geography = "tract",
+  variables = mob_vars,
+  state     = "CA",
+  county    = "Alameda",
+  year      = 2024
+) %>%
+  select(GEOID, variable, estimate) %>%
+  pivot_wider(names_from = variable, values_from = estimate) %>%
+  mutate(
+    arrived_white = (B07004H_001 - B07004H_002) / B07004H_001,
+    arrived_black = (B07004B_001 - B07004B_002) / B07004B_001
+  )
+
+mob_tract
+glimpse(mob_tract)
+
+# Join it to tonight's table, and check the join the way Section 4 taught:
+
+rb_seg_mob <- rb_seg %>%
+  left_join(mob_tract, by = "GEOID")
+
+rb_seg_mob
+glimpse(rb_seg_mob)
+nrow(rb_seg)                          # 377
+nrow(rb_seg_mob)                      # still 377
+sum(is.na(rb_seg_mob$arrived_white))    # 0
+
+# DENOMINATORS, one more time, because they decide whether any of this is
+# real. A tract with 40 Black residents swings from 0% to 25% on ten
+# people. So we read a tract's rate only where that group actually lives
+# there in numbers -- Lab 4's rule again, at least 100 people:
+
+mob_by_type <- rb_seg_mob %>%
+  filter(nt_group %in% rb_by_type_solid$nt_group) %>%
+  group_by(nt_group) %>%
+  summarize(
+    white_arrived = median(arrived_white[B07004H_001 >= 100]),
+    black_arrived = median(arrived_black[B07004B_001 >= 100]),
+    n_white     = sum(B07004H_001 >= 100),
+    n_black     = sum(B07004B_001 >= 100)
+  )
+
+mob_by_type
+
+# Find the Black-Latine row. Read it twice.
+#
+# In Alameda's Black-Latine neighborhoods, about 17% of WHITE residents
+# moved into their home within the past year. About 4% of BLACK residents
+# did. Same tracts, same year, same table: White residents arriving
+# roughly FOUR TIMES as fast as their Black neighbors. And it is the
+# extreme on both ends -- of every neighborhood type, Black-Latine tracts
+# have the HIGHEST White arrival rate and the LOWEST Black arrival rate.
+#
+# That is what arrival looks like in a neighborhood that is changing.
+# Newcomers arriving fast; long-term residents staying put.
+#
+# Now go back to the county numbers. 12.4% against 12.8%, a difference of
+# nothing. The county average did not just miss this, it actively hid it,
+# by averaging the arriving with the staying across 379 tracts at once.
+# Same table, same year, same county. The only thing that changed was the
+# geography you asked about. Keep that in mind every time someone hands
+# you a county-level statistic about a neighborhood-level problem.
+#
+# Before charting, look at n_white and n_black. The Black rate rests on 13
+# tracts in the Black-Latine row and just 2 in "Mostly Asian" -- so that
+# second one is not a finding, it is a rounding error wearing a label. We
+# chart only the types where both groups clear 10 tracts:
+
+mob_long <- mob_by_type %>%
+  filter(n_black >= 10) %>%
+  select(nt_group, white_arrived, black_arrived) %>%
+  pivot_longer(-nt_group, names_to = "group", values_to = "share") %>%
+  mutate(group = case_when(
+    group == "white_arrived" ~ "White (non-Latine) residents",
+    group == "black_arrived" ~ "Black residents"
+  ))
+
+# Section 5.2's dodged bars, doing the same job for a different question:
+
+ggplot(mob_long, aes(x = share, y = reorder(nt_group, share), fill = group)) +
+  geom_col(position = "dodge") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(
+    title    = "In Black-Latine neighborhoods, White residents are four times likelier to be new arrivals",
+    subtitle = "Median tract share who moved into their home in the past year, 2020-2024 ACS",
+    x        = "Share who moved in within the past year",
+    y        = NULL,
+    fill     = NULL,
+    caption  = "Source: ACS 5-year table B07004. Tracts with 100+ residents of that group."
+  ) +
+  theme_minimal()
+
+# Notice the Asian-Latine row runs the other way: 3% of White residents
+# moved, 5.7% of Black residents did. The pattern is not "White people
+# move more." It is specific to which neighborhoods are changing and who
+# is arriving in them.
+# --------------------------------------------------------------------------
+# 6.2 Mapping it: where are these neighborhoods, and who is arriving?
+# --------------------------------------------------------------------------
+# The dodged bars gave you one number per neighborhood type. A median hides
+# geography, and geography is the whole subject of this course. So put it
+# on a map.
+#
+# Lab 4's recipe, unchanged: tigris for the tract shapes, left_join
+# starting FROM the shapes so the result stays spatial, tmap to draw it.
+
+library(tigris)
+library(tmap)
+
+# Cache map downloads so re-runs are instant:
+options(tigris_use_cache = TRUE)
+
+alameda_tracts <- tracts(state = "CA", county = "Alameda", year = 2024)
+
+mob_map <- alameda_tracts %>%
+  left_join(rb_seg_mob, by = "GEOID")
+
+# Pull out just the Black-Latine tracts, keeping the 100-resident rule:
+
+bl_map <- mob_map %>%
+  filter(nt_group == "Black-Latine", B07004H_001 >= 100)
+
+nrow(bl_map)   # 12 of the 13 -- one has too few White residents to rate
+
+# TWO LAYERS IN ONE MAP, which is new. Each tm_shape() starts a layer, and
+# layers draw in order, so the second one lands on top of the first. Grey
+# for the whole county to show where you are, then the Black-Latine tracts
+# colored by how fast White residents are arriving:
+
+tm_shape(mob_map) +
+  tm_polygons(col = "grey92", border.col = "white", title = "Rest of county") +
+tm_shape(bl_map) +
+  tm_polygons(
+    col        = "arrived_white",
+    palette    = "Reds",
+    style      = "quantile",
+    border.col = "grey30",
+    title      = "White arrivals\n(share of White\nresidents, past year)"
+  )
+
+# Two things to take from it.
+#
+# FIRST, WHERE THEY ARE. Alameda's Black-Latine tracts are not scattered
+# across the county at random. Nearly all of them pack into one cluster at
+# the northwest end, the Oakland and Berkeley side, with a single outlier
+# further south -- while the whole eastern half of the county has none at
+# all. Segregation is not only a number attached to a tract. It has a
+# shape, and you just drew it.
+#
+# SECOND, AND THIS IS THE PART THE BAR CHART COULD NOT SHOW: they are not
+# all changing at the same speed. Across those 12 tracts the White arrival
+# rate runs from 0% to about 46%. The 17% median you charted is the middle
+# of a very wide spread. White residents are moving into some Black-Latine
+# neighborhoods fast, and into others barely at all. "Where, exactly?" is a
+# question
+# only the map can answer, and it is the question a city council member
+# actually has.
+
+# --------------------------------------------------------------------------
+# 6.2.1 Click around: interactive maps of where each group is arriving
+# --------------------------------------------------------------------------
+# Lab 4's tmap_mode("view") turns any tmap into a slippy web map you can
+# pan, zoom, and click. Switch it on once:
+
+tmap_mode("view")
+
+# WHERE ARE BLACK HOUSEHOLDS MOVING IN? Countywide this time, not just the
+# Black-Latine tracts, and only where at least 100 Black residents live so
+# the rate means something. popup.vars picks what a click shows you:
+
+mob_black <- mob_map %>%
+  filter(B07004B_001 >= 100)
+
+# Save the map to a NAME this time instead of just printing it -- we want
+# both maps as objects in a moment. Typing the name draws it:
+
+map_black <- tm_shape(mob_black) +
+  tm_polygons(
+    col        = "arrived_black",
+    palette    = "Purples",
+    style      = "quantile",
+    alpha      = 0.7,
+    title      = "Black arrivals",
+    popup.vars = c("nt_group", "arrived_black", "p_rb")
+  )
+
+map_black
+
+# 281 tracts qualify. The median is about 8%, and the top of the range is
+# extreme -- click a dark tract before you believe it, because the highest
+# values sit in tracts with dorms and group quarters, where "moved in the
+# past year" describes a student body, not a housing market.
+#
+# NOW THE SAME MAP FOR WHITE HOUSEHOLDS. Identical code, two words changed:
+
+mob_white <- mob_map %>%
+  filter(B07004H_001 >= 100)
+
+map_white <- tm_shape(mob_white) +
+  tm_polygons(
+    col        = "arrived_white",
+    palette    = "Reds",
+    style      = "quantile",
+    alpha      = 0.7,
+    title      = "White arrivals",
+    popup.vars = c("nt_group", "arrived_white", "p_rb")
+  )
+
+map_white
+
+# 372 tracts qualify, median about 10%.
+#
+# NOW PUT THEM SIDE BY SIDE. This is what saving the maps to names bought
+# us. tmap_arrange() takes any number of tmap objects and lays them out in
+# one view; ncol says how many across; and sync = TRUE LINKS them, so
+# panning or zooming one map moves the other to match. That linking is the
+# whole point -- comparing two maps at different zooms tells you nothing.
+
+tmap_arrange(map_black, map_white, ncol = 2, sync = TRUE)
+
+# The Viewer pane is small for two maps. Click the "Show in new window"
+# icon (top-right of the Viewer, a little arrow leaving a box) to open them
+# full-screen in your browser, then zoom into Oakland and drag around.
+# Both maps move together.
+#
+# (One rough edge: tmap_save() works on a single interactive map but errors
+# on an arranged pair in the current tmap. For a slide, save the two maps
+# separately, or take a screenshot of the linked view.)
+#
+# Compare where the dark patches sit. That comparison is the section's
+# argument in one gesture: countywide the two medians are close (8% and
+# 10%), but they are dark in DIFFERENT PLACES. Sameness on average,
+# difference on the ground.
+#
+# Then click the Black-Latine tracts specifically on each map. In those 12
+# tracts the White arrival rates run 0, 9.6, 10.7, 11.8, 15, 17, 17.6,
+# 20.3, 24, 32.2, 38.9, 45.5 -- while the Black arrival rates in the same
+# tracts run 0, 0, 0, 0.1, 2.2, 4.4, 5.4, 8.2, 9.8, 15.2, 23.5, 28.2. Four
+# of those neighborhoods took in essentially no Black residents at all last
+# year, while White arrivals ran into the tens of percent next door.
+#
+# Interactive maps are for exploring and for presentations; static ones are
+# for print and for slides you cannot click. Switch back when you are done,
+# or every later map in this lab opens in a browser:
+
+tmap_mode("plot")
+
+# (Keep the reliability habit from Lab 4 in view. Every rate on these maps
+# is an ACS estimate with a margin of error, and the tracts with the
+# smallest populations have the widest ones. The map draws a confident
+# color either way -- that confidence is the map's, not the data's.)
+
+
+# --------------------------------------------------------------------------
+# 6.2.2 One map instead of two: where is White arrival outpacing Black?
+# --------------------------------------------------------------------------
+# Two maps side by side works, but look at what your eyes are actually
+# doing: flicking between them and subtracting. Anything a reader has to
+# compute in their head belongs in the data instead. So compute it.
+#
+# ONE NUMBER PER TRACT: the White arrival rate minus the Black arrival
+# rate. Positive means White residents are moving in faster than Black
+# residents; negative means the reverse; zero means the two are arriving at
+# the same rate. We multiply by 100 so the units are PERCENTAGE POINTS,
+# which is what the legend will say.
+#
+# This measure needs BOTH denominators, so a tract only qualifies if it has
+# at least 100 White AND at least 100 Black residents:
+
+mob_gap <- mob_map %>%
+  filter(B07004H_001 >= 100, B07004B_001 >= 100) %>%
+  mutate(arrival_gap = 100 * (arrived_white - arrived_black))
+
+nrow(mob_gap)              # 278 of 379 tracts can be compared at all
+summary(mob_gap$arrival_gap)
+
+# THIS IS WHAT DIVERGING COLORS ARE FOR. A sequential palette (Reds, Blues)
+# runs light to dark and answers "how much?" This measure is not "how
+# much." It has a meaningful ZERO in the middle and two directions away
+# from it, so it wants a palette with two directions and a neutral center:
+# RdBu, which runs red at the low end through near-white in the middle to
+# blue at the high end. (Put a minus in front, "-RdBu", to flip which side
+# gets which color. Section 9.2 comes back to this.)
+#
+# One more decision, and it matters. One tract sits at -76 percentage
+# points. Left alone, a single outlier stretches the color scale so far
+# that every other tract washes out to near-white. So we set the breaks by
+# hand, and the outer bins absorb the extremes:
+
+tm_shape(mob_gap) +
+  tm_polygons(
+    col        = "arrival_gap",
+    palette    = "RdBu",
+    breaks     = c(-Inf, -20, -10, -5, 5, 10, 20, Inf),
+    border.col = "grey60",
+    alpha = .5,
+    title      = "White minus Black\narrival rate\n(percentage points)"
+  )
+
+# READING IT. Check the legend before you say a word about this map, every
+# time, because a diverging palette can be pointed either direction.
+#
+# BLUE tracts are the POSITIVE side: White residents arrived faster than
+# Black residents last year, by 5, 10, more than 20 points as the blue
+# deepens.
+#
+# RED tracts are the NEGATIVE side: the reverse, Black arrival outpacing
+# White arrival.
+#
+# NEAR-WHITE in the middle means the two groups arrived at roughly the
+# same rate.
+#
+# And notice what is NOT on this map: only the 278 comparable tracts are
+# drawn at all. The other 101 are simply absent, because one of the two
+# groups has fewer than 100 residents there and the rate would be noise.
+# A blank tract is not a zero and not a tie. It means we could not tell,
+# which is a finding worth saying out loud rather than coloring in.
+#
+# Countywide the split is 172 tracts where White arrival is faster against
+# 104 where Black arrival is, with a median gap of about +4 points. But go
+# back to the neighborhood types and the concentration shows: the median
+# gap is +14.4 points in Black-Latine tracts, against +4.3 in Asian-White,
+# +4.2 in Mixed, and -1.1 in Asian-Latine. The Black-Latine neighborhoods
+# are not just the ones with the most White arrival. They are the ones
+# where the RACIAL GAP in who is arriving is widest, by a factor of three.
+#
+# ONE CAUTION, and it is the arithmetic. Every rate here is an estimate
+# with a margin of error, and a DIFFERENCE of two estimates carries both
+# margins -- it is always noisier than either number alone. Treat the
+# strong colors at the ends as the signal and the pale middle as "probably
+# nothing." If you put this map on a slide, say the two denominators out
+# loud, and say why some tracts are blank.
+
+# --------------------------------------------------------------------------
+# 6.2.3 Three things none of this can tell you
+# --------------------------------------------------------------------------
+# Tables, chart, and maps together -- here is what B07004 still cannot say,
+# no matter how good the map looks.
+#
+# 1. WHO LEFT. This is the big one, and it is built into the question.
+#    The ACS asks where you lived a year ago -- and it asks people who are
+#    HERE NOW. Anyone pushed out of a tract last year answers that
+#    question at their new address, counted in somebody else's
+#    neighborhood. A tract that lost the people who could no longer afford
+#    it looks, in this table, quiet. Every measure tonight shares this
+#    blind spot; this one just makes it obvious.
+#
+# 2. WHY THEY MOVED. A household priced out of its apartment and a
+#    household that bought a bigger place two miles away are both "moved
+#    within same county." Migration is not displacement. Displacement is
+#    migration UNDER PRESSURE, and the pressure is invisible here. Anyone
+#    who shows you a mobility rate and calls it displacement has skipped
+#    the hardest step in the field.
+#
+# 3. HOW THE GROUPS OVERLAP. B07004B is "Black alone" and includes Black
+#    Latine residents; B07004I is "Latine of any race" and counts those
+#    same people again. The iterations do not sum to the total and were
+#    never built to. Name the iteration you used, every time.
+
+# YOUR TURN (3): run mob_vars for one county in your project area, first
+# at county level and then at tract level joined to your own rb_seg. Did
+# the tract view change the story the county view told you? Then, in two
+# sentences: what would you need to know about those movers before calling
+# any of it displacement?
+# [PUT YOUR ANSWER BELOW]
+#
+
+# --------------------------------------------------------------------------
+# 6.3 OPTIONAL: the data that DOES count who left (counties only)
+# --------------------------------------------------------------------------
+# Skip this if we are short on time -- nothing later depends on it.
+#
+# Sections 6.1 and 6.2 ended on a real limit: B07004 counts arrivals, and no ACS
+# table reports departures for a census tract. So the obvious question is
+# whether ANY public data counts who left. The answer is yes, with one
+# expensive catch.
+#
+# The Census publishes MIGRATION FLOWS: for a given place, how many people
+# arrived from each other place, and how many left for each other place.
+# Pairing an origin with a destination is exactly what B07004 could not do.
+# tidycensus gets it with a second function, get_flows().
+#
+# THE CATCH, and it is why this is not the main section: get_flows() only
+# accepts counties, county subdivisions, and metro areas. There is no tract
+# version, and there is no way to make one. If your question is about
+# neighborhoods, Section 6.1 is your table and this one cannot help you.
+#
+# A VINTAGE WARNING TOO. Everything else in this lab uses year = 2024. This
+# cannot. County-to-county flows top out at 2020 (the 2016-2020 ACS) -- ask
+# for a newer year and the Census hands back flows between STATES instead,
+# which is not what we want. That window also straddles the start of the
+# pandemic. Name the years you used.
 
 flows_alameda <- get_flows(
   geography = "county",
@@ -747,35 +1225,26 @@ flows_alameda <- get_flows(
   year      = 2020
 )
 
-# A VINTAGE WARNING, and it is a real one. Everything else in this lab uses
-# year = 2024. This line cannot. The Census publishes these flows on a long
-# lag, and as of August 2026 asking for a newer year still returns flows to
-# STATES rather than to individual counties -- which would break the whole
-# point below. So: county-to-county tops out at 2020 (the 2016-2020 ACS),
-# and that window straddles the start of the pandemic. Check for a newer
-# vintage when you use this in your project, and name the years you used.
-#
-# What came back:
-
 flows_alameda %>%
   count(variable)
 
-# Three variables, one row each per PARTNER place:
+# Three variables, one row each per PARTNER place -- and note that the
+# second one is the thing Section 6.1 could not give us at any price:
 #
 #   MOVEDIN   people who moved from that place TO Alameda
-#   MOVEDOUT  people who moved from Alameda TO that place
+#   MOVEDOUT  people who moved from Alameda TO that place    <- departures
 #   MOVEDNET  MOVEDIN minus MOVEDOUT (positive = Alameda gained)
 #
 # AN ID TRICK. Place IDs have lengths, and the length tells you what KIND
-# of place you are looking at. Here: 5 digits is
-# a U.S. county, 10 digits is a Connecticut town (that state reports towns
-# instead of counties), and a missing GEOID2 is a world region like "Asia."
-# nchar() counts the characters in a value, so this keeps counties only:
+# of place you are looking at: 5 digits is a U.S. county, 10 digits is a
+# Connecticut town (that state reports towns instead of counties), and a
+# missing GEOID2 is a world region like "Asia." nchar() counts the
+# characters in a value, so this keeps counties only:
 
 flows_counties <- flows_alameda %>%
   filter(nchar(GEOID2) == 5)
 
-# Where did people GO? Sort the outflows:
+# Where did people GO? This is the question we could not ask before:
 
 flows_counties %>%
   filter(variable == "MOVEDOUT") %>%
@@ -791,15 +1260,14 @@ flows_counties %>%
   select(FULL2_NAME, estimate, moe) %>%
   head(6)
 
-# Read those two lists together before charting anything. Contra Costa is
-# the number-one DESTINATION (about 16,500 people) and also the number-three
-# ORIGIN (about 7,800). Santa Clara is on both lists too. Movement between
-# neighboring counties is enormous in both directions at once -- which is
-# exactly why the gross numbers cannot tell you the story by themselves.
-# The NET is where the direction shows up.
+# Read the two lists together before charting. Contra Costa is the
+# number-one DESTINATION (about 16,500 people) and also the number-three
+# ORIGIN (about 7,800). Movement between neighboring counties is enormous
+# in both directions at once, which is why gross numbers cannot tell the
+# story alone. The NET is where direction shows up.
 #
-# Twelve biggest net flows, in either direction. abs() strips the minus
-# sign so we sort by SIZE, and if_else() (Lab 3) labels the direction:
+# Twelve biggest net flows, either direction. abs() strips the minus sign
+# so we sort by SIZE, and if_else() (Lab 3) labels the direction:
 
 net_biggest <- flows_counties %>%
   filter(variable == "MOVEDNET") %>%
@@ -810,11 +1278,10 @@ net_biggest <- flows_counties %>%
 net_biggest %>%
   select(FULL2_NAME, estimate, moe, direction)
 
-# The chart is Section 5's ordered bars with two additions: a line at zero,
-# because this measure has a meaningful center, and hand-picked colors.
-# scale_fill_manual() lets you say which category gets which color, which
-# matters here -- a chart about loss and gain must not scramble red and
-# blue. And comma_format() on the axis, since these are counts of people.
+# Section 5's ordered bars, plus a line at zero because this measure has a
+# meaningful center, plus hand-picked colors. scale_fill_manual() lets you
+# say which category gets which color, which matters when a chart is about
+# loss and gain. comma_format() because these are counts of people.
 
 ggplot(net_biggest,
        aes(x = estimate, y = reorder(FULL2_NAME, estimate), fill = direction)) +
@@ -833,63 +1300,38 @@ ggplot(net_biggest,
   ) +
   theme_minimal()
 
-# Look at which counties sit on which side. Alameda GAINED from San
-# Francisco (+5,257), Santa Clara (+3,344), and San Mateo (+3,100) -- three
-# of the most expensive housing markets in the country. It LOST to Contra
-# Costa (-8,702), San Joaquin (-3,962), Stanislaus, Solano, Sacramento, and
-# Placer -- the cheaper edge of the region and beyond it.
+# Alameda GAINED from San Francisco (+5,257), Santa Clara (+3,344), and San
+# Mateo (+3,100) -- three of the most expensive housing markets in the
+# country. It LOST to Contra Costa (-8,702), San Joaquin (-3,962),
+# Stanislaus, Solano, Sacramento, and Placer -- the cheaper edge of the
+# region and past it. That is people moving DOWN the rent ladder, one
+# county at a time. Set it beside Section 6: Solano had the Bay Area's
+# HIGHEST rent-burdened share on its CHEAPEST rents. The flows are
+# consistent with that, though they do not prove it.
 #
-# That is people moving DOWN the rent ladder, one county at a time. And set
-# it beside Section 6's ranking: Solano had the Bay Area's HIGHEST
-# rent-burdened share on the region's CHEAPEST rents. The flows show one
-# mechanism that is consistent with that paradox -- the counties absorbing
-# the outflow are the counties where burden is worst. Consistent with, not
-# proof of. Which brings us to the part that matters most.
+# WHAT THIS STILL CANNOT TELL YOU, briefly, because Section 6.1 made the
+# same three points at length:
 #
-# THREE THINGS THIS DATA CANNOT TELL YOU
-#
-# 1. WHO MOVED. These are ALL movers -- owners and renters, rich and poor,
-#    together in one number. You cannot split them. The Census used to
-#    publish these flows broken down by tenure, income, and race, but that
-#    stopped: ask get_flows() for breakdown = "TENURE" on any recent year
-#    and it refuses, because those characteristics are only available for
-#    surveys before 2016. So "where did low-income RENTERS go" is not a
-#    question this file can answer.
-#
-# 2. WHY THEY MOVED. This is the big one. A family priced out of Oakland
-#    and a family that bought a bigger house in Walnut Creek on purpose
-#    appear in this data as the same arrow. Migration is not displacement.
-#    Displacement is migration UNDER PRESSURE, and the pressure is invisible
-#    here. Anyone who shows you a net-outflow number and calls it
-#    displacement has skipped the hardest step in the field.
-#
-# 3. WHO LEFT THE COUNTRY. Notice that the world-region rows have a MOVEDIN
-#    number but no MOVEDOUT. The ACS asks people living in the U.S. where
-#    they lived a year ago. Someone who moved abroad is not here to be
-#    asked, so emigration simply is not measured.
+#   - ALL MOVERS, not renters and not low-income households. Ask
+#     get_flows() for breakdown = "TENURE" and it refuses; those
+#     characteristics stopped being published after 2016.
+#   - PUSHED vs CHOSE is still invisible. A family priced out of Oakland
+#     and a family that wanted a yard in Walnut Creek are the same arrow.
+#   - EMIGRATION is still missing. The world-region rows carry a MOVEDIN
+#     number but no MOVEDOUT: someone who moved abroad is not here to be
+#     asked.
 #
 # And the margins of error have not left either. Sacramento's net loss is
-# about -1,177 with a margin of roughly +/- 1,050, which nearly touches
-# zero. Solano's is -1,213 +/- 644. Lean on the big bars at the ends of that
-# chart, not the small ones in the middle.
-#
-# WHAT RESEARCHERS DO INSTEAD. Because of limits 1 and 2, models that
-# actually estimate displacement risk reach for data that follows the same
-# households or individuals over time, rather than counting anonymous
-# arrivals and departures. That is one of the inputs behind the Housing
-# Precarity Risk Model in the bonus Lab 6, and it is a large part of why
-# that model can say things a flow table cannot.
-
-# YOUR TURN (3): run the get_flows() call for one county in your project
-# area. Which county does yours lose the most people to, and which does it
-# gain the most from? Then, in two sentences: what would you need to know
-# about those movers before calling any of it displacement?
-# [PUT YOUR ANSWER BELOW]
-#
+# about -1,177 with a margin near +/- 1,050, which nearly touches zero.
+# Lean on the big bars at the ends, not the small ones in the middle.
 
 # ==========================================================================
-# 7. Getting results OUT of R: write_csv()
+# 7. OPTIONAL: Getting results OUT of R: write_csv()
 # ==========================================================================
+# We are not covering this in class, and you do not need it for the final
+# project. It is here for when you want it -- and you will want it the
+# first time someone asks for your numbers in a spreadsheet.
+#
 # Your group's writeup, slides, and maps need your numbers outside of R.
 # The universal answer is a CSV file -- "comma separated values" -- which
 # Excel, Google Sheets, Datawrapper, and every tool on earth can read.
@@ -911,8 +1353,12 @@ write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "~/output/bay_rb_by_county.c
 # That is the shape web mapping tools want.
 
 # ==========================================================================
-# 8. Publishing path 1: a web map with Datawrapper (no code)
+# 8. OPTIONAL: Publishing path 1: a web map with Datawrapper (no code)
 # ==========================================================================
+# Also not covered in class, and not needed for the final. Section 9 is
+# the mapping path we do use. This one is here if you want an interactive
+# web map for a slide, and it runs on Section 7's CSV.
+#
 # Datawrapper (datawrapper.de) is a free web tool newsrooms use for
 # interactive charts and maps -- perfect for final-project visuals your
 # audience can hover over. You already made its input file. The clicks,
@@ -951,14 +1397,10 @@ write_csv(bay_rb %>% select(GEOID, NAME, p_rb_pct), "~/output/bay_rb_by_county.c
 # ==========================================================================
 # Everything here is Lab 4: tigris for tract shapes, left_join starting
 # FROM the shapes (so the result stays spatial), tmap to draw it.
-
-library(tigris)
-library(tmap)
-
-# Cache map downloads so re-runs are instant:
-options(tigris_use_cache = TRUE)
-
-alameda_tracts <- tracts(state = "CA", county = "Alameda", year = 2024)
+#
+# Section 6.2 already loaded tigris and tmap and downloaded alameda_tracts,
+# so we go straight to the join. (If you skipped 6.2, run its three setup
+# lines first -- the two library() calls and the tracts() download.)
 
 rb_map_data <- alameda_tracts %>%
   left_join(rb_seg, by = "GEOID")
@@ -1034,8 +1476,12 @@ tm_shape(rb_map_data) +
 #
 
 # ==========================================================================
-# 10. Your final-project toolkit (keep this section open while you work)
+# 10. OPTIONAL: Your final-project toolkit (keep this open while you work)
 # ==========================================================================
+# We are not walking through this in class. It is a reference card: every
+# task the final-project prompt asks for, and the lab section that taught
+# it. Read it on your own when your group sits down to work.
+#
 # The prompt asks your group for: an area of at least two counties or a
 # region; a research question about displacement; 3-5 data points/plots;
 # at least two hypotheses about disparate impact; a 10-15 minute
@@ -1051,10 +1497,10 @@ tm_shape(rb_map_data) +
 #   Segregation types.............. Lab 5 sec 2-3 (ntdf + case_when)
 #   Compare groups/places.......... Lab 3 + Lab 5 sec 5 (group_by,
 #                                   summarize, bars, boxplots, dodged bars)
-#   Who left, and where to........ Lab 5 sec 6.1 (get_flows, net migration
-#                                   -- and its three hard limits)
-#   Maps........................... Lab 4 + Lab 5 sec 8-9 (tmap or
-#                                   Datawrapper)
+#   Who is moving, by race........ Lab 5 sec 6.1 (B07004 race iterations,
+#                                   county vs tract -- and its three limits)
+#   Maps........................... Lab 4 + Lab 5 sec 9 (tmap; sec 8 is
+#                                   the optional Datawrapper path)
 #   Outside data off a website..... Lab 5 sec 5.3 (download, upload to the
 #                                   DataHub, str_pad the ID, join, check)
 #   Ship it........................ Lab 5 sec 7 (write_csv, output folder)

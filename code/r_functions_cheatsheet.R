@@ -175,9 +175,10 @@
 #                   (my neighborhood package)
 #                     ntdf(state = "CA", county = "Alameda", year = 2024)
 #
-# get_flows()       ACS migration flows: who moved in, who moved   [lab 5]
-#                   out, and the net, between one county and every
-#                   other. County-to-county tops out at year 2020
+# get_flows()       county-to-county migration -- the one source   [lab 5]
+#                   that reports who moved OUT, not just in.
+#                   Counties/metros only, never tracts; county-to-
+#                   county tops out at year = 2020
 #                     get_flows(geography = "county", state = "CA",
 #                               county = "Alameda", year = 2020)
 #
@@ -255,7 +256,7 @@
 #                     pivot_wider(names_from  = variable,
 #                                 values_from = estimate)
 #
-# pivot_longer()    the return trip: wide -> long, for multi-line   [lab 4]
+# pivot_longer()    the return trip: wide -> long, for multi-line  [lab 4]
 #                   charts (one row per year-group pair)
 #                     pivot_longer(-year, names_to = "group",
 #                                  values_to = "filings")
@@ -282,10 +283,6 @@
 #                   length tells you what kind of place it is
 #                   (5 digits = a county, 10 = a Connecticut town)
 #                     filter(nchar(GEOID2) == 5)
-
-# ==========================================================================
-# 7. SMALL CALCULATIONS
-# ==========================================================================
 #
 # mean() / median() average / middle value                     [labs 1, 3]
 #                     median(alameda_rb_clean$p_rb)
@@ -330,7 +327,7 @@
 #
 # geom_col()        bars -- compare a few places or groups         [lab 1]
 #                     + geom_col(fill = "steelblue")
-#                   two measures per group, side by side: map       [lab 5]
+#                   two measures per group, side by side: map      [lab 5]
 #                   fill = inside aes(), then dodge the bars
 #                     + geom_col(position = "dodge")
 #
@@ -409,6 +406,12 @@
 # tmap_mode()       switch between static ("plot") and             [lab 4]
 #                   interactive ("view") maps
 #                     tmap_mode("view")
+#
+# tmap_arrange()    show several saved maps side by side;          [lab 5]
+#                   sync = TRUE links their pan and zoom so you
+#                   are always comparing the same view
+#                     tmap_arrange(map_black, map_white,
+#                                  ncol = 2, sync = TRUE)
 #
 # tmap_save()       save a map to a file                           [lab 4]
 #                     tmap_save(my_map, "~/eviction_map.png")
