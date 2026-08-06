@@ -49,8 +49,9 @@ Lab scripts live in `code/`:
 - `lab2_census_data.R` — tidycensus / ACS data
 - `lab3_rent_burden.R` — census table literacy, the rent-burden measure & the core chart types (two-session lab)
 - `lab4_evictions_mapping.R` — ERN eviction data, rates, and maps
-- `lab5_rb_seg.R` — rent burden and segregation
-- `lab6_bonus_memory.R` — bonus: working under memory constraints
+- `lab5_rb_seg.R` — rent burden, segregation, outside data, and a migration brief (`get_flows()`)
+- `lab6_hprm.R` — bonus self-study: reading the Housing Precarity Risk Model (short path §1–6, long path §7–10)
+- `lab6_bonus_memory.R` — retired predecessor (memory constraints); superseded by `lab6_hprm.R`, kept pending Tim's call
 - `r_functions_cheatsheet.R` — student reference card: every function in the labs, grouped by task (regenerate inventory with `website/maintainer/list_lab_functions.R`)
 - `README.md` — package practices (plain base-R/`library()` pedagogy)
 

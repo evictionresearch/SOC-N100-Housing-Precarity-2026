@@ -31,8 +31,9 @@ Lab scripts live in `code/`:
 - `lab2_census_data.R` — tidycensus / ACS data
 - `lab3_rent_burden.R` — census table literacy, the rent-burden measure & the core chart types (two-session lab)
 - `lab4_evictions_mapping.R` — ERN eviction data, rates, and maps
-- `lab5_rb_seg.R` — rent burden and segregation
-- `lab6_bonus_memory.R` — bonus: working under memory constraints
+- `lab5_rb_seg.R` — rent burden, segregation, outside data, and a migration brief (`get_flows()`)
+- `lab6_hprm.R` — bonus self-study: reading the Housing Precarity Risk Model (short path §1–6, long path §7–10)
+- `lab6_bonus_memory.R` — retired predecessor (memory constraints); superseded by `lab6_hprm.R`, kept pending Tim's call
 - `r_functions_cheatsheet.R` — student reference card: every function in the labs, grouped by task (regenerate inventory with `website/maintainer/list_lab_functions.R`)
 
 Labs use **tidyverse**, **tidycensus**, **ggplot2**, **sf**, and related packages. Students run these via Berkeley DataHub (not locally).
@@ -66,6 +67,19 @@ When updating `website/index.qmd` for a new semester:
 - Add new weekly entries (keep old weeks for reference or archive them)
 - Assignment due dates and group project prompts are in `index.qmd` and `syllabus.qmd`
 - The syllabus structure is stable; typically only the term date and instructor contact info change in `syllabus.qmd`
+
+<!-- BEGIN hprm-lineage (synced from evictionresearch/library/standards/claude-md-hprm-lineage.md — edit there, then run library/scripts/sync_claude_md_standard.py) -->
+## HPRM lineage
+
+When introducing the HPRM in any prose: decades of scholarship on displacement,
+gentrification, segregation, urban planning, and demography, operationalized with
+modern Bayesian tools (BART); developed by Tim Thomas and collaborators at UC
+Berkeley's Urban Displacement Project during the pandemic, carried forward by ERN.
+Public theory families (four only): place stratification and discrimination,
+economic/affordability, household preference, and network theories of neighborhood
+change. "Highways of migration" and ranking superlatives stay internal. Canonical
+narrative: `cidrlab/library/ORG.md → HPRM Lineage`.
+<!-- END hprm-lineage -->
 
 <!-- BEGIN factual-accuracy (synced from evictionresearch/library/standards/claude-md-factual-accuracy.md — edit there, then run library/scripts/sync_claude_md_standard.py) -->
 ## Factual accuracy — non-negotiable

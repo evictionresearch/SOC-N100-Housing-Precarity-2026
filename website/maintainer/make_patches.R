@@ -60,7 +60,8 @@ specs <- list(
     blocks = c(
       '\ninstall.packages("remotes")\n',
       '\nremotes::install_github("evictionresearch/neighborhood")\n',
-      '\nmy_seg <- ntdf(\n  state  = "__",\n  county = "__",\n  year   = 2024\n) %>%\n  mutate(nt_conc = as.character(nt_conc))\n\nmy_seg %>%\n  count(nt_conc, sort = TRUE)\n'
+      '\nmy_seg <- ntdf(\n  state  = "__",\n  county = "__",\n  year   = 2024\n)\n\nmy_seg %>%\n  count(nt_conc, sort = TRUE)\n',
+      '\nlevels(my_seg$nt_conc)\n'
     )
   )
 )

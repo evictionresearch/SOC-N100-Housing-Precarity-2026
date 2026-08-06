@@ -132,7 +132,7 @@ lab_scripts <- c(
   "3" = "code/lab3_rent_burden.R",
   "4" = "code/lab4_evictions_mapping.R",
   "5" = "code/lab5_rb_seg.R",
-  "6" = "code/lab6_bonus_memory.R"  # bonus: memory constraints (duckdb/arrow)
+  "6" = "code/lab6_hprm.R"  # bonus: reading the HPRM (needs data/hprm/*.rds)
 )
 
 repo_root <- find_repo_root()

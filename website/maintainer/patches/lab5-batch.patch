@@ -1,6 +1,6 @@
 --- a/code/lab5_rb_seg.R
 +++ b/code/lab5_rb_seg.R
-@@ -44,14 +44,14 @@
+@@ -72,14 +72,14 @@
  # CRAN package "remotes", whose job is fetching packages from GitHub
  # (RUN ONCE, then put a # in front of it):
  
@@ -19,7 +19,7 @@
  # The remotes:: prefix means "use the install_github tool from the remotes
  # toolbox without opening the whole toolbox." You will see this
  # package::function() style often in other people's code.
-@@ -741,16 +741,16 @@
+@@ -1078,21 +1078,21 @@
  #
  # (a) Segregation types for your county:
  
@@ -27,8 +27,7 @@
 -  state  = "__",
 -  county = "__",
 -  year   = 2024
--) %>%
--  mutate(nt_conc = as.character(nt_conc))
+-)
 -
 -my_seg %>%
 -  count(nt_conc, sort = TRUE)
@@ -37,11 +36,18 @@
 +#   state  = "__",
 +#   county = "__",
 +#   year   = 2024
-+# ) %>%
-+#   mutate(nt_conc = as.character(nt_conc))
++# )
 +# 
 +# my_seg %>%
 +#   count(nt_conc, sort = TRUE)
++# 
+ #     Then compare your counts against the full list of categories. Which
+ #     neighborhood types does your county not have AT ALL? (Section 2's
+ #     move -- and the empty ones are worth a sentence in your writeup.)
+ 
+-levels(my_seg$nt_conc)
+-
++# levels(my_seg$nt_conc)
 +# 
  # (b) Rent burden for the same county (copy the Section 1 build, swap the
  #     state and county):

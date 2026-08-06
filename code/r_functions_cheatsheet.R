@@ -21,9 +21,10 @@
 # page on the course site.
 #
 # (Maintainers: the inventory below was extracted mechanically from
-# code/lab*.R + a1_example.R on 2026-07-21 with
+# code/lab*.R + a1_example.R on 2026-08-06 with
 # website/maintainer/list_lab_functions.R. After editing labs, rerun that
-# script and reconcile this file against its output.)
+# script and reconcile this file against its output. As of that run every
+# function called in labs 1-6 and a1_example.R appears here, tagged.)
 
 # ==========================================================================
 # 1. SYMBOLS AND EVERYDAY BASICS
@@ -110,6 +111,9 @@
 # nrow() / ncol()   count rows / columns                       [labs 1, 4]
 #                     nrow(alameda_raw)
 #
+# dim()             rows and columns at once                       [lab 5]
+#                     dim(ces)   # 9106 x 70
+#
 # names()           list a table's column names                    [lab 1]
 #                     names(alameda_wide)
 #
@@ -126,6 +130,12 @@
 #
 # class()           what kind of object is this?                   [lab 4]
 #                     class(flat_join)
+#
+# levels()          the categories a FACTOR can take, in their     [lab 5]
+#                   stored order -- including ones your data has
+#                   none of. Compare against count() to find what
+#                   is MISSING from your area
+#                     levels(seg$nt_conc)
 #
 # object.size()     how much memory an object uses                 [lab 6]
 #                     object.size(evictions) %>% format(units = "MB")
@@ -150,12 +160,26 @@
 # readRDS()         read an R data file someone hands you          [lab 4]
 #                     readRDS("~/SOC-N100-Housing-Precarity-2026/data/evictions/d5_case_aggregated.rds")
 #
+# read_rds()        tidyverse spelling of readRDS()                [lab 6]
+#                     read_rds("~/.../data/hprm/hprm_tract_2022.rds")
+#
+# read_csv()        read a CSV -- from a file OR straight from     [lab 5]
+#                   a web address. How data you DOWNLOAD yourself
+#                   gets into R
+#                     read_csv("~/.../data/calenviroscreen50_070126.csv")
+#
 # tracts()          download census-tract map outlines (tigris)    [lab 4]
 #                     tracts(state = "IN", county = "Marion", year = 2022)
 #
 # ntdf()            build neighborhood racial-composition types    [lab 5]
-#                   (Tim's neighborhood package)
+#                   (my neighborhood package)
 #                     ntdf(state = "CA", county = "Alameda", year = 2024)
+#
+# get_flows()       ACS migration flows: who moved in, who moved   [lab 5]
+#                   out, and the net, between one county and every
+#                   other. County-to-county tops out at year 2020
+#                     get_flows(geography = "county", state = "CA",
+#                               county = "Alameda", year = 2020)
 #
 # open_dataset()    point at a parquet file WITHOUT loading it     [lab 6]
 #                   into memory (arrow)
@@ -204,6 +228,13 @@
 # count()           shortcut: group and tally in one move          [lab 5]
 #                     count(nt_conc, sort = TRUE)
 #
+# distinct()        keep only unique rows                          [lab 4]
+#                     distinct(county_geoid)
+#
+# factor()          fix a category order (charts alphabetize   [labs 5, 6]
+#                   text labels unless you say otherwise)
+#                     factor(tier, levels = c("Low", "Med", "High"))
+#
 # first()           grab a group's first value (for a number       [lab 4]
 #                   repeated on every row)
 #                     summarize(renters = first(co_totrent))
@@ -241,6 +272,16 @@
 #
 # paste0()          glue text together (e.g., building GEOIDs)     [lab 4]
 #                     paste0(state_code, county_code)
+#
+# str_pad()         pad a value to a fixed width -- the fix for    [lab 5]
+#                   outside data whose ID column lost a leading
+#                   zero (6001400100 -> "06001400100")
+#                     str_pad(tract, width = 11, side = "left", pad = "0")
+#
+# nchar()           how many characters is this value? An ID's     [lab 5]
+#                   length tells you what kind of place it is
+#                   (5 digits = a county, 10 = a Connecticut town)
+#                     filter(nchar(GEOID2) == 5)
 
 # ==========================================================================
 # 7. SMALL CALCULATIONS
@@ -255,15 +296,24 @@
 # round()           round numbers                                  [lab 5]
 #                     round(p_rb, 2)
 #
+# abs()             drop the minus sign -- lets you sort by SIZE   [lab 5]
+#                   when a column runs both negative and positive
+#                     arrange(desc(abs(estimate)))
+#
 # is.na()           is this value missing?                         [lab 3]
 #                     filter(is.na(p_rb))
+#
+# coalesce()        first non-missing value of those given --      [lab 6]
+#                   the tidy way to fill in NAs
+#                     coalesce(rate, 0)
+#
+# cor()             correlation: do two numbers move together?     [lab 6]
+#                   +1 lockstep up, 0 no relation, -1 opposite
+#                     cor(hprm, p_rb, use = "complete.obs")
 #
 # is.finite() /     catch the results of dividing by zero          [lab 4]
 # is.infinite()
 #                     filter(is.finite(rate))
-#
-# as.character()    turn values into text                          [lab 5]
-#                     as.character(nt_conc)
 #
 # format()          pretty-print a value                           [lab 6]
 #                     format(units = "MB")
@@ -292,6 +342,10 @@
 #
 # geom_point()      scatter -- do two numbers move together?       [lab 3]
 #                     + geom_point()
+#
+# geom_jitter()     scatter with points nudged apart so            [lab 6]
+#                   overlapping dots stop hiding each other
+#                     + geom_jitter(width = 0.2)
 #
 # geom_smooth()     drape a trend line (with uncertainty ribbon)   [lab 3]
 #                   over a scatter
@@ -324,9 +378,16 @@
 # scale_y_continuous()    money/percent formats below
 #                     + scale_x_continuous(labels = scales::percent_format())
 #
-# scales::dollar_format() /  print axis numbers as $ or %      [labs 2, 3]
-# scales::percent_format()
-#                     labels = scales::dollar_format()
+# scales::dollar_format() /  print axis numbers as $, %, or    [labs 2, 3]
+# scales::percent_format() /  1,000s. House rule: every axis       [lab 5]
+# scales::comma_format()      names its units
+#                     labels = scales::comma_format()
+#
+# scale_fill_manual()  choose which category gets which color      [lab 5]
+#                    -- so a chart about loss and gain never
+#                    scrambles red and blue
+#                     + scale_fill_manual(values = c("Alameda lost" = "firebrick",
+#                                                    "Alameda gained" = "steelblue"))
 #
 # ggsave()          save the chart to an image file (inches)       [lab 1]
 #                     ggsave("~/my_chart.png", width = 8, height = 5)
@@ -355,6 +416,11 @@
 # st_drop_geometry()  peel the shapes off a spatial table to       [lab 4]
 #                     get a plain table
 #                     st_drop_geometry(marion_tracts)
+#
+# st_crs()          check (or set) a spatial object's coordinate   [lab 4]
+#                   reference system -- two layers must share one
+#                   before they can be drawn together
+#                     st_crs(marion_tracts)
 
 # ==========================================================================
 # 10. WRITING YOUR OWN RECIPES (ITERATION)
@@ -396,5 +462,5 @@
 # ==========================================================================
 # Built from the actual lab scripts (labs 1-6 and the A1 example) -- if
 # you have run a lab, you have run these. Spot a function in a lab that
-# is not on this card? Tell Tim; the list is regenerated from the code.
+# is not on this card? Tell me; the list is regenerated from the code.
 # ==========================================================================

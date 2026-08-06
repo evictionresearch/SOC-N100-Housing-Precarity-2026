@@ -32,7 +32,31 @@ Appendix A has every URL). ✅ᵇ = carried from an earlier dated verification (
 bank; date shown). 📎 = real quote, attribute to its source on the slide. 🚫 = do not claim.
 [CONFIRM] = needs Tim. *(chart read)* = describe the visual, no precise figure.
 
-**Timing (60 min):**
+## AS-BUILT SLIDE MAP (deck read 2026-08-04, ~4:50pm)
+
+Deck: "20260804 SOC N100 Week 5 Solutions". **Slides 1–7 are built.** Section 1 was
+restructured during the build and no longer matches the S3–S5 spec below; the as-built
+version is better and is recorded here. Slide-by-slide paste copy lives in
+`week5_lecture3_slide_build.md`.
+
+| Deck # | Slide, as built | Spec origin |
+|---|---|---|
+| 1 | Title — "What actually helps: from eviction to eviction policy" | S1 |
+| 2 | Agenda | S2 |
+| 3 | The Eviction Process (exits at every stage) | new this build |
+| 4 | The Data Processing Pipeline (branching: counts → trends; names+addresses → disparity) | S3, restructured |
+| 5 | State Counts vs. Names & Addresses — Washington \| Minnesota | new this build |
+| 6 | Gap in eviction data (LSC coverage map) | S4, replaced by LSC's own map |
+| 7 | Housing Precarity Risk Model | S5 |
+| 8+ | Testimony section begins | S6 onward, unchanged below |
+
+**Cut during the build:** the eviction-data-atlas beat as specced in S4 (replaced by the LSC
+map, which sidesteps the atlas-page 404); an "Eviction Data WA" OCR/NER method slide that
+briefly sat at 6–7.
+
+**Timing:** re-derive when the deck is finished. Release valve is still the video.
+
+**Timing as originally specced (60 min):**
 
 | § | Beat | Slides | Min |
 |---|---|---|---|
@@ -109,6 +133,24 @@ and it's why the skills you're building in lab are not clerical. They are the di
 between a crisis that's visible and one that isn't."
 
 ### S5 — "How was the HPRM actually done?" **NEW** *(promised after the Jul 14 question)*
+
+> **BUILT as deck slide 7, "Housing Precarity Risk Model."** As built it carries: EDR 197
+> displacement predictors · net migration of low-income households · which census variables
+> relate to those moves · EER 184 eviction predictors · 15 states of court records train the
+> model · what drives evictions at tract level · HPRM = sum score of EDR and EER · the
+> evictionresearch.net/hprm link.
+>
+> ⚠ **THE EVICTION CLOCK IS NOT ON THE SLIDE.** It is a model input *and* it is the hinge
+> to Section 5 — S15 opens by calling back to it, and the 🎤 below ends on "hold onto that
+> eviction-clock fact." Either add a line to the slide or say it out loud: *the statutory
+> timeline is itself a predictor, and it ranges tenfold, about 5 days in Louisiana to 53 in
+> Massachusetts.* Without it, S15's "your address decides how long you have" arrives cold.
+>
+> ⚠ Also absent from the slide: the **0–4 / 0–4 → 0–8** scoring and **64,028 tracts, 2019
+> vintage**. "Sum score of EDR and EER" implies the arithmetic without giving the range;
+> worth saying the range aloud so the 0–8 map colors make sense later.
+>
+> Footer still reads 2024.05.26.
 One inputs→outputs slide, no math wall:
 - **What goes in** (per census tract): who lives there (ACS — 197 predictors on the
   displacement side, 184 on the eviction side ✅); where renters actually move (a national
@@ -191,7 +233,7 @@ governmental stakeholders.' In Week 6 you'll each give a version of this. Steal 
 
 ## SECTION 3 — THE FOUR P'S, EACH ELEMENT DESCRIBED (10 min)
 
-### S9 — The framework *(asset: WA profile **Figure 5** ✅ — reuse the graphic directly)*
+### S11 - The framework *(asset: WA profile **Figure 5** ✅ — reuse the graphic directly)*
 - Title, verbatim: **"No single lever stops an eviction — it takes four."**
 - The framework sentence, verbatim: "Prevent the filing before it reaches court, protect
   tenants once they're in it, preserve the low-cost homes that already exist, and produce
@@ -205,7 +247,7 @@ governmental stakeholders.' In Week 6 you'll each give a version of this. Steal 
   fastest → T3 structural & slow); a red line marked **"STRONGEST TOGETHER"** connects rental
   assistance to right to counsel.
 
-### S10 — Five levers, one build each *(walk Figure 5's numbered list; all quotes ✅ from the page)*
+### Five levers, one build each *(walk Figure 5's numbered list; all quotes ✅ from the page)*
 1. **Rental assistance, paid to the landlord (Tier 1).** ERA plus the moratoria "coincided
    with roughly 673,000 fewer filings across studied counties (about 45% below what
    pre-pandemic trends would have predicted)," and ERA recipients saw "about 65% lower odds
@@ -230,7 +272,7 @@ governmental stakeholders.' In Week 6 you'll each give a version of this. Steal 
    households" (WA Dept. of Commerce) ✅; today there are "only 28 affordable, available
    homes for every 100 of the state's lowest-income renters" (NLIHC, The Gap) ✅.
 
-### S11 — Why it takes all four **NEW**
+### Why it takes all four **NEW**
 - Sequencing 📎 ✅ (Karen Chapple, in The Journalist's Resource, Clark Merrefield, May 2,
   2023): "What seems pretty clear is that you want to make sure you have your tenant
   protections and housing preservation policies in place first and then do some building.

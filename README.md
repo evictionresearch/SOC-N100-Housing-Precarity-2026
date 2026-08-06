@@ -40,7 +40,7 @@ A few tips for success:
 - **Run labs on DataHub**, not a local install — everyone in class is then on the same setup, and help is easier to give.
 - **Labs build on each other.** Lab 1 sets up your (free) Census API key that every later lab uses.
 - **Save your own work under new file names** — the git-pull link updates course files, and edits to the originals can create conflicts.
-- The final project pulls together everything from the labs; the bonus lab (`code/lab6_bonus_memory.R`) shows how to keep bigger projects from running out of memory.
+- The final project pulls together everything from the labs; the bonus lab (`code/lab6_hprm.R`) has you read a real risk model, the Housing Precarity Risk Model, instead of building one.
 
 ## Course staff and maintainers
 
